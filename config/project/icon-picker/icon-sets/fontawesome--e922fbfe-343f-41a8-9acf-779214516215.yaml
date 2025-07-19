@@ -1,0 +1,7 @@
+enabled: true
+handle: fontawesome
+name: 'Font Awesome'
+settings:
+  folder: /regular
+sortOrder: 1
+type: verbb\iconpicker\iconsets\SvgFolder

@@ -1,0 +1,63 @@
+@layer components {
+    .button {
+        --button-border-width: 2px;
+        --button-base-color: var(--color-neutral-900);
+        --button-inverse-color: var(--color-white);
+
+        --button-text-color: var(--button-inverse-color);
+        --button-bg-color: var(--button-base-color);
+
+        --button-hover-text-color: var(--button-base-color);
+        --button-hover-bg-color: transparent;
+
+        --button-border-color: var(--button-base-color);
+        --focusable-color: var(--button-base-color);
+
+        -webkit-tap-highlight-color: transparent;
+        display: inline-flex;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 100%;
+        padding: --spacing(2.5) --spacing(7);
+        overflow: hidden;
+        gap: --spacing(1.5);
+        border: var(--button-border-width) solid var(--button-border-color);
+        border-radius: calc(infinity * 1px);
+        background-color: var(--button-bg-color);
+        color: var(--button-text-color);
+        font-weight: 600;
+        font-size: var(--text-base);
+        line-height: --spacing(6);
+        text-decoration: none;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition-duration: var(--default-transition-duration);
+
+        &:hover {
+            background-color: var(--button-hover-bg-color);
+            color: var(--button-hover-text-color);
+        }
+
+        &.button-outline {
+            --button-text-color: var(--button-base-color);
+            --button-bg-color: transparent;
+            --button-hover-text-color: var(--button-inverse-color);
+            --button-hover-bg-color: var(--button-base-color);
+        }
+
+        @media (--screen-xs) {
+            width: auto;
+        }
+    }
+
+    .button-blue {
+        --button-base-color: var(--color-blue-500);
+    }
+
+    .button-white {
+        --button-base-color: var(--color-white);
+        --button-inverse-color: var(--color-neutral-900);
+    }
+}

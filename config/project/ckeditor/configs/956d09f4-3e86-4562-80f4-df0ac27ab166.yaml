@@ -1,0 +1,14 @@
+headingLevels:
+  - 3
+  - 4
+  - 5
+js: "return {\r\n  link: {\r\n    decorators: {\r\n      openInNewTab: {\r\n        mode: 'manual',\r\n        label: 'Open in new tab',\r\n        defaultValue: false,\r\n        attributes: {\r\n          target: '_blank'\r\n        }\r\n      },\r\n    },\r\n  },\r\n}"
+name: Body
+toolbar:
+  - heading
+  - '|'
+  - bold
+  - italic
+  - link
+  - bulletedList
+  - numberedList

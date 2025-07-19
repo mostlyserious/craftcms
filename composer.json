@@ -1,0 +1,65 @@
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "behinddesign/craft-object-storage": "v1.1.1",
+        "born05/craft-sentry": "3.0.0",
+        "craftcms/ckeditor": "4.9.0",
+        "craftcms/cms": "5.8.8",
+        "craftpulse/craft-colour-swatches": "5.1.0",
+        "npm-asset/fortawesome--fontawesome-pro": "6.7.2",
+        "nystudio107/craft-seomatic": "5.1.16",
+        "nystudio107/craft-vite": "5.0.1",
+        "putyourlightson/craft-sendgrid": "3.0.0",
+        "spicyweb/craft-embedded-assets": "5.4.3",
+        "topshelfcraft/environment-label": "5.0.0",
+        "verbb/expanded-singles": "3.0.3",
+        "verbb/icon-picker": "3.0.5",
+        "vlucas/phpdotenv": "^5.4.0",
+        "webrgp/craft-ignition": "v1.0.7"
+    },
+    "require-dev": {
+        "craftcms/generator": "^2.0.0",
+        "yiisoft/yii2-shell": "^2.0.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "modules\\": "modules/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "craftcms/plugin-installer": true,
+            "yiisoft/yii2-composer": true
+        },
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "8.3"
+        }
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.exam\u001ble.dev', '.env');\""
+        ]
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://composer.craftcms.com",
+            "canonical": false
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "npm-asset/fortawesome--fontawesome-pro",
+                "version": "6.7.2",
+                "type": "npm-asset",
+                "dist": {
+                    "type": "tar",
+                    "url": "https://npm.fontawesome.com/@fortawesome/fontawesome-pro/-/6.7.2/fontawesome-pro-6.7.2.tgz"
+                }
+            }
+        }
+    ]
+}

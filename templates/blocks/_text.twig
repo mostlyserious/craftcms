@@ -1,0 +1,20 @@
+{% if block.richText|plain or block.heading|plain %}
+    <section class="{{ swatch(palette, 'background', 'text') }}" data-animate>
+        <div class="{{ padding }}">
+            <div class="container max-w-5xl">
+                {% if block.heading|plain %}
+                    <header class="mb-4" data-animate>
+                        <h2 class="text-3xl md:text-4xl">
+                            {{ block.heading|heading }}
+                        </h2>
+                    </header>
+                {% endif %}
+                {% if block.richText|plain %}
+                    <div class="prose {{ branded ? 'prose-brand' }}" data-animate>
+                        {{ block.richText|media(976) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endif %}

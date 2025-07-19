@@ -1,0 +1,73 @@
+{% set navigation = craft.entries
+    .section('navigation')
+    .cache
+    .one %}
+
+<div class="navbar" data-property="--navbar-height:offsetHeight|px">
+    <div class="container max-w-7xl">
+        <div class="relative z-10 navbar-inner">
+            <a class="navbar-logo" href="/" title="{{ ('home page')|t }}">
+                <img width="200" height="50"
+                    src="{{ craft.vite.asset('src/img/logo.svg') }}"
+                    alt="{{ seomatic.site.siteName|default(siteName) }}"
+                    onerror="removeAttribute('width')">
+            </a>
+            <nav aria-label="{{ ('main navigation')|t }}">
+                <ul class="navbar-nav">
+                    {% for item in navigation.main|default([]) %}
+                        {% if item.type == 'dropdown' %}
+                            <li class="navbar-item">
+                                <button type="button"
+                                    class="navbar-link"
+                                    aria-controls="menu-item-{{ item.uid }}"
+                                    data-toggle="is-active"
+                                    data-toggle-group="{{ item.uid }}">
+                                    {{ item.title }}
+                                    {{ svg('@fontawesome/solid/chevron-down.svg')|attr({
+                                        class: 'transition fill-current size-3',
+                                    }) }}
+                                </button>
+                                <ul id="menu-item-{{ item.uid }}" class="dropdown"
+                                    data-toggle-inert="is-active">
+                                    {% for child in item.links %}
+                                        {{ link(child.button, {
+                                            class: 'dropdown-link',
+                                        }, 'li')|attr({
+                                            class: 'dropdown-item',
+                                        }) }}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% elseif item.type == 'menuItem' %}
+                            {{ link(item.button, {
+                                class: loop.index == navigation.main|length
+                                    ? 'button button-blue'
+                                    : 'navbar-link',
+                            }, 'li')|attr({
+                                class: 'navbar-item',
+                            }) }}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                <button type="button"
+                    class="p-4 -mr-4 navbar-toggle"
+                    aria-controls="mobile-menu"
+                    aria-expanded="false"
+                    aria-label="{{ ('Open & close mobile menu')|t }}"
+                    data-toggle="is-open"
+                    data-toggle-target="#mobile-menu"
+                    data-toggle-group="mobile"
+                    data-toggle-lock-scroll
+                    data-toggle-trap-focus>
+                    <span class="block relative w-5 h-4">
+                        <span class="navbar-toggle-line"></span>
+                        <span class="navbar-toggle-line"></span>
+                        <span class="navbar-toggle-line"></span>
+                    </span>
+                </button>
+            </nav>
+        </div>
+    </div>
+</div>
+
+{{ include('common/_mobileNavigation') }}

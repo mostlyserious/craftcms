@@ -1,0 +1,6 @@
+@import "$css/setup/base.css" theme(reference);
+@import "$css/setup/theme.css" theme(reference);
+
+@reference "tailwindcss";
+
+/* @import this file into your SCF (e.g. Svelte, Vue) to make use of all PostCSS features. */

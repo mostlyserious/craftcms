@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer components {
+    .ck-powered-by-balloon {
+        display: none !important;
+    }
+
+    #page-container::before {
+        --env-color: transparent;
+
+        border-bottom: 1px solid #d4dae4 !important;
+        box-shadow: inset -1rem 0 0 0 var(--env-color) !important;
+    }
+
+    body.env-staging #page-container::before {
+        --env-color: #facc15;
+        padding-right: 2rem !important;
+    }
+
+    body.env-production #page-container::before {
+        --env-color: #10b981;
+        padding-right: 2rem !important;
+    }
+
+    form {
+        & .titlebar {
+            padding-left: 1.5rem !important;
+            font-weight: 600;
+        }
+
+        & [data-attribute="heading"] {
+            & .ck.ck-editor__top {
+                /* Uncomment if no formatting is needed for heading fields. */
+                /* display: none; */
+            }
+
+            & .ck.ck-content {
+                border-top-right-radius: var(--ck-border-radius) !important;
+                border-top-left-radius: var(--ck-border-radius) !important;
+            }
+        }
+
+        & input.text.readable {
+            font-weight: 600 !important;
+        }
+
+        & .ck.ck-content {
+            padding: 0.5rem !important;
+
+            &[role="textbox"][aria-label^="heading"i] {
+                font-weight: 500;
+                font-size: 1.5rem;
+                line-height: 1.2;
+            }
+
+            & figure.table {
+                width: 100%;
+
+                & thead tr {
+                    background-color: var(--color-gray-800);
+                    color: var(--color-white);
+                }
+            }
+        }
+
+        & .hyper-header-type select {
+            color: var(--color-gray-700) !important;
+            font-weight: 700 !important;
+        }
+    }
+}

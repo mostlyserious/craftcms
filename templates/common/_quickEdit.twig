@@ -1,0 +1,14 @@
+{% if entry is defined and currentUser and craft.app.request.isPreview == false %}
+    {% if (canSave(entry)) %}
+        <div class="fixed bottom-12 left-12 z-9999">
+            <a href="{{ entry.cpEditUrl }}"
+                class="block p-3 text-white rounded-full border-2 border-white shadow-lg transition hover:scale-110 bg-[#d61f2b]"
+                title="Edit {{ entry.title|default(entry.type.handle) }}"
+                target="_cpEdit">
+                {{ svg('@fontawesome/regular/pen-to-square.svg')|attr({
+                    class: 'block fill-current size-5',
+                }) }}
+            </a>
+        </div>
+    {% endif %}
+{% endif %}

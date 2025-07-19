@@ -1,0 +1,12 @@
+columnSuffix: null
+handle: ico
+instructions: null
+name: Icon
+searchable: false
+settings:
+  iconSets: '*'
+  renderId: null
+  showLabels: false
+translationKeyFormat: null
+translationMethod: none
+type: verbb\iconpicker\fields\IconPickerField

@@ -1,0 +1,14 @@
+{% extends '_base' %}
+
+{% if entry.section.handle|default(null) == 'moduleListing' and not currentUser %}
+    {% exit 404 %}
+{% endif %}
+
+{% block navigation %}
+    {{ include('common/_topBar', ignore_missing=true) }}
+    {{ include('common/_navigation') }}
+{% endblock %}
+
+{% block footer %}
+    {{ include('common/_footer') }}
+{% endblock %}

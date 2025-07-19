@@ -1,0 +1,29 @@
+columnSuffix: null
+handle: header
+instructions: null
+name: Header
+searchable: false
+settings:
+  createButtonLabel: 'Edit Header'
+  defaultIndexViewMode: cards
+  enableVersioning: false
+  entryTypes:
+    -
+      __assoc__:
+        -
+          - uid
+          - 26a63b22-d0c1-40a5-b44e-95dac319f8d5 # Header
+        -
+          - group
+          - General
+  includeTableView: false
+  maxEntries: 1
+  minEntries: null
+  pageSize: 50
+  propagationKeyFormat: null
+  propagationMethod: all
+  showCardsInGrid: false
+  viewMode: cards
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Matrix

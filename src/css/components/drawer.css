@@ -1,0 +1,100 @@
+@layer components {
+    .drawer {
+        z-index: 50;
+        position: fixed;
+        top: var(--navbar-height);
+        right: 0;
+        width: 100dvw;
+        height: calc(100dvh - var(--navbar-height));
+        background-color: --alpha(var(--color-neutral-900) / 0.8);
+        opacity: 0;
+        pointer-events: none;
+        transition-duration: var(--default-transition-duration);
+        transition-property: opacity var(--default-transition-properties);
+
+        @media (--screen-xl) {
+            display: none;
+        }
+
+        :is(&.is-open, &:has(:focus)) {
+            opacity: 1;
+            pointer-events: auto;
+
+            & .drawer-inner {
+                translate: 0 0;
+            }
+        }
+    }
+
+    .drawer-inner {
+        display: flex;
+        flex-direction: column;
+        max-width: var(--container-lg);
+        height: 100%;
+        margin-left: auto;
+        overflow: auto;
+        translate: 100% 0;
+        background-color: var(--color-white);
+        transition-duration: var(--default-transition-duration);
+        transition-property: translate var(--default-transition-properties);
+    }
+
+    .drawer-nav {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+
+        & > .drawer-item:last-child {
+            margin-top: auto;
+
+            & .drawer-link {
+                display: block;
+                padding: --spacing(4) --spacing(7);
+                background-color: var(--color-blue-500);
+                color: var(--color-white);
+                text-align: center;
+            }
+        }
+    }
+
+    .drawer-item {
+        position: relative;
+        width: 100%;
+        transition-duration: var(--default-transition-duration);
+
+        &.is-active {
+            padding-bottom: --spacing(2);
+        }
+    }
+
+    .drawer-collapsible {
+        display: grid;
+        grid-template-rows: 0fr;
+        padding-left: --spacing(2);
+        transition-duration: var(--default-transition-duration);
+        transition-property: grid-template-rows var(--default-transition-properties);
+
+        .is-active & {
+            grid-template-rows: 1fr;
+        }
+
+        & .drawer-collapsible-content {
+            overflow: hidden;
+        }
+    }
+
+    .drawer-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: --spacing(3) --spacing(4);
+        gap: --spacing(2);
+        color: var(--color-blue-500);
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition-duration: var(--default-transition-duration);
+    }
+}

@@ -1,0 +1,40 @@
+@layer components {
+    .pagination {
+        display: inline-flex;
+        overflow: hidden;
+        gap: --spacing(2);
+        text-align: center;
+    }
+
+    .pagination-item {
+        display: flex;
+    }
+
+    .pagination-text,
+    .pagination-link {
+        display: grid;
+        place-items: center;
+        justify-content: center;
+        width: --spacing(10);
+        height: --spacing(10);
+        border-radius: 999px;
+        font-weight: 700;
+        line-height: --spacing(10);
+        text-align: center;
+    }
+
+    .pagination-text {
+        background-color: var(--color-neutral-300);
+    }
+
+    .pagination-link {
+        position: relative;
+        transition-duration: var(--default-transition-duration);
+
+        &:hover {
+            background-color: var(--color-blue-500);
+            color: var(--color-white);
+            text-decoration: none;
+        }
+    }
+}

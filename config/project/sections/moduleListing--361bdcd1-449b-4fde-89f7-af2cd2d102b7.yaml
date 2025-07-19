@@ -1,0 +1,28 @@
+defaultPlacement: end
+enableVersioning: true
+entryTypes:
+  -
+    uid: e0ec4062-7362-447d-afd6-f80982e53e7d # Page
+handle: moduleListing
+maxAuthors: 1
+name: 'Module Listing'
+previewTargets:
+  -
+    __assoc__:
+      -
+        - label
+        - 'Primary entry page'
+      -
+        - urlFormat
+        - '{url}'
+      -
+        - refresh
+        - '1'
+propagationMethod: all
+siteSettings:
+  4133e941-2578-4d54-9009-6630aa7e39d4: # $PRIMARY_SITE_NAME
+    enabledByDefault: true
+    hasUrls: true
+    template: pages/_entry
+    uriFormat: '{slug}'
+type: single

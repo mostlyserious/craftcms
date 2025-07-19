@@ -1,0 +1,310 @@
+@layer components {
+    .prose {
+        font-size: var(--text-base);
+        line-height: var(--text-base--line-height);
+
+        & p {
+            margin-top: --spacing(5);
+            margin-bottom: --spacing(5);
+        }
+
+        & :any-link:not(.button) {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 2px;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+
+        & blockquote {
+            margin-top: --spacing(6);
+            margin-bottom: --spacing(6);
+            padding-inline-start: --spacing(4);
+        }
+
+        & :is(h1, h2, h3, h4, h5, h6) {
+            font-weight: 600;
+        }
+
+        & h1 {
+            margin-top: 0;
+            margin-bottom: --spacing(4);
+            font-size: var(--text-3xl);
+            line-height: var(--text-3xl--line-height);
+        }
+
+        & h2 {
+            margin-top: --spacing(12);
+            margin-bottom: --spacing(4);
+            font-size: var(--text-3xl);
+            line-height: var(--text-3xl--line-height);
+        }
+
+        & h3 {
+            margin-top: --spacing(8);
+            margin-bottom: --spacing(3);
+            font-size: var(--text-2xl);
+            line-height: var(--text-2xl--line-height);
+        }
+
+        & h4 {
+            margin-top: --spacing(6);
+            margin-bottom: --spacing(2);
+            font-size: var(--text-xl);
+            line-height: var(--text-xl--line-height);
+        }
+
+        & img {
+            margin-top: --spacing(8);
+            margin-bottom: --spacing(8);
+        }
+
+        & picture {
+            margin-top: --spacing(8);
+            margin-bottom: --spacing(8);
+        }
+
+        & picture > img {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        & video {
+            margin-top: --spacing(8);
+            margin-bottom: --spacing(8);
+        }
+
+        & kbd {
+            padding-top: --spacing(1);
+            padding-bottom: --spacing(1);
+            padding-inline-start: --spacing(2);
+            padding-inline-end: --spacing(2);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--text-sm);
+        }
+
+        & code {
+            font-size: var(--text-sm);
+        }
+
+        & h2 code {
+            font-size: var(--text-lg);
+        }
+
+        & h3 code {
+            font-size: var(--text-md);
+        }
+
+        & pre {
+            margin-top: --spacing(6);
+            margin-bottom: --spacing(6);
+            padding-top: --spacing(3);
+            padding-bottom: --spacing(3);
+            padding-inline-start: --spacing(4);
+            padding-inline-end: --spacing(4);
+            border-radius: var(--border-radius-md);
+            font-size: var(--text-sm);
+            line-height: var(--text-sm--line-height);
+        }
+
+        & :where(ol, ul) {
+            margin-top: --spacing(5);
+            margin-bottom: --spacing(5);
+            padding-inline-start: --spacing(6);
+        }
+
+        & ol {
+            list-style-type: decimal;
+        }
+
+        & ul {
+            list-style-type: disc;
+        }
+
+        & li {
+            margin-top: --spacing(2);
+            margin-bottom: --spacing(2);
+
+            aside & {
+                margin: 0;
+            }
+        }
+
+        & :where(ol, ul) > li {
+            padding-inline-start: --spacing(2);
+
+            aside & {
+                padding-inline-start: 0;
+            }
+        }
+
+        & > ul > li p {
+            margin-top: --spacing(3);
+            margin-bottom: --spacing(3);
+        }
+
+        & > ul > li > p:first-child {
+            margin-top: --spacing(5);
+        }
+
+        & > ul > li > p:last-child {
+            margin-bottom: --spacing(5);
+        }
+
+        & > ol > li > p:first-child {
+            margin-top: --spacing(5);
+        }
+
+        & > ol > li > p:last-child {
+            margin-bottom: --spacing(5);
+        }
+
+        & ul ul,
+        & ul ol,
+        & ol ul,
+        & ol ol {
+            margin-top: --spacing(3);
+            margin-bottom: --spacing(3);
+        }
+
+        & hr {
+            margin-top: --spacing(12);
+            margin-bottom: --spacing(12);
+        }
+
+        & hr + * {
+            margin-top: 0;
+        }
+
+        & h2 + * {
+            margin-top: 0;
+        }
+
+        & h3 + * {
+            margin-top: 0;
+        }
+
+        & h4 + * {
+            margin-top: 0;
+        }
+
+        & figure {
+            margin-top: --spacing(8);
+            margin-bottom: --spacing(8);
+        }
+
+        & :is(h1, h2, h3, h4, h5, h6) + figure.table {
+            margin-top: --spacing(4);
+        }
+
+        & figure > * {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        & figcaption {
+            margin-top: --spacing(3);
+            font-size: var(--text-sm);
+            line-height: var(--text-sm--line-height);
+        }
+
+        & > :first-child {
+            margin-top: 0;
+        }
+
+        & > :last-child {
+            margin-bottom: 0;
+        }
+
+        & table {
+            width: 100%;
+            text-align: left;
+
+            & :where(td, th) {
+                padding: --spacing(3);
+                border-width: 0.5px;
+                border-color: var(--color-gray-400);
+            }
+        }
+    }
+
+    .prose-brand {
+        & :is(h1, h2, h3, h4, h5, h6) {
+            font-weight: 400;
+        }
+
+        & :any-link:not(.button) {
+            color: var(--color-blue-500);
+            font-weight: 600;
+            text-decoration: none;
+            text-underline-offset: 2px;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        & ul {
+            list-style-type: none;
+
+            & li {
+                margin-top: --spacing(1);
+                margin-bottom: --spacing(1);
+                padding-left: --spacing(2);
+                text-indent: calc(--spacing(5) * -1);
+
+                @media (--screen-sm) {
+                    padding-left: --spacing(8);
+                }
+
+                &::before {
+                    display: inline-block;
+                    width: --spacing(5);
+                    height: --spacing(5);
+                    translate: --spacing(2) --spacing(1.5);
+                    content: url("$fontawesome/solid/check.svg");
+                }
+            }
+        }
+
+        & figure.image {
+            & img {
+                margin: 0;
+            }
+
+            & :any-link {
+                display: inline-block;
+                cursor: pointer;
+            }
+        }
+
+        & figure.table {
+            width: 100%;
+            max-height: 60dvh;
+            overflow: auto;
+
+            @media (--screen-sm) {
+                max-height: 100%;
+            }
+        }
+
+        & table {
+            & thead {
+                background-color: var(--color-neutral-900);
+                color: var(--color-white);
+            }
+
+            & tbody {
+                & tr:nth-child(even) {
+                    background-color: var(--color-neutral-200);
+                }
+            }
+
+            & :where(td, th) {
+                border: none;
+            }
+        }
+    }
+}

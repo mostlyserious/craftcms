@@ -1,0 +1,53 @@
+columnSuffix: null
+handle: blocks
+instructions: null
+name: Content
+searchable: true
+settings:
+  createButtonLabel: 'Add Block'
+  defaultIndexViewMode: cards
+  enableVersioning: false
+  entryTypes:
+    -
+      __assoc__:
+        -
+          - uid
+          - a400573f-5ebe-41f4-8d51-ed519b4e15a6 # Billboard
+        -
+          - group
+          - General
+    -
+      __assoc__:
+        -
+          - uid
+          - d847a59f-97c9-452d-8cdb-afc1a6d36377 # Image & Text
+        -
+          - group
+          - General
+    -
+      __assoc__:
+        -
+          - uid
+          - a60b39fe-197f-4eff-abef-b7130e29fe0a # Text
+        -
+          - group
+          - General
+    -
+      __assoc__:
+        -
+          - uid
+          - e379fc2b-f33d-4486-bc6b-04929aab786d # Group
+        -
+          - group
+          - Advanced
+  includeTableView: false
+  maxEntries: null
+  minEntries: null
+  pageSize: null
+  propagationKeyFormat: null
+  propagationMethod: all
+  showCardsInGrid: false
+  viewMode: blocks
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Matrix

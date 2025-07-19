@@ -1,0 +1,73 @@
+color: orange
+description: null
+fieldLayouts:
+  f2f28d10-121f-410c-bf16-a140a301574b:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: '2025-07-19T19:39:50+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: 2b134bcf-b385-44d1-8d39-b3be84bed910 # Nested
+            handle: null
+            includeInCards: false
+            instructions: null
+            label: null
+            providesThumbs: false
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 5dbc5346-5ae4-412d-84a1-04d9b9787b34
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: bff4eea5-4e9a-478b-b92b-67fab790fb41
+        userCondition: null
+      -
+        elementCondition:
+          class: craft\elements\conditions\entries\EntryCondition
+          conditionRules:
+            -
+              class: craft\elements\conditions\entries\FieldConditionRule
+              operator: in
+              uid: 76945376-59e0-4a81-ae6e-651501c43da7
+              values:
+                - cbed9ff3-3b7b-4fe9-99a3-5773c8920f0b # Content
+          elementType: craft\elements\Entry
+          fieldContext: global
+        elements:
+          -
+            dateAdded: '2025-07-19T19:52:11+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: fd17e42e-291b-4fb6-a3ae-58836dcf9589 # Background
+            handle: null
+            includeInCards: false
+            instructions: null
+            label: null
+            providesThumbs: false
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 8ebbe079-9112-4ecb-8ee8-67e6e390f3c7
+            userCondition: null
+            warning: null
+            width: 100
+        name: Design
+        uid: 29a408d2-bce8-4bb7-bdd5-1af098f1c6b2
+        userCondition: null
+handle: group
+hasTitleField: false
+icon: layer-group
+name: Group
+showSlugField: false
+showStatusField: false
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site

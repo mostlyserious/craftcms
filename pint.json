@@ -1,0 +1,55 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "ordered_traits": true,
+        "mb_str_functions": true,
+        "strict_comparison": true,
+        "ordered_interfaces": true,
+        "declare_strict_types": true,
+        "backtick_to_shell_exec": true,
+        "concat_space": { "spacing": "one" },
+        "phpdoc_align": { "align": "vertical" },
+        "not_operator_with_successor_space": false,
+        "ordered_imports": { "sort_algorithm": "length" },
+        "phpdoc_trim_consecutive_blank_line_separation": true,
+        "fully_qualified_strict_types": { "import_symbols": true },
+        "no_alternative_syntax": { "fix_non_monolithic_code": false },
+        "trailing_comma_in_multiline": {
+            "elements": ["arguments", "arrays", "match", "parameters"]
+        },
+        "new_with_parentheses": {
+            "anonymous_class": false,
+            "named_class": true
+        },
+        "global_namespace_import": {
+            "import_classes": true,
+            "import_constants": true,
+            "import_functions": true
+        },
+        "ordered_class_elements": {
+            "sort_algorithm": "none",
+            "order": [
+                "use_trait",
+                "case",
+                "constant",
+                "constant_public",
+                "constant_protected",
+                "constant_private",
+                "property_public",
+                "property_protected",
+                "property_private",
+                "construct",
+                "destruct",
+                "magic",
+                "phpunit",
+                "method_abstract",
+                "method_public",
+                "method_public_static",
+                "method_protected",
+                "method_protected_static",
+                "method_private",
+                "method_private_static"
+            ]
+        }
+    }
+}

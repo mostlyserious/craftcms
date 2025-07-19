@@ -1,0 +1,40 @@
+{% set backgroundImage = block.backgroundImage.eagerly().one %}
+
+{% if backgroundImage is not null %}
+    <section class="relative overflow-hidden {{ swatch(palette, 'background', 'text') }}" data-animate>
+        {{ image(backgroundImage, {
+            fit: 'crop',
+            width: 800,
+            height: 800,
+        }, {
+            (screen.md): {
+                fit: 'crop',
+                width: 1600,
+                height: 800,
+            },
+        })|attr({
+            class: '*:absolute *:inset-0 *:object-center *:object-cover *:w-full *:h-full',
+            role: 'presentation',
+        }) }}
+        <div class="absolute inset-0 bg-neutral-800/50"></div>
+        <div class="grid content-center min-h-vh-30 md:min-h-vh-40 lg:min-h-vh-50 {{ padding }}">
+            <div class="container relative max-w-5xl">
+                <div class="grid gap-6 text-center text-white">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl">
+                        {{ block.heading|heading }}
+                    </h2>
+                    {% if block.excerpt|plain %}
+                        <div class="prose {{ branded ? 'prose-brand' }}" data-animate>
+                            {{ block.excerpt }}
+                        </div>
+                    {% endif %}
+                    {{ link(block.button, {
+                        class: 'mt-2 button button-white',
+                    }, 'div')|attr({
+                        data: { animate: true },
+                    }) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}

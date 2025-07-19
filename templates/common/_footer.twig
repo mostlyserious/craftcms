@@ -1,0 +1,35 @@
+{% set navigation = craft.entries
+    .section('navigation')
+    .cache
+    .one %}
+
+<section class="{{ swatch(palettes.misc.footer, 'background', 'text') }}">
+    <div class="py-4 md:py-8" data-animate>
+        <div class="container max-w-7xl">
+            <div class="grid gap-12">
+                <div class="text-center">
+                    <span class="block md:inline">
+                        &copy; {{ now|date('Y') }}
+                        {{ seomatic.site.siteName|default(siteName) }}.
+                        {{ ('All Rights Reserved')|t }}
+                    </span>
+                    {% if navigation.legal|default([])|length %}
+                        <span class="hidden md:inline">|</span>
+                        <nav class="inline">
+                            {% for index, item in navigation.legal %}
+                                {{ index ? '|' }}
+                                {{ link(item.button) }}
+                            {% endfor %}
+                        </nav>
+                    {% endif %}
+                    <span class="hidden lg:inline">|</span>
+                    <span class="block lg:inline">
+                        {{ ('Website crafted by {value}')|t({
+                            value: '<a href="https://mostlyserious.io" target="_blank">Mostly Serious</a>',
+                        })|raw }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

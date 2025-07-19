@@ -1,0 +1,233 @@
+dateModified: 1753045691
+elementSources:
+  craft\elements\Entry:
+    -
+      defaultSort:
+        - postDate
+        - desc
+      defaultViewMode: ''
+      disabled: false
+      key: '*'
+      tableAttributes:
+        - status
+        - section
+        - postDate
+        - expiryDate
+        - authors
+        - link
+      type: native
+    -
+      heading: Public
+      key: 'heading:9819c319-26bf-45f6-8966-9411881bbfca'
+      type: heading
+    -
+      key: 'single:e264d6c0-ed99-4ba2-b530-a08f12b5407f' # Home
+      type: native
+    -
+      key: 'section:98068dc3-f30b-4dc2-a65c-9d18dc2b982e' # Pages
+      type: native
+    -
+      heading: Globals
+      key: 'heading:26c97fce-8779-4431-b97a-59baa6978afa'
+      type: heading
+    -
+      defaultSort:
+        - id
+        - asc
+      defaultViewMode: ''
+      disabled: false
+      key: 'single:3ccd497c-3d40-4a46-8534-54cb4686a65f' # Navigation
+      tableAttributes:
+        - status
+        - postDate
+        - expiryDate
+        - authors
+        - link
+      type: native
+email:
+  fromEmail: $SYSTEM_EMAIL_ADDRESS
+  fromName: $PRIMARY_SITE_NAME
+  replyToEmail: null
+  template: ''
+  transportSettings:
+    apiKey: $SENDGRID_API_KEY
+    categories: ''
+  transportType: putyourlightson\sendgrid\mail\SendgridAdapter
+fs:
+  aws:
+    hasUrls: true
+    name: AWS
+    settings:
+      bucket: $OBJECT_STORAGE_BUCKET
+      endpoint: $OBJECT_STORAGE_SERVER
+      endpointType: subdomain
+      expires: ''
+      keyId: $OBJECT_STORAGE_ACCESS_KEY
+      region: $OBJECT_STORAGE_REGION
+      secret: $OBJECT_STORAGE_SECRET_KEY
+      subfolder: ''
+      visibility: private
+    type: behinddesign\ObjectStorage\Fs
+    url: $OBJECT_STORAGE_URL
+meta:
+  __names__:
+    2a0b5a7e-6cac-422a-a10c-46c72ca9e652: Icon # Icon
+    2b134bcf-b385-44d1-8d39-b3be84bed910: Nested # Nested
+    3b9cc488-3089-4b60-90e7-69f344a260d7: Excerpt # Excerpt
+    3b82137d-68df-4184-8c52-fe82a83fd864: Switched # Switched
+    3ccd497c-3d40-4a46-8534-54cb4686a65f: Navigation # Navigation
+    3f3ea580-ece0-4297-b0cd-f62546e76029: 'Rich Text' # Rich Text
+    5ad412c1-8632-4d85-beed-9ac4a40468dd: SEO # SEO
+    8a23ef88-0f26-4e54-9054-dfad645a92b4: Excerpt # Excerpt
+    23e7a25a-326c-497d-b2d2-8a3f0441478d: Heading # Heading
+    26a63b22-d0c1-40a5-b44e-95dac319f8d5: Header # Header
+    77e3d49f-4339-4267-8daf-3ba6445ee93e: 'Featured Image' # Featured Image
+    0081e5eb-e59c-4ef4-b421-4aa0f565e036: Public # Public
+    361bdcd1-449b-4fde-89f7-af2cd2d102b7: 'Module Listing' # Module Listing
+    956d09f4-3e86-4562-80f4-df0ac27ab166: Body # Body
+    4133e941-2578-4d54-9009-6630aa7e39d4: $PRIMARY_SITE_NAME # $PRIMARY_SITE_NAME
+    5966aa13-fd54-4d5d-bc19-0f672a8ce313: 'Font Awesome Brands' # Font Awesome Brands
+    079361a2-d9fc-47d8-b2d2-37532b257a50: Headings # Headings
+    98068dc3-f30b-4dc2-a65c-9d18dc2b982e: Pages # Pages
+    5044364f-faaa-4ebd-8f8c-8fc3abd5488e: Menu # Menu
+    a3adc4b2-c0e3-46e1-b366-8c4c6fced6a8: Dropdown # Dropdown
+    a60b39fe-197f-4eff-abef-b7130e29fe0a: Text # Text
+    a400573f-5ebe-41f4-8d51-ed519b4e15a6: Billboard # Billboard
+    ad8a5f74-72c0-4ba5-8d07-54ab8cea97e8: Button # Button
+    c01f9841-0c83-458e-906c-c420fd8e9ae4: 'Menu Item' # Menu Item
+    c390a72a-35ca-4c23-98d1-c1deca0af008: 'Craft CMS' # Craft CMS
+    cbed9ff3-3b7b-4fe9-99a3-5773c8920f0b: Content # Content
+    d847a59f-97c9-452d-8cdb-afc1a6d36377: 'Image & Text' # Image & Text
+    d739735e-78c1-4f27-9588-f7d4bedcb800: Links # Links
+    da66a76a-4366-4f46-8188-66fc5cbc5314: Header # Header
+    e0ec4062-7362-447d-afd6-f80982e53e7d: Page # Page
+    e264d6c0-ed99-4ba2-b530-a08f12b5407f: Home # Home
+    e379fc2b-f33d-4486-bc6b-04929aab786d: Group # Group
+    e922fbfe-343f-41a8-9acf-779214516215: 'Font Awesome' # Font Awesome
+    f1ce3b8e-7185-4942-a3e1-217dbed2832a: Standard # Standard
+    fb8b8ada-d276-4ad7-87ca-d2e1be1fba84: Body # Body
+    fcc2fe10-7c1e-4017-9983-b337f8ad1e37: Navigation # Navigation
+    fd17e42e-291b-4fb6-a3ae-58836dcf9589: Background # Background
+plugins:
+  behinddesign-object-storage:
+    edition: standard
+    enabled: true
+    schemaVersion: '2.0'
+  ckeditor:
+    edition: standard
+    enabled: true
+    schemaVersion: 3.0.0.0
+  colour-swatches:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.4.3
+    settings:
+      default: null
+  embeddedassets:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  environment-label:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  expanded-singles:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  icon-picker:
+    edition: standard
+    enabled: true
+    licenseKey: F5SEZUD46I0JZ7SUTD6VVDYT
+    schemaVersion: 1.2.3
+    settings:
+      enableCache: true
+      iconItemSize: 32
+      iconItemSizeLarge: 40
+      iconItemWrapperSize: 56
+      iconItemWrapperSizeLarge: 72
+      iconSetsPath: '@vendor/npm-asset/fortawesome--fontawesome-pro/svgs/'
+      iconSetsUrl: '@web/'
+      redactorFieldHandle: ''
+  ignition:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  sendgrid:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  sentry-sdk:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  seomatic:
+    edition: standard
+    enabled: true
+    licenseKey: BB93R18H4OOUXI5L7E58X07T
+    schemaVersion: 3.0.13
+    settings:
+      addHrefLang: true
+      addPaginatedHreflang: true
+      addXDefaultHrefLang: true
+      alwaysIncludeCanonicalUrls: false
+      cpTitlePrefix: '⚙ '
+      cspNonce: ''
+      cspScriptSrcPolicies:
+        -
+          __assoc__:
+            -
+              - policy
+              - "'self'"
+      devModeCpTitlePrefix: '🚧⚙ '
+      devModeTitlePrefix: '🚧 '
+      displayAnalysisSidebar: true
+      displayPreviewSidebar: true
+      enableDebugToolbarPanel: true
+      enableJsonLdEndpoint: false
+      enableMetaContainerEndpoint: false
+      enableSeoFileLinkEndpoint: false
+      environment: live
+      excludeNonCanonicalUrls: false
+      generatorEnabled: true
+      headersEnabled: true
+      includeHomepageInBreadcrumbs: true
+      lowercaseCanonicalUrl: true
+      manuallySetEnvironment: false
+      maxDescriptionLength: 155
+      maxTitleLength: 70
+      metaCacheDuration: 0
+      pluginName: SEOmatic
+      regenerateSitemapsAutomatically: true
+      renderEnabled: true
+      separatorChar: '|'
+      sidebarDisplayPreviewTypes:
+        - google
+        - twitter
+        - facebook
+      siteGroupsSeparate: true
+      siteUrlOverride: ''
+      sitemapsEnabled: true
+      socialMediaPreviewTarget: false
+      submitSitemaps: true
+      truncateDescriptionTags: true
+      truncateTitleTags: true
+      xDefaultSite: 0
+  vite:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+system:
+  edition: pro
+  live: true
+  name: $PRIMARY_SITE_NAME
+  retryDuration: null
+  schemaVersion: 5.8.0.3
+  timeZone: America/Los_Angeles
+users:
+  allowPublicRegistration: false
+  defaultGroup: null
+  photoSubpath: null
+  photoVolumeUid: null
+  require2fa: false
+  requireEmailVerification: true

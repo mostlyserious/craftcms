@@ -1,0 +1,53 @@
+{% set image %}
+    <div class="p-4 md:p-6 md:w-1/2 lg:p-12 sm:w-3/7" data-animate>
+        {{ image(block.featuredImage.eagerly().one, {
+            fit: 'crop',
+            width: 430,
+            height: 280,
+        }, {
+            (screen.xs): {
+                fit: 'crop',
+                width: 610,
+                height: 400,
+            },
+            (screen.sm): {
+                fit: 'crop',
+                width: 290,
+                height: 290,
+            },
+            (screen.md): {
+                fit: 'crop',
+                width: 450,
+                height: 450,
+            },
+        })|attr({
+            class: '*:rounded',
+        }) }}
+    </div>
+{% endset %}
+
+<section class="{{ swatch(palette, 'background', 'text') }}" data-animate>
+    <div class="{{ padding }}">
+        <div class="container max-w-5xl">
+            <div class="flex flex-col items-center -m-4 sm:flex-row md:-m-6 lg:-m-12">
+                {{ not block.isFlipped ? image }}
+                <div class="p-4 md:p-6 md:w-1/2 lg:p-12 sm:w-4/7">
+                    <div class="grid gap-6">
+                        <h2 class="text-3xl sm:text-4xl" data-animate>
+                            {{ block.heading|heading }}
+                        </h2>
+                        <div class="prose" data-animate>
+                            {{ block.body }}
+                        </div>
+                        {{ link(block.button, {
+                            class: 'button button-blue',
+                        }, 'div')|attr({
+                            data: { animate: true },
+                        }) }}
+                    </div>
+                </div>
+                {{ block.isFlipped ? image }}
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,16 @@
+defaultPlacement: end
+enableVersioning: true
+entryTypes:
+  -
+    uid: fcc2fe10-7c1e-4017-9983-b337f8ad1e37 # Navigation
+handle: navigation
+maxAuthors: 1
+name: Navigation
+propagationMethod: all
+siteSettings:
+  4133e941-2578-4d54-9009-6630aa7e39d4: # $PRIMARY_SITE_NAME
+    enabledByDefault: true
+    hasUrls: false
+    template: null
+    uriFormat: null
+type: single

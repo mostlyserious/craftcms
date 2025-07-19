@@ -1,0 +1,46 @@
+{% if blocks is not defined %}
+    {% set blocks = entry.blocks.cache.all %}
+{% endif %}
+
+{% for index, block in blocks %}
+    {% if nested|default(false) %}
+        {% if loop.index == blocks|length %}
+            {% set padding = 'pt-4' %}
+        {% elseif loop.first %}
+            {% set padding = 'pb-4' %}
+        {% else %}
+            {% set padding = 'py-4' %}
+        {% endif %}
+    {% endif %}
+
+    {% if nested|default(false) %}
+        {% set palette = craft.app.config.custom.colors.background.default %}
+    {% else %}
+        {% set palette = craft.app.config.custom.colors.background[block.background.label|default(null)] is defined
+            ? craft.app.config.custom.colors.background[block.background.label]
+            : craft.app.config.custom.colors.background.default %}
+    {% endif %}
+
+    {% if padding is not defined or padding is null %}
+        {% switch block.type.handle %}
+            {% case 'someException' %}
+                {% set padding = 'py-8 md:py-16' %}
+            {% default %}
+                {% set padding = 'py-8 md:py-16 lg:py-24' %}
+        {% endswitch %}
+    {% endif %}
+
+    {{ craft.app.config.general.devMode ? ("<!-- START #{block.type.handle}:#{block.id|default(0)} -->")|raw }}
+    {% if block.type.handle in ['someException'] %}
+        {{ include("blocks/_#{block.type.handle}", ignore_missing=true) }}
+    {% else %}
+        {% cache using key block.uid ~ block.dateUpdated.format('U') %}
+        {{ include("blocks/_#{block.type.handle}", ignore_missing=true) }}
+        {% endcache %}
+    {% endif %}
+    {{ craft.app.config.general.devMode ? ("<!-- END #{block.type.handle}:#{block.id|default(0)} -->")|raw }}
+
+    {% if not nested|default(false) %}
+        {% set padding = null %}
+    {% endif %}
+{% endfor %}

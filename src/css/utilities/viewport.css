@@ -1,0 +1,191 @@
+@utility w-vw-* {
+    width: calc(--value(integer) * 1vw);
+}
+
+@utility w-vh-* {
+    width: calc(--value(integer) * 1vh);
+}
+
+@utility w-vmin-* {
+    width: calc(--value(integer) * 1vmin);
+}
+
+@utility w-vmax-* {
+    width: calc(--value(integer) * 1vmax);
+}
+
+@utility w-dvw-* {
+    width: calc(--value(integer) * 1dvw);
+}
+
+@utility w-dvh-* {
+    width: calc(--value(integer) * 1dvh);
+}
+
+@utility w-dvmin-* {
+    width: calc(--value(integer) * 1dvmin);
+}
+
+@utility w-dvmax-* {
+    width: calc(--value(integer) * 1dvmax);
+}
+
+@utility min-w-vw-* {
+    min-width: calc(--value(integer) * 1vw);
+}
+
+@utility min-w-vh-* {
+    min-width: calc(--value(integer) * 1vh);
+}
+
+@utility min-w-vmin-* {
+    min-width: calc(--value(integer) * 1vmin);
+}
+
+@utility min-w-vmax-* {
+    min-width: calc(--value(integer) * 1vmax);
+}
+
+@utility min-w-dvw-* {
+    min-width: calc(--value(integer) * 1dvw);
+}
+
+@utility min-w-dvh-* {
+    min-width: calc(--value(integer) * 1dvh);
+}
+
+@utility min-w-dvmin-* {
+    min-width: calc(--value(integer) * 1dvmin);
+}
+
+@utility min-w-dvmax-* {
+    min-width: calc(--value(integer) * 1dvmax);
+}
+
+@utility max-w-vw-* {
+    max-width: calc(--value(integer) * 1vw);
+}
+
+@utility max-w-vh-* {
+    max-width: calc(--value(integer) * 1vh);
+}
+
+@utility max-w-vmax-* {
+    max-width: calc(--value(integer) * 1vmin);
+}
+
+@utility max-w-vmax-* {
+    max-width: calc(--value(integer) * 1vmax);
+}
+
+@utility max-w-dvw-* {
+    max-width: calc(--value(integer) * 1dvw);
+}
+
+@utility max-w-dvh-* {
+    max-width: calc(--value(integer) * 1dvh);
+}
+
+@utility max-w-dvmax-* {
+    max-width: calc(--value(integer) * 1dvmin);
+}
+
+@utility max-w-dvmax-* {
+    max-width: calc(--value(integer) * 1dvmax);
+}
+
+@utility h-vw-* {
+    height: calc(--value(integer) * 1vw);
+}
+
+@utility h-vh-* {
+    height: calc(--value(integer) * 1vh);
+}
+
+@utility h-vmin-* {
+    height: calc(--value(integer) * 1vmin);
+}
+
+@utility h-vmax-* {
+    height: calc(--value(integer) * 1vmax);
+}
+
+@utility h-dvw-* {
+    height: calc(--value(integer) * 1dvw);
+}
+
+@utility h-dvh-* {
+    height: calc(--value(integer) * 1dvh);
+}
+
+@utility h-dvmin-* {
+    height: calc(--value(integer) * 1dvmin);
+}
+
+@utility h-dvmax-* {
+    height: calc(--value(integer) * 1dvmax);
+}
+
+@utility min-h-vw-* {
+    min-height: calc(--value(integer) * 1vw);
+}
+
+@utility min-h-vh-* {
+    min-height: calc(--value(integer) * 1vh);
+}
+
+@utility min-h-vmin-* {
+    min-height: calc(--value(integer) * 1vmin);
+}
+
+@utility min-h-vmax-* {
+    min-height: calc(--value(integer) * 1vmax);
+}
+
+@utility min-h-dvw-* {
+    min-height: calc(--value(integer) * 1dvw);
+}
+
+@utility min-h-dvh-* {
+    min-height: calc(--value(integer) * 1dvh);
+}
+
+@utility min-h-dvmin-* {
+    min-height: calc(--value(integer) * 1dvmin);
+}
+
+@utility min-h-dvmax-* {
+    min-height: calc(--value(integer) * 1dvmax);
+}
+
+@utility max-h-vw-* {
+    max-height: calc(--value(integer) * 1vw);
+}
+
+@utility max-h-vh-* {
+    max-height: calc(--value(integer) * 1vh);
+}
+
+@utility max-h-vmax-* {
+    max-height: calc(--value(integer) * 1vmin);
+}
+
+@utility max-h-vmax-* {
+    max-height: calc(--value(integer) * 1vmax);
+}
+
+@utility max-h-dvw-* {
+    max-height: calc(--value(integer) * 1dvw);
+}
+
+@utility max-h-dvh-* {
+    max-height: calc(--value(integer) * 1dvh);
+}
+
+@utility max-h-dvmax-* {
+    max-height: calc(--value(integer) * 1dvmin);
+}
+
+@utility max-h-dvmax-* {
+    max-height: calc(--value(integer) * 1dvmax);
+}

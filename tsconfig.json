@@ -1,0 +1,54 @@
+{
+    "include": [
+        "./src/env.d.ts",
+        "./node_modules/@types/**/*.d.ts",
+        "./src/**/*.js",
+        "./src/**/*.ts",
+        "./src/**/*.svelte"
+    ],
+    "exclude": [
+        "./node_modules/**/*",
+        "./vendor/**/*",
+        "./web/**/*"
+    ],
+    "compilerOptions": {
+        "checkJs": true,
+        "jsx": "preserve",
+        "jsxImportSource": "solid-js",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "allowUnusedLabels": false,
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "alwaysStrict": true,
+        "isolatedModules": true,
+        "verbatimModuleSyntax": true,
+        "noErrorTruncation": true,
+        "types": [],
+        "outDir": "./web/static",
+        "baseUrl": ".",
+        "rootDirs": [ "." ],
+        "paths": {
+            "$lib": [ "./src/lib" ],
+            "$lib/*": [ "./src/lib/*" ],
+            "$css": [ "./src/css" ],
+            "$css/*": [ "./src/css/*" ],
+            "$img": [ "./src/img" ],
+            "$img/*": [ "./src/img/*" ],
+            "$fontawesome": [ "./vendor/npm-asset/fortawesome--fontawesome-pro/svgs" ],
+            "$fontawesome/*": [ "./vendor/npm-asset/fortawesome--fontawesome-pro/svgs/*" ]
+        },
+        "lib": [
+            "esnext",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "moduleResolution": "bundler",
+        "module": "esnext",
+        "target": "esnext",
+        "ignoreDeprecations": "5.0"
+    }
+}

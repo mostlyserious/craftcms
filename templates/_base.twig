@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="{{ craft.app.language }}">
+<head>
+    {% set shared = craft.entries.section('shared').one %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+
+        ::view-transition-image-pair(*) {
+            animation-duration: 150ms;
+            animation-fill-mode: both;
+        }
+    </style>
+
+    {% if getenv('ASSETS_URL') %}
+        <link rel="preconnect" href="{{ getenv('ASSETS_URL') }}" crossorigin>
+    {% endif %}
+
+    <link rel="preload" href="{{ craft.vite.asset('src/img/logo.svg') }}" as="image" type="image/svg+xml" />
+
+    {# Non-blocking Web Fonts - check to ensure display:swap is also used #}
+    {% if craft.app.config.custom.fonts.adobe|default(null) %}
+        <link rel="preconnect" href="https://use.typekit.net" crossorigin>
+        <link rel="preconnect" href="https://p.typekit.net" crossorigin>
+        <link rel="preload" href="{{ craft.app.config.custom.fonts.adobe }}" as="style">
+        <link rel="stylesheet" href="{{ craft.app.config.custom.fonts.adobe }}" media="print" onload="this.media = 'all'" />
+        <noscript>
+            <link rel="stylesheet" href="{{ craft.app.config.custom.fonts.adobe }}">
+        </noscript>
+    {% endif %}
+
+    {% if craft.app.config.custom.fonts.google|default(null) %}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preload" as="style" href="{{ craft.app.config.custom.fonts.google }}">
+        <link rel="stylesheet" href="{{ craft.app.config.custom.fonts.google }}" media="print" onload="this.media = 'all'">
+        <noscript>
+            <link rel="stylesheet" href="{{ craft.app.config.custom.fonts.google }}">
+        </noscript>
+    {% endif %}
+
+    {% block head %}
+        {{ external('@webroot/static/assets/markup.html')|striptags('<link><meta>')|raw }}
+    {% endblock %}
+
+    {% if craft.app.config.general.disallowRobots %}
+        <meta name="robots" content="noindex">
+    {% endif %}
+
+    {% if shared is not null %}
+        {{ craft.app.config.env == 'production' ? shared.headTop|raw : (shared.headTop ? ('<template> %s </template>')|format(shared.headTop)|raw) }}
+    {% endif %}
+
+    {% if craft.app.config.env == 'staging' and getenv('MARKERIO_PROJECT') %}
+        <script>
+            window.markerConfig = {
+                project: '{{ getenv("MARKERIO_PROJECT") }}',
+                source: 'snippet'
+            };
+        </script>
+        <script>
+            !function(e,r,a){if(!e.__Marker){e.__Marker={};var t=[],n={__cs:t};["show","hide","isVisible","capture","cancelCapture","unload","reload","isExtensionInstalled","setReporter","setCustomData","on","off"].forEach(function(e){n[e]=function(){var r=Array.prototype.slice.call(arguments);r.unshift(e),t.push(r)}}),e.Marker=n;var s=r.createElement("script");s.async=1,s.src="https://edge.marker.io/latest/shim.js";var i=r.getElementsByTagName("script")[0];i.parentNode.insertBefore(s,i)}}(window,document);
+        </script>
+    {% endif %}
+
+    <script>
+        window.customElements.define('x-svelte', class extends HTMLElement {});
+
+        window.$app = {{ ({
+            isPreview: craft.app.request.isPreview,
+            isAdmin: currentUser and currentUser.admin,
+            devMode: craft.app.config.general.devMode,
+            objectStorageUrl: getenv('OBJECT_STORAGE_URL'),
+            assetsUrl: getenv('ASSETS_URL'),
+            lang: craft.app.language,
+            i18n: localizations(craft.app.language, 'site'),
+            palettes: craft.app.config.custom.colors,
+        })|json_encode|raw }};
+
+        window.$app.csrf = fetch('/actions/users/session-info', {
+            headers: { 'Accept': 'application/json' },
+        }).then(res => res.json()).then(res => ({
+            name: res.csrfTokenName,
+            value: res.csrfTokenValue,
+        }))
+    </script>
+
+    {{ craft.vite.script('src/app.js', false) }}
+
+    {% if shared is not null %}
+        {{ craft.app.config.env == 'production' ? shared.headBottom|raw : (shared.headBottom ? ('<template> %s </template>')|format(shared.headBottom)|raw) }}
+    {% endif %}
+</head>
+<body>
+    {% if shared is not null %}
+        {{ craft.app.config.env == 'production' ? shared.bodyTop|raw : (shared.bodyTop ? ('<template> %s </template>')|format(shared.bodyTop)|raw) }}
+    {% endif %}
+
+    <a href="#maincontent" class="block absolute top-2 left-2 z-50 py-1 px-1.5 font-semibold bg-white rounded-md not-focus:sr-only">
+        {{ ('Skip to Main Content')|t }}
+    </a>
+
+    <header>
+        {% block navigation %}
+        {% endblock %}
+    </header>
+
+    <main id="maincontent">
+        {% block main %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        {% block footer %}
+        {% endblock %}
+    </footer>
+
+    {{ include('common/_quickEdit') }}
+
+    {% if shared is not null %}
+        {{ craft.app.config.env == 'production' ? shared.bodyBottom|raw : (shared.bodyBottom ? ('<template> %s </template>')|format(shared.bodyBottom)|raw) }}
+    {% endif %}
+</body>
+</html>

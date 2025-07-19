@@ -1,0 +1,3 @@
+@utility grid-fill-* {
+    grid-template-columns: repeat(auto-fill, minmax(min(--spacing(--value(integer)), 100%), 1fr));
+}

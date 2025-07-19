@@ -1,0 +1,40 @@
+color: blue
+description: null
+fieldLayouts:
+  fb4f4954-5775-4dd0-bd7d-cdeed5ea41bc:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: '2025-07-18T18:52:52+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: ad8a5f74-72c0-4ba5-8d07-54ab8cea97e8 # Button
+            handle: null
+            includeInCards: false
+            instructions: null
+            label: null
+            providesThumbs: false
+            required: true
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 114feca6-da34-4434-9aae-447b7f4f80b3
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: 1131505c-8c11-4340-a684-ce70950c6932
+        userCondition: null
+handle: menuItem
+hasTitleField: false
+icon: link-simple
+name: 'Menu Item'
+showSlugField: false
+showStatusField: false
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: '{button.label}'
+titleTranslationKeyFormat: null
+titleTranslationMethod: site

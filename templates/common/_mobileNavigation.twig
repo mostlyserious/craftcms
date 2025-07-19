@@ -1,0 +1,43 @@
+<div id="mobile-menu" class="drawer">
+    <div class="drawer-inner">
+        <nav class="flex grow" aria-label="mobile menu">
+            <ul class="drawer-nav" data-toggle-inert="is-open">
+                {% for item in navigation.main|default([]) %}
+                    {% if item.type == 'dropdown' %}
+                        <li class="drawer-item">
+                            <button type="button"
+                                class="drawer-link"
+                                aria-controls="drawer-item-{{ item.uid }}"
+                                data-toggle="is-active"
+                                data-toggle-group="mobile">
+                                {{ item.title }}
+                                {{ svg('@fontawesome/solid/chevron-right.svg')|attr({
+                                    class: 'transition fill-current is-active:rotate-90 size-3',
+                                }) }}
+                            </button>
+                            <div class="drawer-collapsible">
+                                <ul id="drawer-item-{{ item.uid }}"
+                                    class="drawer-collapsible-content"
+                                    data-toggle-inert="is-active">
+                                    {% for child in item.links %}
+                                        {{ link(child.button, {
+                                            class: 'drawer-link',
+                                        }, 'li')|attr({
+                                            class: 'drawer-item',
+                                        }) }}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </li>
+                    {% elseif item.type == 'menuItem' %}
+                        {{ link(item.button, {
+                            class: 'drawer-link',
+                        }, 'li')|attr({
+                            class: 'drawer-item',
+                        }) }}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+</div>

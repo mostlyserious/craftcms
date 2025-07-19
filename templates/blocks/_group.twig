@@ -1,0 +1,9 @@
+<div class="{{ swatch(palette, 'background', 'text') }}" data-animate>
+    <div class="{{ padding }}">
+        {{ include('blocks/_entry', {
+            blocks: block.nested,
+            nested: true,
+            branded: branded,
+        }) }}
+    </div>
+</div>

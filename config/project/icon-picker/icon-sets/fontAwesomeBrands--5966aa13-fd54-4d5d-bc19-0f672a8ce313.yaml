@@ -1,0 +1,7 @@
+enabled: true
+handle: fontAwesomeBrands
+name: 'Font Awesome Brands'
+settings:
+  folder: /brands
+sortOrder: 2
+type: verbb\iconpicker\iconsets\SvgFolder

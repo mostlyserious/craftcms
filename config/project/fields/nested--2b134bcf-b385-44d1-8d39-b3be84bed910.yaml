@@ -1,0 +1,29 @@
+columnSuffix: null
+handle: nested
+instructions: null
+name: Nested
+searchable: true
+settings:
+  createButtonLabel: 'Add Block'
+  defaultIndexViewMode: cards
+  enableVersioning: false
+  entryTypes:
+    -
+      __assoc__:
+        -
+          - uid
+          - a60b39fe-197f-4eff-abef-b7130e29fe0a # Text
+        -
+          - group
+          - General
+  includeTableView: false
+  maxEntries: null
+  minEntries: null
+  pageSize: null
+  propagationKeyFormat: null
+  propagationMethod: all
+  showCardsInGrid: false
+  viewMode: blocks
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Matrix

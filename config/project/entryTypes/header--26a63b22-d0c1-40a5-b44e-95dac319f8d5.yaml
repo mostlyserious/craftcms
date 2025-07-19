@@ -1,0 +1,94 @@
+color: null
+description: null
+fieldLayouts:
+  1cfe989c-d377-440c-b995-e8b1c756106d:
+    cardThumbAlignment: start
+    cardView:
+      - 'layoutElement:6bf6d7d6-00c1-4ef7-8489-610e4b007fcc'
+      - 'layoutElement:b3dddfde-80aa-4efc-9166-b2b74065b921'
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: '2025-07-20T00:17:02+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: 23e7a25a-326c-497d-b2d2-8a3f0441478d # Heading
+            handle: null
+            includeInCards: false
+            instructions: null
+            label: null
+            providesThumbs: false
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 1de96c65-c8aa-45b3-8e0d-43766bc756d8
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: '2025-07-20T00:17:02+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: 3b9cc488-3089-4b60-90e7-69f344a260d7 # Excerpt
+            handle: null
+            includeInCards: true
+            instructions: null
+            label: null
+            providesThumbs: false
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 6bf6d7d6-00c1-4ef7-8489-610e4b007fcc
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: '2025-07-20T00:17:02+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: ad8a5f74-72c0-4ba5-8d07-54ab8cea97e8 # Button
+            handle: null
+            includeInCards: true
+            instructions: null
+            label: null
+            providesThumbs: false
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: b3dddfde-80aa-4efc-9166-b2b74065b921
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: '2025-07-20T00:17:02+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: 77e3d49f-4339-4267-8daf-3ba6445ee93e # Featured Image
+            handle: null
+            includeInCards: false
+            instructions: null
+            label: null
+            providesThumbs: true
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 7954331b-6820-4698-b318-fbfdfad5e474
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: 4f87f965-16c2-4c5a-9f4d-729a0c498584
+        userCondition: null
+handle: header
+hasTitleField: false
+icon: block
+name: Header
+showSlugField: false
+showStatusField: false
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: '{heading|default(owner.title)|striptags}'
+titleTranslationKeyFormat: null
+titleTranslationMethod: site

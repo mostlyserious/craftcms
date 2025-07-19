@@ -1,0 +1,22 @@
+@utility inset-center {
+    --tw-translate-x: -50%;
+    --tw-translate-y: -50%;
+
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+}
+
+@utility inset-x-center {
+    --tw-translate-x: -50%;
+
+    left: 50%;
+    translate: -50% 0;
+}
+
+@utility inset-y-center {
+    --tw-translate-y: -50%;
+
+    top: 50%;
+    translate: 0 -50%;
+}

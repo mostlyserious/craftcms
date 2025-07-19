@@ -1,0 +1,147 @@
+@layer components {
+    .navbar {
+
+    }
+
+    .navbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .navbar-logo {
+        display: block;
+        width: max-content;
+        margin-block: --spacing(1);
+        padding: --spacing(2);
+        border-radius: var(--radius-md);
+        font-size: var(--text-3xl);
+        transition-duration: var(--default-transition-duration);
+
+        &:hover {
+            background-color: --alpha(currentcolor / 0.15);
+        }
+    }
+
+    .navbar-nav {
+        display: none;
+        align-items: center;
+        height: 100%;
+        gap: --spacing(2);
+
+        @media (--screen-xl) {
+            display: flex;
+        }
+    }
+
+    .navbar-item {
+        position: relative;
+        transition-duration: var(--default-transition-duration);
+
+        &:last-of-type {
+            margin-left: --spacing(2);
+        }
+    }
+
+    .navbar-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: --spacing(2) --spacing(4);
+        gap: --spacing(2);
+        border-radius: var(--radius-md);
+        color: var(--color-blue-500);
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition-duration: var(--default-transition-duration);
+
+        &:hover {
+            background-color: --alpha(currentcolor / 0.15);
+        }
+
+        &[target="_blank"]::after {
+            display: block;
+            width: --spacing(2.5);
+            height: --spacing(2.5);
+            background-image: url("$fontawesome/solid/arrow-up-right-from-square.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            content: " ";
+        }
+    }
+
+    .is-active .navbar-link {
+        color: var(--color-neutral-900);
+
+        &:hover {
+            background-color: --alpha(currentcolor / 0.15);
+        }
+    }
+
+    .navbar-toggle {
+        display: block;
+        z-index: 40;
+        position: relative;
+        cursor: pointer;
+
+        @media (--screen-xl) {
+            display: none;
+        }
+
+        & .navbar-toggle-line {
+            --default-transition-properties: translate, rotate, var(--default-transition-properties);
+            box-sizing: content-box;
+            display: block;
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            transform-origin: 100% 50%;
+            translate: 0 0;
+            rotate: 0;
+            border-top-width: 1px;
+            border-bottom-width: 1px;
+            border-radius: var(--radius-md);
+            border-color: currentcolor;
+            background-color: currentcolor;
+            pointer-events: none;
+            transition-duration: var(--default-transition-duration);
+
+            &:nth-of-type(1) {
+                top: 0;
+            }
+
+            &:nth-of-type(2) {
+                top: 50%;
+                transform-origin: 50% 50%;
+                translate: 0 -50%;
+                rotate: 0;
+            }
+
+            &:nth-of-type(3) {
+                bottom: 0;
+            }
+        }
+    }
+
+    .navbar-toggle[aria-expanded="true"] {
+        color: var(--color-blue-500);
+
+        & .navbar-toggle-line:nth-of-type(1) {
+            translate: -15% -22%;
+            rotate: -45deg;
+        }
+
+        & .navbar-toggle-line:nth-of-type(2) {
+            translate: 0 -50%;
+            opacity: 0;
+        }
+
+        & .navbar-toggle-line:nth-of-type(3) {
+            translate: -15% 22%;
+            rotate: 45deg;
+        }
+    }
+}

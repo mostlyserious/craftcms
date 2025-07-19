@@ -1,0 +1,37 @@
+@layer components {
+    .form-label {
+        display: block;
+        margin-bottom: --spacing(1);
+        font-weight: var(--font-weight-bold);
+        font-size: var(--text-sm);
+        line-height: var(--text-sm--line-height);
+        text-transform: uppercase;
+    }
+
+    .form-input {
+        appearance: none;
+        width: 100%;
+        padding-inline: --spacing(3);
+        padding-block: --spacing(2);
+        border-width: 1px;
+        border-radius: var(--radius-sm);
+        border-color: var(--color-neutral-200);
+    }
+
+    [type="search"].form-input {
+        padding-right: --spacing(12) !important;
+        background-image: url("$fontawesome/solid/magnifying-glass.svg");
+        background-position: right 0.75rem top calc(50% + 1px);
+        background-size: auto --spacing(4);
+        background-repeat: no-repeat;
+    }
+
+    select:not([multiple]).form-input {
+        padding-right: --spacing(10) !important;
+        background-image: url("$fontawesome/solid/chevron-down.svg");
+        background-position: right 0.75rem top calc(50% + 1px);
+        background-size: auto --spacing(4);
+        background-repeat: no-repeat;
+        cursor: pointer;
+    }
+}

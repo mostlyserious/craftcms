@@ -1,0 +1,63 @@
+color: blue
+description: null
+fieldLayouts:
+  6f96e98f-5a2d-4223-bfc1-d37e3330d51c:
+    cardThumbAlignment: end
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: '2025-07-19T17:12:19+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: 5044364f-faaa-4ebd-8f8c-8fc3abd5488e # Menu
+            handle: main
+            includeInCards: false
+            instructions: null
+            label: __blank__
+            providesThumbs: false
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 06694db3-0833-4e98-9961-a231a7ec211a
+            userCondition: null
+            warning: null
+            width: 100
+        name: Main
+        uid: 5e2219ef-628c-444a-a032-fa0974e3ebb5
+        userCondition: null
+      -
+        elementCondition: null
+        elements:
+          -
+            dateAdded: '2025-07-20T03:31:45+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: d739735e-78c1-4f27-9588-f7d4bedcb800 # Links
+            handle: legal
+            includeInCards: false
+            instructions: null
+            label: __blank__
+            providesThumbs: false
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: ea7a0f11-dcad-4c90-8ebc-4c42ee36a3ab
+            userCondition: null
+            warning: null
+            width: 100
+        name: Legal
+        uid: 1fc4795e-f1ed-4659-9f38-1bd3f214fac8
+        userCondition: null
+handle: navigation
+hasTitleField: false
+icon: bars
+name: Navigation
+showSlugField: false
+showStatusField: false
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site

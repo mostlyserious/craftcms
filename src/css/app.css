@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@import "$css/setup/base.css";
+@import "$css/setup/theme.css";
+
+@import "$css/utilities/button.css";
+@import "$css/utilities/container.css";
+@import "$css/utilities/grid-fill.css";
+@import "$css/utilities/misc.css";
+@import "$css/utilities/viewport.css";
+
+@import "$css/components/drawer.css";
+@import "$css/components/dropdown.css";
+@import "$css/components/form.css";
+@import "$css/components/navbar.css";
+@import "$css/components/pagination.css";
+@import "$css/components/prose.css";
+
+@layer base {
+    html {
+        background-color: var(--color-neutral-800);
+        font-size: 16px;
+        text-rendering: geometricPrecision;
+        scroll-padding: 2rem 4rem;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        interpolate-size: allow-keywords;
+        background-color: var(--root-bg);
+        color: var(--root-color);
+    }
+
+    :root {
+        --root-bg: var(--color-white);
+        --root-color: var(--color-neutral-800);
+        --focusable-color: var(--color-blue-500);
+        --default-border-style: solid;
+        --default-transition-properties: color, background-color, border-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+    }
+
+    :where(*, *:before, *:after) {
+        border-style: var(--default-border-style);
+        transition-property: var(--default-transition-properties);
+        transition-timing-function: var(--default-transition-timing-function);
+    }
+
+    :where(h1, h2, h3, h4, h5, h6) {
+        text-wrap: balance;
+    }
+
+    :where(input, textarea, select) {
+        font: inherit;
+        letter-spacing: inherit;
+        word-spacing: inherit;
+    }
+
+    :where(button) {
+        text-align: unset;
+        text-underline-offset: 2px;
+        cursor: pointer;
+
+        & svg {
+            pointer-events: none;
+        }
+    }
+
+    :where(img) {
+        pointer-events: none;
+        transition: opacity 400ms;
+        user-select: none;
+    }
+
+    :where(address){
+        font-style: normal;
+    }
+
+    :where([data-animate]) {
+        opacity: 0;
+    }
+
+    :is(:any-link) {
+        text-decoration-line: underline;
+        text-underline-offset: max(2px, 0.125em);
+
+        &:hover {
+            text-decoration-line: none;
+        }
+
+        & svg {
+            pointer-events: none;
+        }
+    }
+
+    :is(:focus, :focus-visible) {
+        outline: transparent;
+    }
+
+    :is(body.is-tabbing :where(:any-link, button, input, select, textarea, [tabindex="0"]):where(:focus, :focus-visible)) {
+        border-radius: var(--radius-sm);
+        outline: 2px solid var(--focusable-color, currentcolor);
+        outline-offset: 2px;
+    }
+
+    picture,
+    x-svelte {
+        display: contents;
+    }
+}

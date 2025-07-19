@@ -1,0 +1,27 @@
+{% set featuredImage = block.featuredImage.eagerly().one ?? null %}
+
+<section class="flex relative bg-gray-100 bg-center bg-cover min-h-[30dvh]"
+    {% if featuredImage %}
+        style="background-image: url({{ src(featuredImage, {
+            auto: 'format,compress',
+            fit: 'crop',
+            width: 1400,
+            height: 600,
+        }) }});"
+    {% endif %}>
+    <div class="absolute inset-0 bg-neutral-800/90"></div>
+    <div class="relative py-16 my-auto w-full md:py-20">
+        <div class="container max-w-5xl">
+            <div class="grid gap-4 text-white" data-animate>
+                <h1 class="text-4xl font-bold uppercase md:text-5xl">
+                    {{ block.heading|default(entry.title)|heading }}
+                </h1>
+                {% if block.excerpt|default('') %}
+                    <div class="prose">
+                        {{ block.excerpt|default('') }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
