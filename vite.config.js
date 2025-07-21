@@ -1,10 +1,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import * as env from './vite/env'
 import { defineConfig } from 'vite'
-import svgo from './vite/vite-plugin-svgo'
+import * as env from './utility/env'
 import tailwindcss from '@tailwindcss/vite'
-import tinify from './vite/vite-plugin-tinify'
+import svgo from './utility/vite-plugin-svgo'
+import tinify from './utility/vite-plugin-tinify'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 
 const { VITE_BASE, VITE_TEMP, PRIMARY_SITE_URL, VITE_PORT } = env.parse()

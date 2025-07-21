@@ -157,7 +157,7 @@ export default [
         },
     },
     {
-        files: [ '*.{js,jsx,ts,tsx}', 'vite/*.{js,jsx,ts,tsx}' ],
+        files: [ '*.{js,jsx,ts,tsx}', 'utility/*.{js,jsx,ts,tsx}' ],
         languageOptions: {
             globals: {
                 Bun: 'readonly',

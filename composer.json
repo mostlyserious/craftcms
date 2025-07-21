@@ -1,4 +1,8 @@
 {
+    "name": "mostlyserious/craftcms",
+    "description": "A Craft CMS Starter",
+    "type": "project",
+    "license": "Unlicense",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
@@ -39,8 +43,8 @@
         }
     },
     "scripts": {
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.exam\u001ble.dev', '.env');\""
+        "post-create-project-cmd": [
+            "./utility/install.sh"
         ]
     },
     "repositories": [
