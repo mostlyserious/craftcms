@@ -5,7 +5,8 @@ name: 'Rich Text'
 searchable: true
 settings:
   availableTransforms: ''
-  availableVolumes: ''
+  availableVolumes:
+    - 0081e5eb-e59c-4ef4-b421-4aa0f565e036 # Public
   characterLimit: null
   ckeConfig: f1ce3b8e-7185-4942-a3e1-217dbed2832a # Standard
   createButtonLabel: null

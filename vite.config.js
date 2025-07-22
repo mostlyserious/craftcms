@@ -7,7 +7,7 @@ import svgo from './utility/vite-plugin-svgo'
 import tinify from './utility/vite-plugin-tinify'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 
-const { VITE_BASE, VITE_TEMP, PRIMARY_SITE_URL, VITE_PORT } = env.parse()
+const { VITE_BASE, VITE_PORT, VITE_TEMP, PRIMARY_SITE_URL } = env.parse()
 
 export default defineConfig(() => {
     if (fs.existsSync(`web${VITE_TEMP || VITE_BASE}`)) {
