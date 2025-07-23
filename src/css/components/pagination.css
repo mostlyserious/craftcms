@@ -1,8 +1,8 @@
 @layer components {
     .pagination {
         display: inline-flex;
-        overflow: hidden;
         gap: --spacing(2);
+        overflow: hidden;
         text-align: center;
     }
 
@@ -13,8 +13,8 @@
     .pagination-text,
     .pagination-link {
         display: grid;
-        place-items: center;
         justify-content: center;
+        place-items: center;
         width: --spacing(10);
         height: --spacing(10);
         border-radius: 999px;

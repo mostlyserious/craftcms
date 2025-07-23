@@ -12,16 +12,15 @@
     --button-border-color: var(--button-base-color);
     --focusable-color: var(--button-base-color);
 
-    -webkit-tap-highlight-color: transparent;
-    display: inline-flex;
     position: relative;
-    align-items: center;
+    display: inline-flex;
+    gap: --spacing(1.5);
     justify-content: center;
+    align-items: center;
+    overflow: hidden;
     width: 100%;
     max-width: 100%;
     padding: --spacing(2.5) --spacing(7);
-    overflow: hidden;
-    gap: --spacing(1.5);
     border: var(--button-border-width) solid var(--button-border-color);
     border-radius: calc(infinity * 1px);
     background-color: var(--button-bg-color);
@@ -33,6 +32,11 @@
     text-transform: uppercase;
     white-space: nowrap;
     transition-duration: var(--default-transition-duration);
+    -webkit-tap-highlight-color: transparent;
+
+    @media (--screen-xs) {
+        width: auto;
+    }
 
     &:hover {
         background-color: var(--button-hover-bg-color);
@@ -44,10 +48,6 @@
         --button-bg-color: transparent;
         --button-hover-text-color: var(--button-inverse-color);
         --button-hover-bg-color: var(--button-base-color);
-    }
-
-    @media (--screen-xs) {
-        width: auto;
     }
 }
 

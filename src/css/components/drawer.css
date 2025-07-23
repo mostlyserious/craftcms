@@ -1,9 +1,9 @@
 @layer components {
     .drawer {
-        z-index: 50;
         position: fixed;
         top: var(--navbar-height);
         right: 0;
+        z-index: 50;
         width: 100dvw;
         height: calc(100dvh - var(--navbar-height));
         background-color: --alpha(var(--color-neutral-900) / 0.8);
@@ -29,14 +29,14 @@
     .drawer-inner {
         display: flex;
         flex-direction: column;
+        overflow: auto;
         max-width: var(--container-lg);
         height: 100%;
         margin-left: auto;
-        overflow: auto;
-        translate: 100% 0;
         background-color: var(--color-white);
         transition-duration: var(--default-transition-duration);
         transition-property: translate var(--default-transition-properties);
+        translate: 100% 0;
     }
 
     .drawer-nav {
@@ -86,11 +86,11 @@
 
     .drawer-link {
         display: flex;
-        align-items: center;
+        gap: --spacing(2);
         justify-content: space-between;
+        align-items: center;
         width: 100%;
         padding: --spacing(3) --spacing(4);
-        gap: --spacing(2);
         color: var(--color-blue-500);
         font-weight: 600;
         text-decoration: none;

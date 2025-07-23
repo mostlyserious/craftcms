@@ -9,13 +9,13 @@
     }
 
     .form-input {
-        appearance: none;
         width: 100%;
         padding-inline: --spacing(3);
         padding-block: --spacing(2);
         border-width: 1px;
-        border-radius: var(--radius-sm);
         border-color: var(--color-neutral-200);
+        border-radius: var(--radius-sm);
+        appearance: none;
     }
 
     [type="search"].form-input {

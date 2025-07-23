@@ -185,19 +185,19 @@
 <style>
     .wrapper {
         position: relative;
+        overflow: hidden;
         width: 100%;
-        background-size: cover;
-        background-position: center;
         aspect-ratio: var(--aspect-ratio);
         border-radius: var(--radius-md);
-        overflow: hidden;
+        background-position: center;
+        background-size: cover;
 
         & iframe {
             position: absolute;
             top: 0;
             right: 0;
-            right: 0;
             bottom: 0;
+            left: 0;
             width: 100%;
             height: 100%;
         }

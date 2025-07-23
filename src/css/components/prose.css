@@ -4,8 +4,7 @@
         line-height: var(--text-base--line-height);
 
         & p {
-            margin-top: --spacing(5);
-            margin-bottom: --spacing(5);
+            margin-block: --spacing(5);
         }
 
         & :any-link:not(.button) {
@@ -19,9 +18,8 @@
         }
 
         & blockquote {
-            margin-top: --spacing(6);
-            margin-bottom: --spacing(6);
-            padding-inline-start: --spacing(4);
+            margin-block: --spacing(6);
+            padding-left: --spacing(4);
         }
 
         & :is(h1, h2, h3, h4, h5, h6) {
@@ -57,30 +55,24 @@
         }
 
         & img {
-            margin-top: --spacing(8);
-            margin-bottom: --spacing(8);
+            margin-block: --spacing(8);
         }
 
         & picture {
-            margin-top: --spacing(8);
-            margin-bottom: --spacing(8);
+            margin-block: --spacing(8);
         }
 
         & picture > img {
-            margin-top: 0;
-            margin-bottom: 0;
+            margin-block: 0;
         }
 
         & video {
-            margin-top: --spacing(8);
-            margin-bottom: --spacing(8);
+            margin-block: --spacing(8);
         }
 
         & kbd {
-            padding-top: --spacing(1);
-            padding-bottom: --spacing(1);
-            padding-inline-start: --spacing(2);
-            padding-inline-end: --spacing(2);
+            padding-inline: --spacing(2);
+            padding-block: --spacing(1);
             border-radius: var(--border-radius-sm);
             font-size: var(--text-sm);
         }
@@ -98,21 +90,17 @@
         }
 
         & pre {
-            margin-top: --spacing(6);
-            margin-bottom: --spacing(6);
-            padding-top: --spacing(3);
-            padding-bottom: --spacing(3);
-            padding-inline-start: --spacing(4);
-            padding-inline-end: --spacing(4);
+            margin-block: --spacing(6);
+            padding-inline: --spacing(4);
+            padding-block: --spacing(3);
             border-radius: var(--border-radius-md);
             font-size: var(--text-sm);
             line-height: var(--text-sm--line-height);
         }
 
         & :where(ol, ul) {
-            margin-top: --spacing(5);
-            margin-bottom: --spacing(5);
-            padding-inline-start: --spacing(6);
+            margin-block: --spacing(5);
+            padding-left: --spacing(6);
         }
 
         & ol {
@@ -124,8 +112,7 @@
         }
 
         & li {
-            margin-top: --spacing(2);
-            margin-bottom: --spacing(2);
+            margin-block: --spacing(2);
 
             aside & {
                 margin: 0;
@@ -133,10 +120,10 @@
         }
 
         & :where(ol, ul) > li {
-            padding-inline-start: --spacing(2);
+            padding-left: --spacing(2);
 
             aside & {
-                padding-inline-start: 0;
+                padding-left: 0;
             }
         }
 
@@ -200,8 +187,7 @@
         }
 
         & figure > * {
-            margin-top: 0;
-            margin-bottom: 0;
+            margin-block: 0;
         }
 
         & figcaption {
@@ -250,8 +236,7 @@
             list-style-type: none;
 
             & li {
-                margin-top: --spacing(1);
-                margin-bottom: --spacing(1);
+                margin-block: --spacing(1);
                 padding-left: --spacing(2);
                 text-indent: calc(--spacing(5) * -1);
 
@@ -260,11 +245,11 @@
                 }
 
                 &::before {
+                    content: url("$fontawesome/solid/check.svg");
                     display: inline-block;
                     width: --spacing(5);
                     height: --spacing(5);
                     translate: --spacing(2) --spacing(1.5);
-                    content: url("$fontawesome/solid/check.svg");
                 }
             }
         }
@@ -281,9 +266,9 @@
         }
 
         & figure.table {
+            overflow: auto;
             width: 100%;
             max-height: 60dvh;
-            overflow: auto;
 
             @media (--screen-sm) {
                 max-height: 100%;

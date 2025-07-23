@@ -28,7 +28,7 @@ export default els => {
 
     backward.setAttribute('class', 'flex fixed left-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-brand-orange')
     forward.setAttribute('class', 'flex fixed right-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-brand-orange')
-    backdrop.setAttribute('class', 'fixed z-20 inset-0 opacity-0 transition pointer-events-none bg-brand-gray-darker/95')
+    backdrop.setAttribute('class', 'fixed inset-0 z-20 opacity-0 transition pointer-events-none bg-brand-gray-darker/95')
     dialog.setAttribute('class', 'overflow-auto fixed top-1/2 left-1/2 z-50 max-w-7xl rounded-md transform -translate-x-1/2 -translate-y-1/2 w-[90dvw] max-h-[90dvh]')
 
     forward.innerHTML = markup(rightArrowIcon, {

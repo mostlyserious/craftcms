@@ -27,9 +27,9 @@
     }
 
     body {
-        interpolate-size: allow-keywords;
         background-color: var(--root-bg);
         color: var(--root-color);
+        interpolate-size: allow-keywords;
     }
 
     :root {
@@ -42,8 +42,8 @@
 
     :where(*, *:before, *:after) {
         border-style: var(--default-border-style);
-        transition-property: var(--default-transition-properties);
         transition-timing-function: var(--default-transition-timing-function);
+        transition-property: var(--default-transition-properties);
     }
 
     :where(h1, h2, h3, h4, h5, h6) {
@@ -58,8 +58,8 @@
 
     :where(button) {
         text-align: unset;
-        text-underline-offset: 2px;
         cursor: pointer;
+        text-underline-offset: 2px;
 
         & svg {
             pointer-events: none;
@@ -68,8 +68,8 @@
 
     :where(img) {
         pointer-events: none;
-        transition: opacity 400ms;
         user-select: none;
+        transition: opacity 400ms;
     }
 
     :where(address){
