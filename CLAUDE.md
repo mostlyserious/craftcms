@@ -29,15 +29,47 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### 3. Aggressive Code Quality Enforcement
 **ALWAYS** apply existing formatting and linting tools before completing any task:
 
-**Required Commands:**
+**External Formatting Tools (Preferred - Use When Available):**
+These tools use stdin/stdout and should be preferred over standard commands:
+- `std-pint` - PHP formatting (replaces `pint`)
+- `std-stylelint` - CSS/HTML formatting (replaces `stylelint --fix`)
+- `std-rustywind` - Tailwind CSS class sorting for all file types
+
+**Installation:** If any `std-` commands are missing, install with:
+```bash
+bun add @mostlyserious/formatters --global
+```
+
+**Standard Commands (Fallback):**
 - Run `pint` for PHP formatting (available globally)
 - Run `eslint --fix` for JavaScript/TypeScript formatting (available globally)
 - Run `stylelint --fix` for CSS formatting (available globally)
 - Run `tsc --noEmit` to ensure TypeScript compilation passes without errors
 
+**File Type Formatting Chains:**
+- **HTML**: `std-stylelint html` → `std-rustywind`
+- **Twig**: `std-rustywind`
+- **CSS**: `std-rustywind css` → `std-stylelint`
+- **PHP**: `std-pint` → `std-rustywind`
+- **TypeScript/JavaScript**: `std-rustywind js`
+- **Svelte**: `std-stylelint html` → `std-rustywind svelte`
+
 **No exceptions** - code quality tools must pass before considering work complete.
 
 ### 4. Strict Adherence to Established Patterns
+
+**Naming Conventions:**
+- **Files & Folders**: kebab-case (`focus-trap.js`, `view-transition.js`)
+- **Modules/Functions**: camelCase (`sveltify.js`, `lockScroll`, `trapFocus`)
+- **Components**: PascalCase (`Image.svelte`, `Video.svelte`, `Icon.svelte`)
+- **Twig Templates**: snake_case with underscore prefix (`_base.twig`, `_entry.twig`)
+- **PHP Variables**: snake_case (`strict_types`, `declare_strict_types`)
+- **PHP Class Methods**: camelCase (`init()`, `getSerializer()`, `registerTwigExtension()`)
+- **JavaScript Variables**: camelCase (`hasFocalPoint`, `focalPoint`)
+
+**Code Formatting Standards:**
+- **JavaScript/TypeScript**: 4-space indentation, single quotes, no semicolons, array bracket spacing `[ 1, 2, 3 ]`, object curly spacing `{ key: value }`, trailing commas in multiline
+- **PHP**: Laravel preset with strict types declaration required, global namespace imports, ordered class elements, one space around concatenation `$a . $b`
 
 **Schema Validation:**
 - ALL data from external sources MUST be validated using Zod schemas
@@ -58,6 +90,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 This is a Craft CMS starter project with a modern frontend architecture built on Vite, Svelte, TypeScript, and Tailwind CSS. The project uses a dual-context system to support both public-facing features and administrative dashboard integration.
+
+### Core Technology Stack
+- **Bun** as package manager (NOT npm/yarn)
+- **Vite 7** for build tooling
+- **Svelte 5** with runes enabled
+- **TypeScript 5** with strict mode
+- **Tailwind CSS 4**
+- **Craft CMS 5**
+- **PHP 8.3+** with strict types declaration
+- **DDEV** for containerized development
+- **ESLint 9** with flat config format
+- **Zod 4 mini** for runtime schema validation
 
 ## Development Commands
 
