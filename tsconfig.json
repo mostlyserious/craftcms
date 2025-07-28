@@ -30,7 +30,7 @@
         "types": [],
         "outDir": "./web/static",
         "baseUrl": ".",
-        "rootDirs": [ "." ],
+        "rootDirs": [ "./src" ],
         "paths": {
             "$lib": [ "./src/lib" ],
             "$lib/*": [ "./src/lib/*" ],
