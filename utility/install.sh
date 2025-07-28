@@ -14,9 +14,6 @@ ddev start
 ddev composer update
 ddev craft setup/keys
 ddev craft install/craft
-curl -s -o /dev/null $(ddev craft env PRIMARY_SITE_URL | sed 's/"//g') # generates license
-sleep 1
-ddev craft update all --interactive=0
 ddev bun update
 
 if command -v op &> /dev/null
