@@ -3,7 +3,6 @@
 <section class="flex relative bg-gray-100 bg-center bg-cover min-h-[30dvh]"
     {% if featuredImage %}
         style="background-image: url({{ src(featuredImage, {
-            auto: 'format,compress',
             fit: 'crop',
             width: 1400,
             height: 600,
