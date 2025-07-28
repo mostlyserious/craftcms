@@ -21,4 +21,12 @@ then
     set_env REALFAVICON_KEY $(get_op REALFAVICON_KEY)
     set_env TINYPNG_KEY $(get_op TINYPNG_KEY)
     ddev bun run build
+else
+    echo "1Password CLI not found."
+    echo "Install it for a better experience. https://developer.1password.com/docs/cli/get-started/"
 fi
+
+# if ! command -v std-pint &> /dev/null
+# then
+#     bun add @mostlyserious/formatters --global
+# fi
