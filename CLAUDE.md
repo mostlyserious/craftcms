@@ -62,7 +62,7 @@ bun add @mostlyserious/formatters --global
 - **Files & Folders**: kebab-case (`focus-trap.js`, `view-transition.js`)
 - **Modules/Functions**: camelCase (`sveltify.js`, `lockScroll`, `trapFocus`)
 - **Components**: PascalCase (`Image.svelte`, `Video.svelte`, `Icon.svelte`)
-- **Twig Templates**: snake_case with underscore prefix (`_base.twig`, `_entry.twig`)
+- **Twig Templates**: camelCase with underscore prefix (`_base.twig`, `_quickEdit.twig`)
 - **PHP Variables**: snake_case (`strict_types`, `declare_strict_types`)
 - **PHP Class Methods**: camelCase (`init()`, `getSerializer()`, `registerTwigExtension()`)
 - **JavaScript Variables**: camelCase (`hasFocalPoint`, `focalPoint`)
