@@ -222,9 +222,9 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
                 'loading' => $lazy ? 'lazy' : 'eager',
             ]);
 
-            // if (!$lazy) {
-            //     header(sprintf('Link: <%s>; as=image; rel=preload;', $url2x));
-            // }
+            if (!$lazy && empty($sources)) {
+                header(sprintf('Link: <%s>; as=image; rel=preload;', $url2x));
+            }
 
             if (count($sources)) {
                 ksort($sources);
@@ -285,7 +285,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
                 ]);
             }
 
-            $args = array_merge($args, [
+            $args = array_merge(static::IMGIX_DEFAULTS, $args, [
                 'crop' => $asset->hasFocalPoint ? 'focalpoint' : ($args['crop'] ?? 'faces,center'),
             ]);
 
