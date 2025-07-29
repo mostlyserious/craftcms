@@ -37,7 +37,6 @@ The schema validates the following environment variables:
 - `VITE_PORT` (default: 5173): Development server port
 
 **External Services**:
-- `REALFAVICON_KEY` (required): API key for RealFaviconGenerator service
 - `TINYPNG_KEY` (required): API key for TinyPNG image optimization
 
 **Craft CMS Configuration**:
@@ -85,7 +84,7 @@ An automated setup script that initializes a new Craft CMS project with all nece
 
 4. **API Key Integration** (if 1Password CLI is available):
    - Retrieves API keys from 1Password vault
-   - Automatically configures `REALFAVICON_KEY` and `TINYPNG_KEY`
+   - Automatically configures `TINYPNG_KEY`
    - Triggers initial build process
 
 5. **Fallback Handling**:
@@ -108,7 +107,6 @@ The install script includes automatic API key retrieval using the 1Password CLI 
 - Access to the Mostly Serious team account (`mostlyserious.1password.com`)
 - Read access to the default `Employee` vault
 - An item named `ENVIRONMENT_DEFAULTS` with the required API key fields
-- Field with label `REALFAVICON_KEY` containing the RealFaviconGenerator API key
 - Field with label `TINYPNG_KEY` containing the TinyPNG API key
 
 **Installation Process:**

@@ -15,7 +15,6 @@ export const Schema = z.looseObject({
     VITE_BASE: z.string(),
     VITE_TEMP: z.optional(z.string()),
     VITE_PORT: z._default(z.coerce.number(), 5173),
-    REALFAVICON_KEY: z.string(),
     TINYPNG_KEY: z.string(),
     CRAFT_ENVIRONMENT: z.enum([ 'dev', 'staging', 'production' ]),
     CRAFT_SECURITY_KEY: z.string(),

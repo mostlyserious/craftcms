@@ -18,7 +18,6 @@ ddev bun update
 
 if command -v op &> /dev/null
 then
-    set_env REALFAVICON_KEY $(get_op REALFAVICON_KEY)
     set_env TINYPNG_KEY $(get_op TINYPNG_KEY)
     ddev bun run build
 else
