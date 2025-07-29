@@ -99,6 +99,32 @@ An automated setup script that initializes a new Craft CMS project with all nece
 - Composer
 - 1Password CLI (optional, for automatic API key setup)
 
+#### 1Password CLI Integration
+
+The install script includes automatic API key retrieval using the 1Password CLI for a streamlined development setup experience. This integration eliminates the need to manually copy and paste API keys from the 1Password vault.
+
+**Requirements:**
+- 1Password CLI installed and authenticated
+- Access to the Mostly Serious team account (`mostlyserious.1password.com`)
+- Read access to the default `Employee` vault
+- An item named `ENVIRONMENT_DEFAULTS` with the required API key fields
+- Field with label `REALFAVICON_KEY` containing the RealFaviconGenerator API key
+- Field with label `TINYPNG_KEY` containing the TinyPNG API key
+
+**Installation Process:**
+1. If 1Password CLI is detected, the script automatically retrieves and sets the API keys
+2. After setting the keys, it runs `ddev bun run build` to perform the initial asset build
+3. If 1Password CLI is not available, the script provides installation instructions and continues without the API keys
+
+**Benefits:**
+- Eliminates manual API key configuration
+- Ensures consistent key management across team members
+- Reduces setup friction for new developers
+- Maintains security by keeping API keys in the team vault
+
+**Installing 1Password CLI:**
+If you don't have the 1Password CLI installed, visit: https://developer.1password.com/docs/cli/get-started/
+
 ## Asset Optimization Plugins
 
 ### `vite-plugin-svgo.js`

@@ -25,8 +25,3 @@ else
     echo "1Password CLI not found."
     echo "Install it for a better experience. https://developer.1password.com/docs/cli/get-started/"
 fi
-
-# if ! command -v std-pint &> /dev/null
-# then
-#     bun add @mostlyserious/formatters --global
-# fi
