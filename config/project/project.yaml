@@ -1,4 +1,4 @@
-dateModified: 1753194057
+dateModified: 1753889697
 elementSources:
   craft\elements\Entry:
     -
@@ -81,6 +81,8 @@ meta:
     8a23ef88-0f26-4e54-9054-dfad645a92b4: Excerpt # Excerpt
     23e7a25a-326c-497d-b2d2-8a3f0441478d: Heading # Heading
     26a63b22-d0c1-40a5-b44e-95dac319f8d5: Header # Header
+    70b357f9-e18b-4bd1-bdfb-3e74bc4a4a3b: Basic # Basic
+    70dc4d63-4e19-4a4e-8dbd-67474f6c069c: 'CMS Guide' # CMS Guide
     77e3d49f-4339-4267-8daf-3ba6445ee93e: 'Featured Image' # Featured Image
     0081e5eb-e59c-4ef4-b421-4aa0f565e036: Public # Public
     361bdcd1-449b-4fde-89f7-af2cd2d102b7: 'Module Listing' # Module Listing
@@ -213,6 +215,16 @@ plugins:
       truncateDescriptionTags: true
       truncateTitleTags: true
       xDefaultSite: 0
+  usermanual:
+    edition: standard
+    enabled: true
+    schemaVersion: 4.0.0
+    settings:
+      enabledSideBar: true
+      pluginNameOverride: 'CMS Guide'
+      section: 5
+      templateOverride: cp/_guide
+      urlSegment: cms-guide
   vite:
     edition: standard
     enabled: true

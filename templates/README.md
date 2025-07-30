@@ -35,23 +35,25 @@ templates/
 ├── _base.twig                 # HTML foundation and global layout
 ├── _main.twig                 # Site structure and navigation blocks
 ├── blocks/                    # Reusable content components
-│   ├── _entry.twig           # Block system orchestrator
-│   ├── _billboard.twig       # Hero sections with background images
-│   ├── _group.twig           # Nested block containers
-│   ├── _imageText.twig       # Image and text combinations
-│   └── _text.twig            # Rich text content blocks
+│   ├── _entry.twig            # Block system orchestrator
+│   ├── _billboard.twig        # Hero sections with background images
+│   ├── _group.twig            # Nested block containers
+│   ├── _imageText.twig        # Image and text combinations
+│   └── _text.twig             # Rich text content blocks
 ├── common/                    # Shared interface components
-│   ├── _footer.twig          # Site footer with navigation
+│   ├── _footer.twig           # Site footer with navigation
 │   ├── _mobileNavigation.twig # Mobile-optimized navigation
 │   ├── _navigation.twig       # Primary site navigation
-│   ├── _quickEdit.twig       # Admin quick-edit interface
-│   └── _topBar.twig          # Flash messages and notifications
+│   ├── _quickEdit.twig        # Admin quick-edit interface
+│   └── _topBar.twig           # Flash messages and notifications
+├── cp/                        # Control panel templates
+│   └── _guide.twig            # CMS Guide plugin template
 ├── headers/                   # Page header components
-│   ├── _entry.twig           # Header block orchestrator
-│   └── _header.twig          # Default page header layout
+│   ├── _entry.twig            # Header block orchestrator
+│   └── _header.twig           # Default page header layout
 └── {section}/                 # Content type templates
-    ├── home/_entry.twig      # Homepage template
-    └── pages/_entry.twig     # Generic page template
+    ├── home/_entry.twig       # Homepage template
+    └── pages/_entry.twig      # Generic page template
 ```
 
 ## Template Patterns and Conventions
@@ -302,8 +304,7 @@ Consistent include syntax with proper context:
 Development-friendly debugging support:
 ```twig
 {# Development mode block markers #}
-{{ craft.app.config.general.devMode ? 
-   ("<!-- START #{block.type.handle}:#{block.id} -->")|raw }}
+{{ craft.app.config.general.devMode ? ("<!-- START #{block.type.handle}:#{block.id} -->")|raw }}
 
 {# Safe property access #}
 {{ block.heading|default(entry.title)|heading }}

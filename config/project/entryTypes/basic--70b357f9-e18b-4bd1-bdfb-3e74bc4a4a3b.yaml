@@ -1,0 +1,72 @@
+color: null
+description: null
+fieldLayouts:
+  289e36a2-ae6e-4d64-be08-ffa6f0cd3010:
+    cardThumbAlignment: end
+    cardView:
+      - 'layoutElement:7f70fadf-5573-4000-bb6e-e866e31bffa1'
+    tabs:
+      -
+        elementCondition: null
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            class: null
+            dateAdded: '2025-07-30T15:28:24+00:00'
+            disabled: false
+            elementCondition: null
+            id: null
+            includeInCards: false
+            inputType: null
+            instructions: null
+            label: null
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            providesThumbs: false
+            readonly: false
+            required: true
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\fieldlayoutelements\entries\EntryTitleField
+            uid: 741e7f03-6894-4209-8886-c763fc23563e
+            userCondition: null
+            warning: null
+            width: 100
+          -
+            dateAdded: '2025-07-30T15:30:28+00:00'
+            editCondition: null
+            elementCondition: null
+            fieldUid: 3f3ea580-ece0-4297-b0cd-f62546e76029 # Rich Text
+            handle: null
+            includeInCards: true
+            instructions: null
+            label: null
+            providesThumbs: false
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            uid: 7f70fadf-5573-4000-bb6e-e866e31bffa1
+            userCondition: null
+            warning: null
+            width: 100
+        name: Content
+        uid: aca40ab5-3572-4aff-b605-8a77e63ca0e3
+        userCondition: null
+handle: basic
+hasTitleField: true
+icon: file-lines
+name: Basic
+showSlugField: true
+showStatusField: true
+slugTranslationKeyFormat: null
+slugTranslationMethod: site
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site
