@@ -6,7 +6,7 @@ import.meta.glob('./img/**/*')
 
 init(document)
 
-if (window.location.hash && window.PerformanceObserver) {
+if (window.location.hash) {
     const target = document.querySelector(window.location.hash)
 
     if (target instanceof HTMLElement) {
