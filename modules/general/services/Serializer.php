@@ -22,7 +22,7 @@ class Serializer extends Component
 
     const TIME_FORMAT = 'g:i a';
 
-    const HEADING_TAGS = '<strong><span><em><br><a><u>';
+    const HEADING_TAGS = '<strong><span><em><br><a><i><u>';
 
     public static function plain(string $string): string
     {
