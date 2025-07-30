@@ -7,6 +7,7 @@
 @import "$css/utilities/container.css";
 @import "$css/utilities/grid-fill.css";
 @import "$css/utilities/misc.css";
+@import "$css/utilities/parallax.css";
 @import "$css/utilities/viewport.css";
 
 @import "$css/components/drawer.css";

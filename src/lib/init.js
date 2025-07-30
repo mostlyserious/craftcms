@@ -1,6 +1,7 @@
 import * as object from '$lib/util/object'
 
 const modules = {
+    '[data-parallax]': () => import('$lib/modules/parallax'),
     '[data-controls]': () => import('$lib/modules/controls'),
     '[data-property]': () => import('$lib/modules/property'),
     '[data-lightbox]': () => import('$lib/modules/lightbox'),

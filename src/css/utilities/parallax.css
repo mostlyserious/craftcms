@@ -1,0 +1,49 @@
+:root {
+    --parallax-perspective: 100vh;
+    --parallax-control: 0;
+    --parallax-x: 0px;
+    --parallax-y: 0px;
+    --parallax-z: 0px;
+}
+
+@utility perspective-* {
+    --parallax-perspective: calc(--value(integer) * 1vh);
+}
+
+@utility -perspective-* {
+    --parallax-perspective: calc(--value(integer) * 1vh);
+}
+
+@utility parallax-* {
+    perspective: var(--parallax-perspective);
+}
+
+@utility parallax-x-* {
+    --parallax-x: --spacing(--value(integer));
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
+}
+
+@utility parallax-y-* {
+    --parallax-y: --spacing(--value(integer));
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
+}
+
+@utility parallax-z-* {
+    --parallax-z: --spacing(--value(integer));
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
+}
+
+@utility -parallax-x-* {
+    --parallax-x: --spacing(--value(integer) * -1);
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
+}
+
+@utility -parallax-y-* {
+    --parallax-y: --spacing(--value(integer) * -1);
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
+}
+
+@utility -parallax-z-* {
+    --parallax-z: --spacing(--value(integer) * -1);
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
+}
