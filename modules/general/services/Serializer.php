@@ -7,7 +7,6 @@ namespace modules\general\services;
 use craft\base\Element;
 use yii\base\Component;
 use craft\elements\Asset;
-use craft\elements\Entry;
 use craft\fields\data\LinkData;
 use verbb\iconpicker\models\Icon;
 use spicyweb\embeddedassets\models\EmbeddedAsset;
@@ -38,21 +37,13 @@ class Serializer extends Component
         return mb_trim(strip_tags($heading, $tags));
     }
 
-    public static function ancestors(Entry $entry): array
-    {
-        return array_map(function (Entry $entry) {
-            return [
-                'uid' => $entry->uid,
-                'title' => $entry->title,
-                'uri' => $entry->uri ? "/{$entry->uri}" : '',
-            ];
-        }, $entry->ancestors->all());
-    }
-
+    /**
+     * @return array[]
+     */
     public static function relatedTo(Element $element, string $handle = ''): array
     {
         if (isset($element->{$handle})) {
-            return array_map(function ($element) {
+            return array_map(function (Element $element): array {
                 return [
                     'uid' => $element->uid,
                     'title' => $element->title,

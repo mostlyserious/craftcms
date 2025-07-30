@@ -48,7 +48,6 @@ Provides standardized methods for transforming Craft CMS content into frontend-c
 **Key Methods:**
 - `plain()` - Strip HTML tags for plain text output
 - `heading()` - Sanitize heading content with allowed tags
-- `ancestors()` - Serialize entry hierarchy
 - `relatedTo()` - Transform related element collections
 - `icon()` - Format Icon Picker field data
 - `image()` - Standardize Asset image data
