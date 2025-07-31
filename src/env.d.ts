@@ -6,40 +6,7 @@ import type { HTMLElementEventMap, HTMLElementTagNameMap, SVGElementTagNameMap }
 
 declare global {
     interface Window {
-        $app: {
-            isPreview: boolean
-            isAdmin: boolean
-            devMode: boolean
-            objectStorageUrl: string
-            assetsUrl: string
-            lang: string
-            i18n: Record<PropertyKey, string>
-            csrf: Promise<{
-                name: string
-                value: string
-            }>
-            palettes: {
-                background: {
-                    default: {
-                        color: string
-                        background: string
-                        text: string
-                    }
-                    lightGray: {
-                        color: string
-                        background: string
-                        text: string
-                    }
-                }
-                misc: {
-                    footer: {
-                        color: string
-                        background: string
-                        text: string
-                    }
-                }
-            }
-        }
+        $app: unknown
     }
 
     type ZodInfer<T> = z.infer<T>

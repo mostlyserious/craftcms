@@ -1,13 +1,15 @@
 import { mount } from 'svelte'
 import wrap from '$lib/util/wrap'
+import { $app } from '$lib/stores/global'
 import { EmbedSchema } from '$lib/schemas'
+import { CsrfSchema } from '$lib/stores/schemas'
 import Video from '$lib/components/Video.svelte'
 
 /**
  * @param {NodeListOf<Element>} els - A collection of DOM elements.
  * */
 export default async els => {
-    const { name: csrfTokenName, value: csrfTokenValue } = await window.$app.csrf
+    const { name: csrfTokenName, value: csrfTokenValue } = CsrfSchema.parse(await $app.csrf)
 
     for (const el of els) {
         if (el instanceof HTMLElement) {

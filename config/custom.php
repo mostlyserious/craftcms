@@ -9,7 +9,7 @@ return [
         // 'google' => '',
         // 'adobe' => '',
     ],
-    // it's very helpful to update `src/env.d.ts` too when you add values here.
+    // you must also update `src/lib/stores/schemas.js` when you add/edit values here.
     'colors' => [
         'background' => [
             'default' => Collection::make([

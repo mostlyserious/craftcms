@@ -1,7 +1,6 @@
+import { $app } from '$lib/stores/global'
 import * as object from '$lib/util/object'
 import { ImageSourceSchema } from '$lib/schemas'
-
-const { objectStorageUrl, assetsUrl } = window.$app
 
 /**
  * @param {HTMLImageElement} el
@@ -81,7 +80,7 @@ export function image(el, source) {
  * */
 export function imgix(url, query = {}) {
     if (url) {
-        url = url.replace(objectStorageUrl, assetsUrl)
+        url = url.replace($app.objectStorageUrl, $app.assetsUrl)
 
         if ((/\.gif$/).test(url)) {
             return url

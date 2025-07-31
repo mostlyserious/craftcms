@@ -1,6 +1,5 @@
+import { $app } from '$lib/stores/global'
 import propertyAccess from '$lib/util/property-access'
-
-const { i18n, lang } = window.$app
 
 /** Formats a string by replacing tokens with their corresponding values.
  * @param {string} string - The string to format.
@@ -21,11 +20,11 @@ export const format = (string, tokens = {}) => {
  * @returns {string} - The translated (and possibly formatted) string.
  * */
 export const t = (str, tokens = {}) => {
-    if (typeof i18n === 'undefined' || typeof i18n[str] === 'undefined') {
+    if (!$app.i18n || typeof $app.i18n[str] === 'undefined') {
         return format(str, tokens)
     }
 
-    return format(i18n[str], tokens)
+    return format($app.i18n[str], tokens)
 }
 
 /** Formats a number into a localized string representation.
@@ -34,7 +33,7 @@ export const t = (str, tokens = {}) => {
  * @returns {string} - The localized number string.
  * */
 export const number = (details, args = {}) => {
-    return new Intl.NumberFormat(lang, args).format(details)
+    return new Intl.NumberFormat($app.lang, args).format(details)
 }
 
 /** Formats a date into a localized string representation.
@@ -43,7 +42,7 @@ export const number = (details, args = {}) => {
  * @returns {string} - The localized date string.
  * */
 export const date = (details, args = {}) => {
-    return new Date(details).toLocaleDateString(lang, args)
+    return new Date(details).toLocaleDateString($app.lang, args)
 }
 
 /** Formats a time into a localized string representation.
@@ -52,5 +51,5 @@ export const date = (details, args = {}) => {
  * @returns {string} - The localized time string.
  * */
 export const time = (details, args = {}) => {
-    return new Date(details).toLocaleTimeString(lang, args)
+    return new Date(details).toLocaleTimeString($app.lang, args)
 }

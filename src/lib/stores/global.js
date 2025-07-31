@@ -1,4 +1,7 @@
 import { MediaQuery } from 'svelte/reactivity'
+import { AppSchema } from '$lib/stores/schemas'
+
+export const $app = AppSchema.parse(window.$app)
 
 export const screen = {
     prefersReducedMotion: new MediaQuery('prefers-reduced-motion: reduce'),

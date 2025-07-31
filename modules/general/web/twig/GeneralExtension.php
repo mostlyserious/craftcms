@@ -103,7 +103,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('swatch', function (Collection $palette, ...$keys): string {
                 return mb_trim($palette->only($keys)->implode(' '));
             }),
-            new TwigFunction('localizations', function ($lang = '*', $domain = '*', $flatten = false): array {
+            new TwigFunction('localizations', function ($lang = '*', $domain = '*', $flatten = false): ?array {
                 $translations = [];
                 $files = glob(sprintf('%s/translations/%s/%s.php', CRAFT_BASE_PATH, $lang, $domain)) ?? [];
 
@@ -121,7 +121,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
                     $translations = array_merge($translations, $list);
                 }
 
-                return $translations;
+                return count($translations) ? $translations : null;
             }),
         ];
     }
