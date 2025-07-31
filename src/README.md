@@ -207,12 +207,11 @@ const { title, featured = false, header, actions } = CardSchema.parse(props);
 ```html
 <x-svelte component="card"
     data-title="Featured Product"
-    data-featured="true"
-    data-price="29.99">
+    data-featured="true">
     <template snippet="header">
         <div class="flex items-center justify-between">
             <span class="badge badge-new">New Arrival</span>
-            <span class="price">${price}</span>
+            <span class="price">$29.99</span>
         </div>
     </template>
     
