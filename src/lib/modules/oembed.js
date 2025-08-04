@@ -15,8 +15,7 @@ export default async els => {
         if (el instanceof HTMLElement) {
             const target = wrap(el)
 
-            /** @type {ZodInfer<typeof EmbedSchema>} */
-            const asset = await fetch('/actions/general/oembed/', {
+            fetch('/actions/general/oembed/', {
                 method: 'POST',
                 mode: 'cors',
                 cache: 'no-cache',
@@ -26,13 +25,15 @@ export default async els => {
                     [csrfTokenName]: csrfTokenValue,
                     url: el.getAttribute('url') || '',
                 }),
-            }).then(res => res.json()).then(res => EmbedSchema.parse(res))
+            }).then(res => res.json()).then(res => {
+                const asset = EmbedSchema.parse(res)
 
-            target.innerHTML = ''
+                target.innerHTML = ''
 
-            mount(Video, {
-                target,
-                props: { asset, playInline: true },
+                mount(Video, {
+                    target,
+                    props: { asset, playInline: true },
+                })
             })
         }
     }

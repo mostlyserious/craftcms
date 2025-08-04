@@ -1,9 +1,9 @@
 import { MediaQuery } from 'svelte/reactivity'
 import { AppSchema } from '$lib/stores/schemas'
 
-export const $app = AppSchema.parse(window.$app)
+export const $app = Object.freeze(AppSchema.parse(window.$app))
 
-export const screen = {
+export const $screen = Object.freeze({
     prefersReducedMotion: new MediaQuery('prefers-reduced-motion: reduce'),
     is2xs: new MediaQuery('min-width: 380px'),
     isXs: new MediaQuery('min-width: 460px'),
@@ -11,4 +11,4 @@ export const screen = {
     isMd: new MediaQuery('min-width: 768px'),
     isLg: new MediaQuery('min-width: 1024px'),
     isXl: new MediaQuery('min-width: 1280px'),
-}
+})

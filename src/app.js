@@ -1,6 +1,6 @@
 import '$css/app.css'
 import init from '$lib/init'
-import { screen } from '$lib/stores/global'
+import { $screen } from '$lib/stores/global'
 
 import.meta.glob('./img/**/*')
 
@@ -29,7 +29,7 @@ if (window.location.hash) {
 }
 
 addEventListener('load', () => {
-    if (!screen.prefersReducedMotion.current) {
+    if (!$screen.prefersReducedMotion.current) {
         document.documentElement.style.scrollBehavior = 'smooth'
     }
 })
