@@ -8,7 +8,9 @@ use Craft;
 use craft\web\View;
 use yii\base\Event;
 use yii\base\Module;
+use GuzzleHttp\Client;
 use craft\helpers\App;
+use craft\elements\Asset;
 use craft\services\Assets;
 use nystudio107\vite\Vite;
 use craft\helpers\StringHelper;
@@ -88,6 +90,33 @@ class General extends Module
                     }
                 },
             );
+
+            if (App::env('IMGIX_API_KEY')) {
+                Event::on(
+                    Asset::class,
+                    Asset::EVENT_AFTER_DELETE,
+                    function (Event $event): void {
+                        /** @var Asset $asset */
+                        $asset = $event->sender;
+
+                        if ($asset->supportsImageEditor) {
+                            $target = str_replace(App::env('OBJECT_STORAGE_URL'), App::env('ASSETS_URL'), $asset->url);
+                            (new Client())->post('https://api.imgix.com/api/v1/purge', [
+                                'headers' => [
+                                    'Authorization' => sprintf('Bearer %s', App::env('IMGIX_API_KEY')),
+                                    'Content-Type' => 'application/vnd.api+json',
+                                ],
+                                'json' => [
+                                    'data' => [
+                                        'attributes' => ['url' => $target],
+                                        'type' => 'purges',
+                                    ],
+                                ],
+                            ]);
+                        }
+                    },
+                );
+            }
 
             Event::on(
                 Assets::class,
