@@ -44,10 +44,6 @@
         </noscript>
     {% endif %}
 
-    {% block head %}
-        {{ external('@webroot/static/assets/markup.html')|striptags('<link><meta>')|raw }}
-    {% endblock %}
-
     {% if craft.app.config.general.disallowRobots %}
         <meta name="robots" content="noindex">
     {% endif %}

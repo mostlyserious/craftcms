@@ -72,7 +72,6 @@ The base template establishes the HTML document structure and provides:
 
 **Block Structure:**
 ```twig
-{% block head %}         <!-- Custom head content -->
 {% block navigation %}   <!-- Site navigation -->
 {% block main %}         <!-- Main content area -->
 {% block footer %}       <!-- Site footer -->

@@ -99,7 +99,6 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('svg', [static::class, 'svg'], static::HTML_SAFE),
             new TwigFunction('link', [static::class, 'link'], static::HTML_SAFE),
             new TwigFunction('image', [static::class, 'image'], static::HTML_SAFE),
-            new TwigFunction('external', [static::class, 'external'], static::HTML_SAFE),
             new TwigFunction('swatch', function (Collection $palette, ...$keys): string {
                 return mb_trim($palette->only($keys)->implode(' '));
             }),
@@ -297,15 +296,6 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         }
         if (is_string($asset)) {
             return sprintf('https://picsum.photos/seed/%s/%d/%d', $asset, $width, $height);
-        }
-
-        return '';
-    }
-
-    public static function external(string $path): string
-    {
-        if (is_readable(Craft::getAlias($path))) {
-            return file_get_contents(Craft::getAlias($path));
         }
 
         return '';
