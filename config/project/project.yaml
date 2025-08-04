@@ -1,4 +1,4 @@
-dateModified: 1753889697
+dateModified: 1754341863
 elementSources:
   craft\elements\Entry:
     -
@@ -58,16 +58,20 @@ fs:
     hasUrls: true
     name: AWS
     settings:
+      addSubfolderToRootUrl: false
+      autoFocalPoint: false
       bucket: $OBJECT_STORAGE_BUCKET
-      endpoint: $OBJECT_STORAGE_SERVER
-      endpointType: subdomain
+      bucketSelectionMode: manual
+      cfDistributionId: $OBJECT_STORAGE_DISTRIBUTION_ID
+      cfPrefix: ''
       expires: ''
       keyId: $OBJECT_STORAGE_ACCESS_KEY
+      makeUploadsPublic: false
       region: $OBJECT_STORAGE_REGION
       secret: $OBJECT_STORAGE_SECRET_KEY
+      storageClass: ''
       subfolder: ''
-      visibility: private
-    type: behinddesign\ObjectStorage\Fs
+    type: craft\awss3\Fs
     url: $OBJECT_STORAGE_URL
 meta:
   __names__:
@@ -111,7 +115,7 @@ meta:
     fcc2fe10-7c1e-4017-9983-b337f8ad1e37: Navigation # Navigation
     fd17e42e-291b-4fb6-a3ae-58836dcf9589: Background # Background
 plugins:
-  behinddesign-object-storage:
+  aws-s3:
     edition: standard
     enabled: true
     schemaVersion: '2.0'

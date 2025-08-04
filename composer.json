@@ -6,8 +6,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "behinddesign/craft-object-storage": "v1.1.1",
         "born05/craft-sentry": "3.0.0",
+        "craftcms/aws-s3": "2.2.3",
         "craftcms/ckeditor": "4.9.0",
         "craftcms/cms": "5.8.11",
         "craftpulse/craft-colour-swatches": "5.1.0",
