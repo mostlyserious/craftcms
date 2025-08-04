@@ -8,8 +8,8 @@ use Craft;
 use craft\web\View;
 use yii\base\Event;
 use yii\base\Module;
-use GuzzleHttp\Client;
 use craft\helpers\App;
+use GuzzleHttp\Client;
 use craft\elements\Asset;
 use craft\services\Assets;
 use nystudio107\vite\Vite;
@@ -91,44 +91,49 @@ class General extends Module
                 },
             );
 
-            if (App::env('IMGIX_API_KEY')) {
-                Event::on(
-                    Asset::class,
-                    Asset::EVENT_AFTER_DELETE,
-                    function (Event $event): void {
-                        /** @var Asset $asset */
-                        $asset = $event->sender;
-
-                        if ($asset->supportsImageEditor) {
-                            $target = str_replace(App::env('OBJECT_STORAGE_URL'), App::env('ASSETS_URL'), $asset->url);
-                            (new Client())->post('https://api.imgix.com/api/v1/purge', [
-                                'headers' => [
-                                    'Authorization' => sprintf('Bearer %s', App::env('IMGIX_API_KEY')),
-                                    'Content-Type' => 'application/vnd.api+json',
-                                ],
-                                'json' => [
-                                    'data' => [
-                                        'attributes' => ['url' => $target],
-                                        'type' => 'purges',
-                                    ],
-                                ],
-                            ]);
-                        }
-                    },
-                );
-            }
+            Event::on(
+                Asset::class,
+                Asset::EVENT_AFTER_DELETE,
+                function (Event $event): void {
+                    $this->purgeImgixAsset($event->sender);
+                },
+            );
 
             Event::on(
                 Assets::class,
                 Assets::EVENT_BEFORE_REPLACE_ASSET,
-                function (ReplaceAssetEvent $asset): void {
-                    $asset->filename = implode('.', [
-                        pathinfo($asset->filename, PATHINFO_FILENAME),
+                function (ReplaceAssetEvent $event): void {
+                    $this->purgeImgixAsset($event->asset);
+
+                    $event->filename = implode('.', [
+                        pathinfo($event->filename, PATHINFO_FILENAME),
                         StringHelper::randomStringWithChars('abcdefghijklmnopqrstuvwxyz0123456789', 7),
-                        mb_strtolower(pathinfo($asset->filename, PATHINFO_EXTENSION)),
+                        mb_strtolower(pathinfo($event->filename, PATHINFO_EXTENSION)),
                     ]);
                 },
             );
         }
+    }
+
+    protected function purgeImgixAsset(Asset $asset): void
+    {
+        if (!App::env('IMGIX_API_KEY') || !$asset->supportsImageEditor) {
+            return;
+        }
+
+        $target = str_replace(App::env('OBJECT_STORAGE_URL'), App::env('ASSETS_URL'), $asset->url);
+
+        (new Client())->post('https://api.imgix.com/api/v1/purge', [
+            'headers' => [
+                'Authorization' => sprintf('Bearer %s', App::env('IMGIX_API_KEY')),
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+            'json' => [
+                'data' => [
+                    'attributes' => ['url' => $target],
+                    'type' => 'purges',
+                ],
+            ],
+        ]);
     }
 }
