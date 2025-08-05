@@ -147,9 +147,11 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
      * @param array<string,mixed>            $args
      * @param array<string,array<int,mixed>> $sources
      * */
-    public static function image(Asset|string|null $asset = null, array $args = [], array $sources = [], bool $lazy = true, string $tag = 'img'): string
+    public static function image(?Asset $asset = null, array $args = [], array $sources = [], bool $lazy = true, string $tag = 'img'): string
     {
-        $attrs = [];
+        if ($asset === null) {
+            return '';
+        }
 
         $assets_url = App::env('IMGIX_URL');
         $base_url = App::env('OBJECT_STORAGE_URL');
@@ -160,111 +162,103 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         $width = intval(str_replace(',', '', strval($width)));
         $height = intval(str_replace(',', '', strval($height)));
 
-        if ($asset instanceof Asset) {
-            $args = array_filter($args);
+        $args = array_filter($args);
 
-            if (isset($asset->focalPoint)) {
-                $args = array_merge($args, [
-                    'fp-x' => $asset->focalPoint['x'],
-                    'fp-y' => $asset->focalPoint['y'],
-                ]);
-            }
-
-            $args = array_merge(static::IMGIX_DEFAULTS, $args, [
-                'crop' => $asset->hasFocalPoint ? 'focalpoint' : ($args['crop'] ?? 'faces,center'),
+        if (isset($asset->focalPoint)) {
+            $args = array_merge($args, [
+                'fp-x' => $asset->focalPoint['x'],
+                'fp-y' => $asset->focalPoint['y'],
             ]);
-
-            if ($assets_url) {
-                $image = [
-                    'url' => str_replace($base_url ?: '', $assets_url, $asset->url) . '?' . http_build_query($args),
-                ];
-
-                $image2x = [
-                    'url' => str_replace($base_url ?: '', $assets_url, $asset->url) . '?' . http_build_query(array_merge($args, [
-                        'width' => isset($args['width']) ? $args['width'] * 2 : null,
-                        'height' => isset($args['height']) ? $args['height'] * 2 : null,
-                    ])),
-                ];
-            } else {
-                $image = ['url' => $asset->url];
-                $image2x = ['url' => $asset->url];
-            }
-
-            if (!$width && $height && isset($asset->height)) {
-                $width = number_format(min($asset->height, $height) * ($asset->width / $asset->height));
-            }
-
-            if (!$height && $width && isset($asset->width)) {
-                $height = number_format(min($asset->width, $width) * ($asset->height / $asset->width));
-            }
-
-            $width = $width ? $width : $asset->width;
-            $height = $height ? $height : $asset->height;
-
-            $url = ($asset->extension === 'gif' ? explode('?', $image['url'])[0] : $image['url']);
-            $url2x = ($asset->extension === 'gif' ? explode('?', $image2x['url'])[0] : $image2x['url']);
-
-            $attrs = ['alt' => $asset->alt ?? ''];
-        } elseif (is_string($asset)) {
-            $url = sprintf('https://picsum.photos/seed/%s/%d/%d', $asset, $width, $height);
-            $url2x = sprintf('https://picsum.photos/seed/%s/%d/%d', $asset, ($width || $height) * 2, ($height || $width) * 2);
-
-            $attrs = ['alt' => 'placeholder image'];
         }
 
-        if (count($attrs)) {
-            $attrs = array_merge($attrs, [
-                'width' => str_replace(',', '', strval($width)),
-                'height' => str_replace(',', '', strval($height)),
-                'src' => 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
-                'srcset' => implode(', ', [$url, "{$url2x} 2x"]),
-                'loading' => $lazy ? 'lazy' : 'eager',
-            ]);
+        $args = array_merge(static::IMGIX_DEFAULTS, $args, [
+            'crop' => $asset->hasFocalPoint ? 'focalpoint' : ($args['crop'] ?? 'faces,center'),
+        ]);
 
-            if (!$lazy && empty($sources)) {
-                header(sprintf('Link: <%s>; as=image; rel=preload;', $url2x));
-            }
+        if ($assets_url) {
+            $image = [
+                'url' => str_replace($base_url ?: '', $assets_url, $asset->url) . '?' . http_build_query($args),
+            ];
 
-            if (count($sources)) {
-                ksort($sources);
-                $sources = array_reverse($sources, true);
+            $image2x = [
+                'url' => str_replace($base_url ?: '', $assets_url, $asset->url) . '?' . http_build_query(array_merge($args, [
+                    'width' => isset($args['width']) ? $args['width'] * 2 : null,
+                    'height' => isset($args['height']) ? $args['height'] * 2 : null,
+                ])),
+            ];
+        } else {
+            $image = ['url' => $asset->url];
+            $image2x = ['url' => $asset->url];
+        }
 
-                return Html::tag('picture', implode(PHP_EOL, array_merge(array_map(function (array $source, int $breakpoint) use ($asset): string {
-                    static $prev_breakpoint = 0;
+        if (!$width && $height && isset($asset->height)) {
+            $width = number_format(min($asset->height, $height) * ($asset->width / $asset->height));
+        }
 
-                    $markup = static::image($asset, $source, [], true, 'source');
-                    $markup = Html::modifyTagAttributes($markup, [
-                        'media' => $prev_breakpoint
-                            ? sprintf('(min-width: %dpx) and (max-width: %dpx)', $breakpoint, $prev_breakpoint - 1)
-                            : sprintf('(min-width: %dpx)', $breakpoint),
-                    ]);
+        if (!$height && $width && isset($asset->width)) {
+            $height = number_format(min($asset->width, $width) * ($asset->height / $asset->width));
+        }
 
-                    $prev_breakpoint = $breakpoint;
+        $width = $width ? $width : $asset->width;
+        $height = $height ? $height : $asset->height;
 
-                    return $markup;
-                }, $sources, array_keys($sources)), [
-                    Html::tag($tag, '', $attrs),
-                ])));
-            }
+        $url = ($asset->extension === 'gif' ? explode('?', $image['url'])[0] : $image['url']);
+        $url2x = ($asset->extension === 'gif' ? explode('?', $image2x['url'])[0] : $image2x['url']);
 
+        $attrs = [
+            'width' => str_replace(',', '', strval($width)),
+            'height' => str_replace(',', '', strval($height)),
+            'src' => 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
+            'srcset' => implode(', ', [$url, "{$url2x} 2x"]),
+            'alt' => $asset->alt ?? '',
+            'loading' => $lazy ? 'lazy' : 'eager',
+        ];
+
+        if (!$lazy && empty($sources)) {
+            header(sprintf('Link: <%s>; as=image; rel=preload;', $url2x));
+        }
+
+        if (count($sources)) {
+            ksort($sources, SORT_NUMERIC);
+            $sources = array_reverse($sources, true);
+
+            return Html::tag('picture', implode(PHP_EOL, array_merge(array_map(function (array $source, string $breakpoint) use ($asset): string {
+                static $prev_breakpoint = null;
+
+                $markup = static::image($asset, $source, [], true, 'source');
+                $markup = Html::modifyTagAttributes($markup, [
+                    'media' => $prev_breakpoint
+                        ? sprintf('(min-width: %s) and (max-width: %s)', $breakpoint, sprintf('calc(%s - 1px)', $prev_breakpoint))
+                        : sprintf('(min-width: %s)', $breakpoint),
+                ]);
+
+                $prev_breakpoint = $breakpoint;
+
+                return $markup;
+            }, $sources, array_keys($sources)), [
+                Html::tag($tag, '', $attrs),
+            ])));
+        }
+
+        if ($tag === 'source') {
+            unset($attrs['src'], $attrs['alt'], $attrs['loading']);
+        } else {
             $attrs = array_merge([
                 'style' => 'opacity:0',
                 'onload' => '!this.hasAttribute("data-animate") ? this.removeAttribute("style") : null, this.removeAttribute("onload")',
             ], $attrs);
-
-            if ($tag === 'source') {
-                unset($attrs['src'], $attrs['alt'], $attrs['style'], $attrs['onload'], $attrs['loading']);
-            }
-
-            return Html::tag($tag, '', $attrs);
         }
 
-        return '';
+        return Html::tag($tag, '', $attrs);
     }
 
     /** @param array<string,mixed> $args */
-    public static function src(Asset|string|null $asset = null, array $args = []): string
+    public static function src(?Asset $asset = null, array $args = []): string
     {
+        if ($asset === null) {
+            return '';
+        }
+
         $assets_url = App::env('IMGIX_URL');
         $base_url = App::env('OBJECT_STORAGE_URL');
 
@@ -274,31 +268,24 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         $width = str_replace(',', '', strval($width));
         $height = str_replace(',', '', strval($height));
 
-        if ($asset instanceof Asset) {
-            $args = array_filter($args);
+        $args = array_filter($args);
 
-            if (isset($asset->focalPoint)) {
-                $args = array_merge($args, [
-                    'fp-x' => $asset->focalPoint['x'],
-                    'fp-y' => $asset->focalPoint['y'],
-                ]);
-            }
-
-            $args = array_merge(static::IMGIX_DEFAULTS, $args, [
-                'crop' => $asset->hasFocalPoint ? 'focalpoint' : ($args['crop'] ?? 'faces,center'),
+        if (isset($asset->focalPoint)) {
+            $args = array_merge($args, [
+                'fp-x' => $asset->focalPoint['x'],
+                'fp-y' => $asset->focalPoint['y'],
             ]);
-
-            $url = $assets_url
-                ? str_replace($base_url ?: '', $assets_url, $asset->url) . '?' . http_build_query($args)
-                : $asset->url;
-
-            return $asset->extension === 'gif' ? explode('?', $url)[0] : $url;
-        }
-        if (is_string($asset)) {
-            return sprintf('https://picsum.photos/seed/%s/%d/%d', $asset, $width, $height);
         }
 
-        return '';
+        $args = array_merge(static::IMGIX_DEFAULTS, $args, [
+            'crop' => $asset->hasFocalPoint ? 'focalpoint' : ($args['crop'] ?? 'faces,center'),
+        ]);
+
+        $url = $assets_url
+            ? str_replace($base_url ?: '', $assets_url, $asset->url) . '?' . http_build_query($args)
+            : $asset->url;
+
+        return $asset->extension === 'gif' ? explode('?', $url)[0] : $url;
     }
 
     public static function svg(Asset|string $svg, ?bool $sanitize = true, ?bool $namespace = null, bool $throw_exception = false): string
