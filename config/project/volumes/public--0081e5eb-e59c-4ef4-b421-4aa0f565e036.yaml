@@ -37,6 +37,42 @@ fieldLayouts:
             userCondition: null
             warning: null
             width: 100
+          -
+            attribute: alt
+            class: null
+            cols: null
+            dateAdded: '2025-08-05T21:46:05+00:00'
+            disabled: false
+            elementCondition:
+              class: craft\elements\conditions\assets\AssetCondition
+              conditionRules:
+                -
+                  class: craft\elements\conditions\assets\FileTypeConditionRule
+                  operator: in
+                  uid: cdee7684-e253-4421-a66d-5a92b6619a26
+                  values:
+                    - image
+              elementType: craft\elements\Asset
+              fieldContext: global
+            id: null
+            includeInCards: false
+            instructions: null
+            label: null
+            name: null
+            orientation: null
+            placeholder: null
+            providesThumbs: false
+            readonly: false
+            requirable: true
+            required: false
+            rows: null
+            tip: null
+            title: null
+            type: craft\fieldlayoutelements\assets\AltField
+            uid: e0f0ef6d-3c24-4d28-aa56-72f00f4d6b1d
+            userCondition: null
+            warning: null
+            width: 100
         name: Content
         uid: 46860ad1-3f99-4acb-a0f1-65a7aaa7f109
         userCondition: null
