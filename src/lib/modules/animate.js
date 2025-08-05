@@ -1,5 +1,6 @@
 import { inView } from 'motion'
 import { animate } from 'motion/mini'
+import { $screen } from '$lib/stores/global'
 import resolveValue from '$lib/util/resolve-value'
 
 /**
@@ -24,7 +25,7 @@ export default els => {
                 args.opacity = [ 0, 1 ]
             }
 
-            const animation = animate(el, args, {
+            const animation = animate(el, $screen.prefersReducedMotion.current ? { opacity: args.opacity } : args, {
                 // @ts-ignore
                 ease: el.dataset.animateEase || 'easeInOut',
                 delay: parseFloat(el.dataset.animateDelay || '') || 0,
@@ -50,7 +51,7 @@ export default els => {
                     animation.pause()
                 } : undefined
             }, {
-                margin: '0px 0px -60px',
+                margin: '0px -60px',
             })
         }
     }
