@@ -1,10 +1,10 @@
-@custom-media --screen-2xs (width >= 370px);
-@custom-media --screen-xs (width >= 460px);
-@custom-media --screen-sm (width >= 640px);
-@custom-media --screen-md (width >= 768px);
-@custom-media --screen-lg (width >= 1024px);
-@custom-media --screen-xl (width >= 1280px);
-@custom-media --screen-2xl (width >= 1400px);
+@custom-media --screen-2xs (width >= 24rem); /* custom */
+@custom-media --screen-xs (width >= 32rem);  /* custom */
+@custom-media --screen-sm (width >= 40rem);  /* TailwindCSS default */
+@custom-media --screen-md (width >= 48rem);  /* TailwindCSS default */
+@custom-media --screen-lg (width >= 64rem);  /* TailwindCSS default */
+@custom-media --screen-xl (width >= 80rem);  /* TailwindCSS default */
+@custom-media --screen-2xl (width >= 96rem); /* TailwindCSS default */
 
 @custom-media --screen-motion-safe (prefers-reduced-motion: no-preference);
 @custom-media --screen-prefers-motion (not (prefers-reduced-motion));

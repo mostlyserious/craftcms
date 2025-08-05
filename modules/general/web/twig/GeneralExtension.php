@@ -63,19 +63,19 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
     public function getGlobals(): array
     {
         return [
-            'screen' => [
-                '2xs' => 370,
-                'xs' => 460,
-                'sm' => 640,
-                'md' => 768,
-                'lg' => 1024,
-                'xl' => 1280,
-                '2xl' => 1400,
-            ],
-            'palettes' => Craft::$app->config->custom->colors,
             'DATE_FORMAT' => Serializer::DATE_FORMAT,
             'TIME_FORMAT' => Serializer::TIME_FORMAT,
             'HEADING_TAGS' => Serializer::HEADING_TAGS,
+            'palettes' => Craft::$app->config->custom->colors,
+            'screen' => [
+                '2xs' => '24rem', // custom
+                'xs' => '32rem',  // custom
+                'sm' => '40rem',  // TailwindCSS default
+                'md' => '48rem',  // TailwindCSS default
+                'lg' => '64rem',  // TailwindCSS default
+                'xl' => '80rem',  // TailwindCSS default
+                '2xl' => '96rem', // TailwindCSS default
+            ],
         ];
     }
 
