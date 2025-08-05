@@ -26,8 +26,8 @@ modules/
     ├── controllers/             # Web and console controllers
     │   └── OembedController.php # oEmbed API endpoint
     ├── services/                # Business logic services
-    │   └── Serializer.php      # Content serialization service
-    ├── templates/              # Module-specific templates
+    │   └── Serializer.php       # Content serialization service
+    ├── templates/               # Module-specific templates
     └── web/
         └── twig/
             └── GeneralExtension.php # Custom Twig functions and filters
@@ -183,8 +183,6 @@ When creating new modules:
    - Service registration in module `init()`
    - Event listener registration
    - Proper namespace and alias setup
-
-5. **Add Documentation**: Update this README with new module features and patterns
 
 ## Development Workflow
 
