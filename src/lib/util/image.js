@@ -80,7 +80,7 @@ export function image(el, source) {
  * */
 export function imgix(url, query = {}) {
     if (url) {
-        url = url.replace($app.objectStorageUrl, $app.assetsUrl)
+        url = url.replace($app.objectStorageUrl, $app.imgixUrl)
 
         if ((/\.gif$/).test(url)) {
             return url

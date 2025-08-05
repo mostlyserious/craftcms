@@ -70,7 +70,7 @@ An automated setup script that initializes a new Craft CMS project with all nece
 1. **Environment Setup**:
    - Copies `.env.example` to `.env`
    - Automatically configures `PRIMARY_SITE_URL` based on current directory name
-   - Sets up `ASSETS_URL` for image optimization service with a sensible default
+   - Sets up `IMGIX_URL` for image optimization service with a sensible default
 
 2. **DDEV Configuration**:
    - Configures DDEV project with directory-based naming

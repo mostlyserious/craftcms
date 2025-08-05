@@ -8,7 +8,7 @@ function get_op() {
 
 cp .env.example .env
 set_env PRIMARY_SITE_URL "https://$(basename $PWD).ddev.site"
-set_env ASSETS_URL "https://$(basename $PWD).imgix.net"
+set_env IMGIX_URL "https://$(basename $PWD).imgix.net"
 ddev config --project-name=$(basename $PWD)
 ddev start
 ddev composer update

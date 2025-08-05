@@ -137,7 +137,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         return preg_replace_callback('/src="([^"]+)"/m', function (array $matches) use ($srcset): string {
             return str_replace(
                 App::env('OBJECT_STORAGE_URL'),
-                App::env('ASSETS_URL'),
+                App::env('IMGIX_URL'),
                 str_replace('{}', $matches[1], $srcset),
             );
         }, $string);
@@ -151,7 +151,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
     {
         $attrs = [];
 
-        $assets_url = App::env('ASSETS_URL');
+        $assets_url = App::env('IMGIX_URL');
         $base_url = App::env('OBJECT_STORAGE_URL');
 
         $width = $args['width'] ?? '';
@@ -265,7 +265,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
     /** @param array<string,mixed> $args */
     public static function src(Asset|string|null $asset = null, array $args = []): string
     {
-        $assets_url = App::env('ASSETS_URL');
+        $assets_url = App::env('IMGIX_URL');
         $base_url = App::env('OBJECT_STORAGE_URL');
 
         $width = $args['width'] ?? '';

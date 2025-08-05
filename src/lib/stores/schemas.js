@@ -16,7 +16,7 @@ export const AppSchema = z.object({
     isPreview: z.boolean(),
     isAdmin: z.boolean(),
     devMode: z.boolean(),
-    assetsUrl: z.url(),
+    imgixUrl: z.url(),
     objectStorageUrl: z.url(),
     lang: z.string(),
     i18n: z.nullable(z.record(z.string(), z.string())),

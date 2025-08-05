@@ -17,8 +17,8 @@
         }
     </style>
 
-    {% if getenv('ASSETS_URL') %}
-        <link rel="preconnect" href="{{ getenv('ASSETS_URL') }}" crossorigin>
+    {% if getenv('IMGIX_URL') %}
+        <link rel="preconnect" href="{{ getenv('IMGIX_URL') }}" crossorigin>
     {% endif %}
 
     <link rel="preload" href="{{ craft.vite.asset('src/img/logo.svg') }}" as="image" type="image/svg+xml" />
@@ -72,7 +72,7 @@
             isAdmin: currentUser and currentUser.admin,
             devMode: craft.app.config.general.devMode,
             objectStorageUrl: getenv('OBJECT_STORAGE_URL'),
-            assetsUrl: getenv('ASSETS_URL'),
+            imgixUrl: getenv('IMGIX_URL'),
             lang: craft.app.language,
             i18n: localizations(craft.app.language, 'site'),
             palettes: craft.app.config.custom.colors,

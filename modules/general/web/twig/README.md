@@ -403,7 +403,7 @@ Convert phone numbers and email addresses to proper link formats.
 The extension handles multiple asset scenarios:
 
 1. **Local Assets**: Standard Craft asset URLs
-2. **CDN Assets**: Transforms `OBJECT_STORAGE_URL` to `ASSETS_URL` for Imgix processing
+2. **CDN Assets**: Transforms `OBJECT_STORAGE_URL` to `IMGIX_URL` for Imgix processing
 3. **Placeholder Images**: Generates Lorem Picsum URLs with seed-based consistency
 
 ### Responsive Image Strategy

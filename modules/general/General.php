@@ -121,7 +121,7 @@ class General extends Module
             return;
         }
 
-        $target = str_replace(App::env('OBJECT_STORAGE_URL'), App::env('ASSETS_URL'), $asset->url);
+        $target = str_replace(App::env('OBJECT_STORAGE_URL'), App::env('IMGIX_URL'), $asset->url);
 
         (new Client())->post('https://api.imgix.com/api/v1/purge', [
             'headers' => [
