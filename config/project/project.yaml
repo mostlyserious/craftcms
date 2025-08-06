@@ -1,4 +1,4 @@
-dateModified: 1754430365
+dateModified: 1754495178
 elementSources:
   craft\elements\Entry:
     -
@@ -156,6 +156,10 @@ plugins:
       iconSetsUrl: '@web/'
       redactorFieldHandle: ''
   ignition:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  markerio:
     edition: standard
     enabled: true
     schemaVersion: 1.0.0
@@ -527,8 +531,11 @@ system:
   timeZone: America/Los_Angeles
 users:
   allowPublicRegistration: false
-  defaultGroup: null
+  deactivateByDefault: false
+  defaultGroup: ''
   photoSubpath: null
   photoVolumeUid: null
-  require2fa: false
+  require2fa:
+    - admins
   requireEmailVerification: true
+  validateOnPublicRegistration: false
