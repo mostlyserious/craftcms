@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "806516c1a0d359469cb0dc4197409c9c",
+    "content-hash": "424fe2d30d659bb177326fa0b6c2ed03",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -796,11 +796,16 @@
         },
         {
             "name": "craftcms/cms",
-            "version": "5.8.11",
+            "version": "5.8.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/craftcms/cms.git",
+                "reference": "bf1b0a33045290a151550bef3c5a4a3d12167cb7"
+            },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/cms/zipball/3dc338c565c5894ebe6544b8d24a4d776d8f51a8",
-                "reference": "3dc338c565c5894ebe6544b8d24a4d776d8f51a8",
+                "url": "https://api.github.com/repos/craftcms/cms/zipball/bf1b0a33045290a151550bef3c5a4a3d12167cb7",
+                "reference": "bf1b0a33045290a151550bef3c5a4a3d12167cb7",
                 "shasum": ""
             },
             "require": {
@@ -861,6 +866,22 @@
                 "bower-asset/yii2-pjax": "~2.0.1",
                 "yii2tech/ar-softdelete": "1.0.4"
             },
+            "require-dev": {
+                "codeception/codeception": "^5.2.0",
+                "codeception/lib-innerbrowser": "4.0.1",
+                "codeception/module-asserts": "^3.0.0",
+                "codeception/module-datafactory": "^3.0.0",
+                "codeception/module-phpbrowser": "^3.0.0",
+                "codeception/module-rest": "^3.3.2",
+                "codeception/module-yii2": "^1.1.9",
+                "craftcms/ecs": "dev-main",
+                "fakerphp/faker": "^1.19.0",
+                "league/factory-muffin": "^3.3.0",
+                "phpstan/phpstan": "^2.1",
+                "rector/rector": "^2.0",
+                "vlucas/phpdotenv": "^5.4.1",
+                "yiisoft/yii2-redis": "^2.0"
+            },
             "suggest": {
                 "ext-exif": "Adds support for parsing image EXIF data.",
                 "ext-iconv": "Adds support for more character encodings than PHP’s built-in mb_convert_encoding() function, which Craft will take advantage of when converting strings to UTF-8.",
@@ -873,6 +894,7 @@
                     "yii2tech\\ar\\softdelete\\": "lib/ar-softdelete/src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "proprietary"
             ],
@@ -890,14 +912,14 @@
                 "yii2"
             ],
             "support": {
-                "email": "support@craftcms.com",
-                "issues": "https://github.com/craftcms/cms/issues?state=open",
-                "forum": "https://craftcms.stackexchange.com/",
-                "source": "https://github.com/craftcms/cms",
                 "docs": "https://craftcms.com/docs/5.x/",
-                "rss": "https://github.com/craftcms/cms/releases.atom"
+                "email": "support@craftcms.com",
+                "forum": "https://craftcms.stackexchange.com/",
+                "issues": "https://github.com/craftcms/cms/issues?state=open",
+                "rss": "https://github.com/craftcms/cms/releases.atom",
+                "source": "https://github.com/craftcms/cms"
             },
-            "time": "2025-07-25T19:05:57+00:00"
+            "time": "2025-08-05T22:16:16+00:00"
         },
         {
             "name": "craftcms/flysystem",
