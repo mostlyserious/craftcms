@@ -12,7 +12,7 @@
         "craftcms/cms": "5.8.13",
         "craftpulse/craft-colour-swatches": "5.1.0",
         "mostlyserious/craft-markerio": "2.2.0",
-        "npm-asset/fortawesome--fontawesome-pro": "6.7.2",
+        "npm-asset/fortawesome--fontawesome-pro": "7.0.0",
         "nystudio107/craft-retour": "5.0.11",
         "nystudio107/craft-seomatic": "5.1.16",
         "nystudio107/craft-vite": "5.0.1",
@@ -61,11 +61,11 @@
             "type": "package",
             "package": {
                 "name": "npm-asset/fortawesome--fontawesome-pro",
-                "version": "6.7.2",
+                "version": "7.0.0",
                 "type": "npm-asset",
                 "dist": {
                     "type": "tar",
-                    "url": "https://npm.fontawesome.com/@fortawesome/fontawesome-pro/-/6.7.2/fontawesome-pro-6.7.2.tgz"
+                    "url": "https://npm.fontawesome.com/@fortawesome/fontawesome-pro/-/7.0.0/fontawesome-pro-7.0.0.tgz"
                 }
             }
         }
