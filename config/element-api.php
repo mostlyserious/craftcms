@@ -6,7 +6,7 @@ use Craft;
 
 return [
     'defaults' => [
-        'cache' => Craft::$app->config->cacheDuration !== 'dev'
+        'cache' => Craft::$app->config->env !== 'dev'
             ? Craft::$app->config->general->cacheDuration
             : false,
     ],
