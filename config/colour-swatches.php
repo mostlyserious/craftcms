@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
  * Colors are mapped from `custom.php` to a schema for the color swatches field here.
  */
 
- return [
+return [
     'palettes' => Collection::make(Craft::$app->config->custom->colors)->mapWithKeys(fn (array $swatches, string $key): array => [
         $key => array_map(fn (Collection $swatch, string $handle, int $i): array => [
             'label' => $handle,

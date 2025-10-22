@@ -2,7 +2,7 @@ columnSuffix: null
 handle: header
 instructions: null
 name: Header
-searchable: false
+searchable: true
 settings:
   createButtonLabel: 'Edit Header'
   defaultIndexViewMode: cards

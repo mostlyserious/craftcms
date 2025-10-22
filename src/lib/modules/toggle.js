@@ -46,12 +46,21 @@ export default els => {
                 for (const elB of els) {
                     if (elB instanceof HTMLElement) {
                         const targetB = getTargetFor(elB)
-                        const { toggleGroup: toggleGroupA } = el.dataset
-                        const { toggleGroup: toggleGroupB } = elB.dataset
-                        const { toggleScope: toggleScopeA } = el.dataset
-                        const { toggleScope: toggleScopeB } = elB.dataset
 
-                        if (!targetB.isSameNode(target)
+                        const {
+                            toggle: toggleClassA = 'is-active',
+                            toggleGroup: toggleGroupA,
+                            toggleScope: toggleScopeA,
+                        } = el.dataset
+
+                        const {
+                            toggle: toggleClassB = 'is-active',
+                            toggleGroup: toggleGroupB,
+                            toggleScope: toggleScopeB,
+                        } = elB.dataset
+
+                        if (toggleClassB === toggleClassA
+                            && !targetB.isSameNode(target)
                             && (!toggleGroupA || toggleGroupB !== toggleGroupA)
                             && (!toggleScopeB || toggleScopeB === toggleScopeA)) {
                             targetB.classList.remove(className)

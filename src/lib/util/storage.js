@@ -1,49 +1,98 @@
-/** Store or retrieve a value in the local storage.
- * @param {string} key
- * @return {[ () => any, (value: any) => void ]}
+import * as z from 'zod/mini'
+
+/**
+ * @import { ZodMiniType } from 'zod/mini'
  * */
-export function useLocal(key) {
+
+/** Store or retrieve a value in the local storage.
+ * @template {ZodMiniType} T
+ * @param {string} key
+ * @param {T} schema
+ * @return {[ () => ?ZodInfer<T>, (value: ZodInfer<T>) => ZodInfer<T> ]}
+ * */
+export function useLocal(key, schema) {
     return [
-        () => safeParse(localStorage.getItem(key)),
-        value => localStorage.setItem(key, JSON.stringify(value)),
+        () => {
+            try {
+                return z.nullable(schema).parse(safeParse(localStorage.getItem(key)))
+            } catch (_) {
+                return null
+            }
+        },
+        value => {
+            const data = schema.parse(value)
+
+            localStorage.setItem(key, JSON.stringify(data))
+
+            return data
+        },
     ]
 }
 
 /** Store or retrieve a value in the session storage.
+ * @template {ZodMiniType} T
  * @param {string} key
- * @return {[ () => any, (value: any) => void ]}
+ * @param {T} schema
+ * @return {[ () => ?ZodInfer<T>, (value: ZodInfer<T>) => ZodInfer<T> ]}
  * */
-export function useSession(key) {
+export function useSession(key, schema) {
     return [
-        () => safeParse(sessionStorage.getItem(key)),
-        value => sessionStorage.setItem(key, JSON.stringify(value)),
+        () => {
+            try {
+                return z.nullable(schema).parse(safeParse(sessionStorage.getItem(key)))
+            } catch (_) {
+                return null
+            }
+        },
+        value => {
+            const data = schema.parse(value)
+
+            sessionStorage.setItem(key, JSON.stringify(data))
+
+            return data
+        },
     ]
 }
 
-/** Sets a cookie with a certain value and expiry date, or retrieves the value of a cookie.
+/** Store or retrieve a value in a cookie.
+ * @template {ZodMiniType} T
  * @param {string} key
- * @return {[ () => any, (value: any) => void ]}
+ * @param {T} schema
+ * @param {number} [defaultExpires=3.154e+7] - Default expiration in milliseconds (default: 1 year)
+ * @return {[ () => ?ZodInfer<T>, (value: ZodInfer<T>, expires?: number) => ZodInfer<T> ]}
  * */
-export function useCookie(key) {
+export function useCookie(key, schema, defaultExpires = 3.154e+7) {
     return [
         () => {
-            const value = `; ${document.cookie}`
-            const parts = value.split(`; ${key}=`)
+            try {
+                const cookieValue = `; ${document.cookie}`
+                const parts = cookieValue.split(`; ${key}=`)
 
-            if (parts.length === 2) {
-                return parts[1].split(';').shift() || ''
+                if (parts.length === 2) {
+                    const rawValue = parts[1].split(';').shift() ?? ''
+
+                    return z.nullable(schema).parse(safeParse(decodeURIComponent(rawValue)))
+                }
+
+                return null
+            } catch (_) {
+                return null
             }
-
-            return ''
         },
-        (value, expires = 3.154e+7) => {
-            document.cookie = `${key}=${value};expires=${expiration(expires).toUTCString()};path=/;secure=true`
+        (value, expires = defaultExpires) => {
+            const data = schema.parse(value)
+            const encodedValue = encodeURIComponent(JSON.stringify(data))
+
+            document.cookie = `${key}=${encodedValue};expires=${expiration(expires).toUTCString()};path=/;secure`
+
+            return data
         },
     ]
 }
 
 /** Sets the expiration time for a cookie.
  * @param {number} expires - The duration for which the cookie should be valid in milliseconds.
+ * @returns {Date} The exact expiry date and time of the cookie.
  * */
 function expiration(expires) {
     const now = new Date()
@@ -60,6 +109,6 @@ function safeParse(value) {
     try {
         return JSON.parse(value || '')
     } catch (_) {
-        return undefined
+        return null
     }
 }

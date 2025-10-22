@@ -13,6 +13,7 @@
 /config/license.key
 
 manifest.dev.json
+SCRATCHPAD.md
 .DS_Store
 *.sql
 *.sql.gz

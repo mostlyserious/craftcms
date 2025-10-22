@@ -8,7 +8,7 @@ import resolveValue from '$lib/util/resolve-value'
  * */
 export default els => {
     for (const el of els) {
-        if (el instanceof HTMLElement && typeof el.dataset.animate === 'string') {
+        if ((el instanceof HTMLElement || el instanceof SVGElement) && typeof el.dataset.animate === 'string') {
             /** @type {Record<string,Array<string|number>>} */
             const args = {}
             const properties = el.dataset.animate.split(';').map(s => s.trim()).filter(Boolean)
@@ -25,11 +25,13 @@ export default els => {
                 args.opacity = [ 0, 1 ]
             }
 
+            console.log(args)
+
             const animation = animate(el, $screen.prefersReducedMotion.current ? { opacity: args.opacity } : args, {
                 // @ts-ignore
                 ease: el.dataset.animateEase || 'easeInOut',
-                delay: parseFloat(el.dataset.animateDelay || '') || 0,
-                duration: parseFloat(el.dataset.animateDuration || '') || 0.3,
+                delay: (parseInt(el.dataset.animateDelay || '') || 0) / 1000,
+                duration: (parseInt(el.dataset.animateDuration || '') || 300) / 1000,
             })
 
             animation.pause()

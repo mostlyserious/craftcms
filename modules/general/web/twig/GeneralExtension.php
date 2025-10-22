@@ -87,6 +87,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('plain', [static::class, 'plain']),
             new TwigFilter('media', [static::class, 'media'], static::HTML_SAFE),
             new TwigFilter('heading', [static::class, 'heading'], static::HTML_SAFE),
+            new TwigFilter('onlyEnv', [static::class, 'onlyEnv'], static::HTML_SAFE),
         ];
     }
 
@@ -146,8 +147,9 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
     /**
      * @param array<string,mixed>            $args
      * @param array<string,array<int,mixed>> $sources
+     * @param 'lazy'|'eager'                 $loading
      * */
-    public static function image(?Asset $asset = null, array $args = [], array $sources = [], bool $lazy = true, string $tag = 'img'): string
+    public static function image(?Asset $asset = null, array $args = [], array $sources = [], string $loading = 'lazy', string $tag = 'img'): string
     {
         if ($asset === null) {
             return '';
@@ -205,16 +207,20 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         $url = ($asset->extension === 'gif' ? explode('?', $image['url'])[0] : $image['url']);
         $url2x = ($asset->extension === 'gif' ? explode('?', $image2x['url'])[0] : $image2x['url']);
 
+        if (!in_array($loading, ['lazy', 'eager'])) {
+            $loading = 'lazy';
+        }
+
         $attrs = [
             'width' => str_replace(',', '', strval($width)),
             'height' => str_replace(',', '', strval($height)),
             'src' => 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
             'srcset' => implode(', ', [$url, "{$url2x} 2x"]),
             'alt' => $asset->alt ?? '',
-            'loading' => $lazy ? 'lazy' : 'eager',
+            'loading' => $loading,
         ];
 
-        if (!$lazy && empty($sources)) {
+        if ($loading === 'eager' && empty($sources)) {
             header(sprintf('Link: <%s>; as=image; rel=preload;', $url2x));
         }
 
@@ -225,7 +231,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             return Html::tag('picture', implode(PHP_EOL, array_merge(array_map(function (array $source, string $breakpoint) use ($asset): string {
                 static $prev_breakpoint = null;
 
-                $markup = static::image($asset, $source, [], true, 'source');
+                $markup = static::image($asset, $source, [], 'lazy', 'source');
                 $markup = Html::modifyTagAttributes($markup, [
                     'media' => $prev_breakpoint
                         ? sprintf('(min-width: %s) and (max-width: %s)', $breakpoint, sprintf('calc(%s - 1px)', $prev_breakpoint))
@@ -353,6 +359,28 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         return Template::raw($wrap
             ? sprintf('<%1$s>%2$s</%1$s>', $wrap, $markup)
             : $markup);
+    }
+
+    /**
+     * @param string|string[] $environments
+     */
+    public static function onlyEnv(?string $markup, string|array $environments): string
+    {
+        $markup = mb_trim($markup ?: '');
+
+        if (!$markup) {
+            return '';
+        }
+
+        if (!is_array($environments)) {
+            $environments = [$environments];
+        }
+
+        if (in_array(Craft::$app->config->env, $environments)) {
+            return $markup;
+        }
+
+        return sprintf('<template> %s </template>', $markup);
     }
 
     public static function plain(mixed $string): string

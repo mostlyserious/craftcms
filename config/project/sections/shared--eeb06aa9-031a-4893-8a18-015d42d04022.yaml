@@ -1,0 +1,16 @@
+defaultPlacement: end
+enableVersioning: true
+entryTypes:
+  -
+    uid: a22a885b-3973-4a3c-ba9c-b1ca6f9e2840 # Shared
+handle: shared
+maxAuthors: 1
+name: Shared
+propagationMethod: all
+siteSettings:
+  4133e941-2578-4d54-9009-6630aa7e39d4: # $PRIMARY_SITE_NAME
+    enabledByDefault: true
+    hasUrls: false
+    template: null
+    uriFormat: null
+type: single

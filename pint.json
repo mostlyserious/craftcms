@@ -1,5 +1,7 @@
 {
     "preset": "laravel",
+    "exclude": ["migrations", "public", "web"],
+    "notPath": ["bootstrap.php"],
     "rules": {
         "ordered_traits": true,
         "mb_str_functions": true,

@@ -30,7 +30,7 @@
         {% endswitch %}
     {% endif %}
 
-    {{ craft.app.config.general.devMode ? ("<!-- START #{block.type.handle}:#{block.id|default(0)} -->")|raw }}
+    {{ ("<!-- START #{block.type.handle}:#{block.id|default(0)} -->")|onlyEnv('dev') }}
     {% if block.type.handle in ['someException'] %}
         {{ include("blocks/_#{block.type.handle}", ignore_missing=true) }}
     {% else %}
@@ -38,7 +38,7 @@
         {{ include("blocks/_#{block.type.handle}", ignore_missing=true) }}
         {% endcache %}
     {% endif %}
-    {{ craft.app.config.general.devMode ? ("<!-- END #{block.type.handle}:#{block.id|default(0)} -->")|raw }}
+    {{ ("<!-- END #{block.type.handle}:#{block.id|default(0)} -->")|onlyEnv('dev') }}
 
     {% if not nested|default(false) %}
         {% set padding = null %}

@@ -6,6 +6,14 @@ function get_op() {
     op item get 'ENVIRONMENT_DEFAULTS' --fields=label=$1 --reveal --account=mostlyserious.1password.com --vault=Employee
 }
 
+if ! command -v ddev &> /dev/null
+then
+    echo "DDEV not found."
+    exit 1
+fi
+
+# @todo: check if we can collect Fort Awesome token up-front
+
 cp .env.example .env
 set_env PRIMARY_SITE_URL "https://$(basename $PWD).ddev.site"
 set_env IMGIX_URL "https://$(basename $PWD).imgix.net"
@@ -14,7 +22,6 @@ ddev start
 ddev composer update
 ddev craft setup/keys
 ddev craft install/craft
-ddev craft update all --interactive=0
 ddev bun update
 
 if command -v op &> /dev/null

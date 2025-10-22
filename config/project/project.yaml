@@ -1,4 +1,4 @@
-dateModified: 1754495178
+dateModified: 1761170407
 elementSources:
   craft\elements\Entry:
     -
@@ -44,6 +44,30 @@ elementSources:
         - authors
         - link
       type: native
+    -
+      defaultSort:
+        - id
+        - asc
+      defaultViewMode: ''
+      disabled: false
+      key: 'single:eeb06aa9-031a-4893-8a18-015d42d04022' # Shared
+      tableAttributes:
+        - status
+        - postDate
+        - expiryDate
+        - authors
+        - link
+      type: native
+    -
+      heading: ''
+      key: 'heading:b9344bce-f2c9-46fe-bc06-a3c8b9d59cc4'
+      type: heading
+    -
+      key: 'single:361bdcd1-449b-4fde-89f7-af2cd2d102b7' # Module Listing
+      type: native
+    -
+      key: 'section:70dc4d63-4e19-4a4e-8dbd-67474f6c069c' # CMS Guide
+      type: native
 email:
   fromEmail: $SYSTEM_EMAIL_ADDRESS
   fromName: $PRIMARY_SITE_NAME
@@ -82,6 +106,7 @@ meta:
     3ccd497c-3d40-4a46-8534-54cb4686a65f: Navigation # Navigation
     3f3ea580-ece0-4297-b0cd-f62546e76029: 'Rich Text' # Rich Text
     5ad412c1-8632-4d85-beed-9ac4a40468dd: SEO # SEO
+    5eecffaf-e4d8-46fd-bcea-35d80e62ec3c: Script # Script
     8a23ef88-0f26-4e54-9054-dfad645a92b4: Excerpt # Excerpt
     23e7a25a-326c-497d-b2d2-8a3f0441478d: Heading # Heading
     26a63b22-d0c1-40a5-b44e-95dac319f8d5: Header # Header
@@ -97,6 +122,7 @@ meta:
     98068dc3-f30b-4dc2-a65c-9d18dc2b982e: Pages # Pages
     5044364f-faaa-4ebd-8f8c-8fc3abd5488e: Menu # Menu
     a3adc4b2-c0e3-46e1-b366-8c4c6fced6a8: Dropdown # Dropdown
+    a22a885b-3973-4a3c-ba9c-b1ca6f9e2840: Shared # Shared
     a60b39fe-197f-4eff-abef-b7130e29fe0a: Text # Text
     a400573f-5ebe-41f4-8d51-ed519b4e15a6: Billboard # Billboard
     ad8a5f74-72c0-4ba5-8d07-54ab8cea97e8: Button # Button
@@ -110,6 +136,7 @@ meta:
     e264d6c0-ed99-4ba2-b530-a08f12b5407f: Home # Home
     e379fc2b-f33d-4486-bc6b-04929aab786d: Group # Group
     e922fbfe-343f-41a8-9acf-779214516215: 'Font Awesome' # Font Awesome
+    eeb06aa9-031a-4893-8a18-015d42d04022: Shared # Shared
     f1ce3b8e-7185-4942-a3e1-217dbed2832a: Standard # Standard
     fb8b8ada-d276-4ad7-87ca-d2e1be1fba84: Body # Body
     fcc2fe10-7c1e-4017-9983-b337f8ad1e37: Navigation # Navigation

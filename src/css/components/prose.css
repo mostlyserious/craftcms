@@ -232,28 +232,6 @@
             }
         }
 
-        & ul {
-            list-style-type: none;
-
-            & li {
-                margin-block: --spacing(1);
-                padding-left: --spacing(2);
-                text-indent: calc(--spacing(5) * -1);
-
-                @media (--screen-sm) {
-                    padding-left: --spacing(8);
-                }
-
-                &::before {
-                    content: url("$fontawesome/solid/check.svg");
-                    display: inline-block;
-                    width: --spacing(5);
-                    height: --spacing(5);
-                    translate: --spacing(2) --spacing(1.5);
-                }
-            }
-        }
-
         & figure.image {
             & img {
                 @apply mx-auto;

@@ -8,26 +8,27 @@
     "require": {
         "born05/craft-sentry": "3.0.0",
         "craftcms/aws-s3": "2.2.3",
-        "craftcms/ckeditor": "4.9.0",
-        "craftcms/cms": "5.8.13",
+        "craftcms/ckeditor": "4.10.1",
+        "craftcms/cms": "5.8.18",
         "craftpulse/craft-colour-swatches": "5.1.0",
         "mostlyserious/craft-markerio": "2.2.0",
         "npm-asset/fortawesome--fontawesome-pro": "7.0.0",
-        "nystudio107/craft-retour": "5.0.11",
-        "nystudio107/craft-seomatic": "5.1.16",
+        "nystudio107/craft-retour": "5.0.12",
+        "nystudio107/craft-seomatic": "5.1.18",
         "nystudio107/craft-vite": "5.0.1",
         "putyourlightson/craft-sendgrid": "3.0.0",
         "putyourlightson/craft-sherlock": "5.2.0",
         "roberskine/craft-user-manual": "5.0.4",
-        "spicyweb/craft-embedded-assets": "5.4.3",
+        "spicyweb/craft-embedded-assets": "5.4.4",
         "topshelfcraft/environment-label": "5.0.0",
         "verbb/expanded-singles": "3.0.3",
-        "verbb/icon-picker": "3.0.5",
+        "verbb/icon-picker": "3.0.6",
         "vlucas/phpdotenv": "^5.4.0",
         "webrgp/craft-ignition": "v1.0.7"
     },
     "require-dev": {
         "craftcms/generator": "^2.0.0",
+        "laravel/pint": "^1.25",
         "yiisoft/yii2-shell": "^2.0.3"
     },
     "autoload": {
@@ -47,6 +48,7 @@
         }
     },
     "scripts": {
+        "pint": "./vendor/bin/pint",
         "post-create-project-cmd": [
             "./utility/install.sh"
         ]

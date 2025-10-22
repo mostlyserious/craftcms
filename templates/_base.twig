@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="{{ craft.app.language }}">
 <head>
-    {% set shared = craft.entries.section('shared').one %}
+    {% set shared = craft.entries
+        .section('shared')
+        .cache
+        .one %}
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,10 +51,6 @@
         <meta name="robots" content="noindex">
     {% endif %}
 
-    {% if shared is not null %}
-        {{ craft.app.config.env == 'production' ? shared.headTop|raw : (shared.headTop ? ('<template> %s </template>')|format(shared.headTop)|raw) }}
-    {% endif %}
-
     <script>
         window.customElements.define('x-svelte', class extends HTMLElement {});
 
@@ -66,7 +65,7 @@
             palettes: craft.app.config.custom.colors,
         })|json_encode|raw }};
 
-        window.$app.csrf = fetch('/actions/users/session-info', {
+        window.$app.csrf = fetch('/actions/users/session-info/', {
             headers: { 'Accept': 'application/json' },
         }).then(res => res.json()).then(res => ({
             name: res.csrfTokenName,
@@ -75,39 +74,24 @@
     </script>
 
     {{ craft.vite.script('src/app.js', false) }}
-
-    {% if shared is not null %}
-        {{ craft.app.config.env == 'production' ? shared.headBottom|raw : (shared.headBottom ? ('<template> %s </template>')|format(shared.headBottom)|raw) }}
-    {% endif %}
 </head>
 <body>
-    {% if shared is not null %}
-        {{ craft.app.config.env == 'production' ? shared.bodyTop|raw : (shared.bodyTop ? ('<template> %s </template>')|format(shared.bodyTop)|raw) }}
-    {% endif %}
-
     <a href="#maincontent" class="block absolute top-2 left-2 z-50 py-1 px-1.5 font-semibold bg-white rounded-md not-focus:sr-only">
         {{ ('Skip to Main Content')|t }}
     </a>
 
     <header>
-        {% block navigation %}
-        {% endblock %}
+        {{ block('navigation') }}
     </header>
 
     <main id="maincontent">
-        {% block main %}
-        {% endblock %}
+        {{ block('main') }}
     </main>
 
     <footer>
-        {% block footer %}
-        {% endblock %}
+        {{ block('footer') }}
     </footer>
 
     {{ include('common/_quickEdit') }}
-
-    {% if shared is not null %}
-        {{ craft.app.config.env == 'production' ? shared.bodyBottom|raw : (shared.bodyBottom ? ('<template> %s </template>')|format(shared.bodyBottom)|raw) }}
-    {% endif %}
 </body>
 </html>

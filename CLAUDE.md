@@ -35,6 +35,16 @@ These tools use stdin/stdout and should be preferred over standard commands:
 - `std-stylelint` - CSS/HTML formatting (replaces `stylelint --fix`)
 - `std-rustywind` - Tailwind CSS class sorting for all file types
 
+**Usage Examples:**
+```bash
+cat path/to/file.php | std-pint > path/to/file.php
+cat path/to/file.html | std-rustywind > path/to/file.html
+cat path/to/file.js | std-rustywind js > path/to/file.js
+cat path/to/file.css | std-rustywind css > path/to/file.css
+cat path/to/file.svelte | std-rustywind svelte > path/to/file.svelte
+cat path/to/file.css | std-stylelint > path/to/file.css
+```
+
 **Installation:** If any `std-` commands are missing, install with:
 ```bash
 bun add @mostlyserious/formatters --global

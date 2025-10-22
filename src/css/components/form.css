@@ -19,7 +19,7 @@
     }
 
     [type="search"].form-input {
-        padding-right: --spacing(12) !important;
+        padding-right: --spacing(12);
         background-image: url("$fontawesome/solid/magnifying-glass.svg");
         background-position: right 0.75rem top calc(50% + 1px);
         background-size: auto --spacing(4);
@@ -27,7 +27,7 @@
     }
 
     select:not([multiple]).form-input {
-        padding-right: --spacing(10) !important;
+        padding-right: --spacing(10);
         background-image: url("$fontawesome/solid/chevron-down.svg");
         background-position: right 0.75rem top calc(50% + 1px);
         background-size: auto --spacing(4);
