@@ -2,7 +2,6 @@
 /// <reference types="vite/client" />
 
 import * as z from 'zod/mini'
-import type { HTMLElementEventMap, HTMLElementTagNameMap, SVGElementTagNameMap } from '@sveltejs/kit'
 
 declare global {
     interface Window {
@@ -16,10 +15,6 @@ declare global {
     type MethodOf<T> = {
         [P in keyof T]: T[P] extends () => unknown ? P : never
     }[keyof T]
-
-    type HTMLElementEventHandlersMap = {
-        [K in keyof HTMLElementEventMap]: (element: HTMLElement, handler: (event: HTMLElementEventMap[K]) => void) => void
-    }
 
     type Json<T> = string & {
         source: T
