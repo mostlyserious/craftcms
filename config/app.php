@@ -20,7 +20,7 @@ return [
             'targets' => [
                 // This configuration method adds the Sentry log target to the existing log component before loading any Craft plugins or modules.
                 // This way we are assured that all logs are sent to Sentry.
-                'sentry' => function (): object {
+                'sentry' => function (): ?object {
                     if (!App::env('SENTRY_DSN')) {
                         return null;
                     }
