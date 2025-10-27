@@ -1,4 +1,4 @@
-dateModified: 1761170407
+dateModified: 1761597393
 elementSources:
   craft\elements\Entry:
     -
@@ -199,10 +199,33 @@ plugins:
     edition: standard
     enabled: true
     schemaVersion: 1.0.0
-  sentry-sdk:
+  sentry-logger:
     edition: standard
     enabled: true
     schemaVersion: 1.0.0
+    settings:
+      anonymous: false
+      dsn: null
+      enabled: true
+      environment: null
+      exceptCodes:
+        - '400'
+        - '403'
+        - '404'
+        - '429'
+      exceptPatterns:
+        - ''
+      levels:
+        - error
+        - warning
+      release: null
+      userPrivacy:
+        - cookies
+        - email
+        - id
+        - ip_address
+        - permissions
+        - username
   seomatic:
     edition: standard
     enabled: true

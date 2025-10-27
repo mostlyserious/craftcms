@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fa9c7ab6ec9b5a9b8e672a9e0814fe07",
+    "content-hash": "5d4e27ba08e555aba39dff679ee0e2c9",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -180,58 +180,6 @@
             "description": "BaconQrCode is a QR code generator for PHP.",
             "homepage": "https://github.com/Bacon/BaconQrCode",
             "time": "2022-12-07T17:46:57+00:00"
-        },
-        {
-            "name": "born05/craft-sentry",
-            "version": "3.0.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/born05/craft-sentry/zipball/b85283a8ce4dd1ed97c032e05293d5a88ab702a4",
-                "reference": "b85283a8ce4dd1ed97c032e05293d5a88ab702a4",
-                "shasum": ""
-            },
-            "require": {
-                "craftcms/cms": "^4.0.0-alpha|^5.0.0-beta.1",
-                "php": "^8.0.2",
-                "sentry/sdk": "^4.0.0"
-            },
-            "type": "craft-plugin",
-            "extra": {
-                "name": "Sentry SDK",
-                "handle": "sentry-sdk",
-                "hasCpSettings": false,
-                "hasCpSection": false,
-                "changelogUrl": "https://raw.githubusercontent.com/born05/craft-sentry/master/CHANGELOG.md",
-                "documentationUrl": "https://github.com/born05/craft-sentry/blob/master/README.md"
-            },
-            "autoload": {
-                "psr-4": {
-                    "born05\\sentry\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Born05",
-                    "homepage": "https://www.born05.com/"
-                }
-            ],
-            "description": "Pushes Craft CMS errors to Sentry.",
-            "keywords": [
-                "cms",
-                "craft",
-                "craft-plugin",
-                "craftcms",
-                "sentry",
-                "sentry sdk"
-            ],
-            "support": {
-                "docs": "https://github.com/born05/craft-sentry/blob/master/README.md",
-                "issues": "https://github.com/born05/craft-sentry/issues"
-            },
-            "time": "2024-06-13T12:44:05+00:00"
         },
         {
             "name": "brick/math",
@@ -1320,17 +1268,71 @@
             "time": "2023-06-19T06:10:36+00:00"
         },
         {
+            "name": "diginov/craft-sentry-logger",
+            "version": "5.0.2",
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/diginov/craft-sentry-logger/zipball/123ac03b96d8ed454c08ea7c46379785a9bcea55",
+                "reference": "123ac03b96d8ed454c08ea7c46379785a9bcea55",
+                "shasum": ""
+            },
+            "require": {
+                "craftcms/cms": "^5.0.0",
+                "sentry/sentry": "^4.10.0"
+            },
+            "type": "craft-plugin",
+            "extra": {
+                "name": "Sentry Logger",
+                "handle": "sentry-logger",
+                "developer": "Diginov",
+                "changelogUrl": "https://raw.githubusercontent.com/diginov/craft-sentry-logger/main/CHANGELOG.md",
+                "documentationUrl": "https://github.com/diginov/craft-sentry-logger/blob/main/README.md"
+            },
+            "autoload": {
+                "psr-4": {
+                    "diginov\\sentrylogger\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Diginov",
+                    "homepage": "https://github.com/diginov"
+                }
+            ],
+            "description": "Pushes Craft CMS logs to Sentry through a real Yii 2 log target",
+            "keywords": [
+                "cms",
+                "craft",
+                "craft-plugin",
+                "craftcms",
+                "sentry",
+                "sentry-logger",
+                "yii2"
+            ],
+            "support": {
+                "email": "support@diginov.com",
+                "issues": "https://github.com/diginov/craft-sentry-logger/issues",
+                "source": "https://github.com/diginov/craft-sentry-logger",
+                "docs": "https://github.com/diginov/craft-sentry-logger/blob/main/README.md",
+                "rss": "https://github.com/diginov/craft-sentry-logger/releases.atom"
+            },
+            "time": "2025-03-02T01:20:53+00:00"
+        },
+        {
             "name": "doctrine/collections",
-            "version": "2.3.0",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/collections.git",
-                "reference": "2eb07e5953eed811ce1b309a7478a3b236f2273d"
+                "reference": "9acfeea2e8666536edff3d77c531261c63680160"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/collections/zipball/2eb07e5953eed811ce1b309a7478a3b236f2273d",
-                "reference": "2eb07e5953eed811ce1b309a7478a3b236f2273d",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/9acfeea2e8666536edff3d77c531261c63680160",
+                "reference": "9acfeea2e8666536edff3d77c531261c63680160",
                 "shasum": ""
             },
             "require": {
@@ -1339,11 +1341,11 @@
                 "symfony/polyfill-php84": "^1.30"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^12",
+                "doctrine/coding-standard": "^14",
                 "ext-json": "*",
-                "phpstan/phpstan": "^1.8",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpunit/phpunit": "^10.5"
+                "phpstan/phpstan": "^2.1.30",
+                "phpstan/phpstan-phpunit": "^2.0.7",
+                "phpunit/phpunit": "^10.5.58 || ^11.5.42 || ^12.4"
             },
             "type": "library",
             "autoload": {
@@ -1387,7 +1389,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/collections/issues",
-                "source": "https://github.com/doctrine/collections/tree/2.3.0"
+                "source": "https://github.com/doctrine/collections/tree/2.4.0"
             },
             "funding": [
                 {
@@ -1403,7 +1405,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-03-22T10:17:19+00:00"
+            "time": "2025-10-25T09:18:13+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -2651,20 +2653,20 @@
         },
         {
             "name": "lcobucci/clock",
-            "version": "3.4.0",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/clock.git",
-                "reference": "f91d84f65cb3e974988bbe872b5da8ca132a155f"
+                "reference": "a3139d9e97d47826f27e6a17bb63f13621f86058"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/clock/zipball/f91d84f65cb3e974988bbe872b5da8ca132a155f",
-                "reference": "f91d84f65cb3e974988bbe872b5da8ca132a155f",
+                "url": "https://api.github.com/repos/lcobucci/clock/zipball/a3139d9e97d47826f27e6a17bb63f13621f86058",
+                "reference": "a3139d9e97d47826f27e6a17bb63f13621f86058",
                 "shasum": ""
             },
             "require": {
-                "php": "~8.3.0 || ~8.4.0",
+                "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
                 "psr/clock": "^1.0"
             },
             "provide": {
@@ -2672,7 +2674,7 @@
             },
             "require-dev": {
                 "infection/infection": "^0.31",
-                "lcobucci/coding-standard": "^11.1.0",
+                "lcobucci/coding-standard": "^11.2.0",
                 "phpstan/extension-installer": "^1.3.1",
                 "phpstan/phpstan": "^2.0.0",
                 "phpstan/phpstan-deprecation-rules": "^2.0.0",
@@ -2699,7 +2701,7 @@
             "description": "Yet another clock abstraction",
             "support": {
                 "issues": "https://github.com/lcobucci/clock/issues",
-                "source": "https://github.com/lcobucci/clock/tree/3.4.0"
+                "source": "https://github.com/lcobucci/clock/tree/3.5.0"
             },
             "funding": [
                 {
@@ -2711,7 +2713,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2025-10-08T18:00:48+00:00"
+            "time": "2025-10-27T09:03:17+00:00"
         },
         {
             "name": "league/container",
@@ -3477,23 +3479,23 @@
         },
         {
             "name": "moneyphp/money",
-            "version": "v4.7.1",
+            "version": "v4.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/moneyphp/money.git",
-                "reference": "1a23f0e1b22e2c59ed5ed70cfbe4cbe696be9348"
+                "reference": "b358727ea5a5cd2d7475e59c31dfc352440ae7ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/moneyphp/money/zipball/1a23f0e1b22e2c59ed5ed70cfbe4cbe696be9348",
-                "reference": "1a23f0e1b22e2c59ed5ed70cfbe4cbe696be9348",
+                "url": "https://api.github.com/repos/moneyphp/money/zipball/b358727ea5a5cd2d7475e59c31dfc352440ae7ec",
+                "reference": "b358727ea5a5cd2d7475e59c31dfc352440ae7ec",
                 "shasum": ""
             },
             "require": {
                 "ext-bcmath": "*",
                 "ext-filter": "*",
                 "ext-json": "*",
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "require-dev": {
                 "cache/taggable-cache": "^1.1.0",
@@ -3561,9 +3563,9 @@
             ],
             "support": {
                 "issues": "https://github.com/moneyphp/money/issues",
-                "source": "https://github.com/moneyphp/money/tree/v4.7.1"
+                "source": "https://github.com/moneyphp/money/tree/v4.8.0"
             },
-            "time": "2025-06-06T07:12:38+00:00"
+            "time": "2025-10-23T07:55:09+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -5487,52 +5489,17 @@
             "time": "2020-12-15T21:32:01+00:00"
         },
         {
-            "name": "sentry/sdk",
-            "version": "4.0.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php-sdk/zipball/fcbca864e8d1dc712f3ecfaa95ea89d024fb2e53",
-                "reference": "fcbca864e8d1dc712f3ecfaa95ea89d024fb2e53",
-                "shasum": ""
-            },
-            "require": {
-                "sentry/sentry": "^4.0"
-            },
-            "type": "metapackage",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sentry",
-                    "email": "accounts@sentry.io"
-                }
-            ],
-            "description": "This is a meta package of sentry/sentry. We recommend using sentry/sentry directly.",
-            "homepage": "http://sentry.io",
-            "keywords": [
-                "crash-reporting",
-                "crash-reports",
-                "error-handler",
-                "error-monitoring",
-                "log",
-                "logging",
-                "sentry"
-            ],
-            "time": "2023-11-06T10:23:19+00:00"
-        },
-        {
             "name": "sentry/sentry",
-            "version": "4.17.0",
+            "version": "4.17.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "62927369a572efc27ddbd89e466e17788329224b"
+                "reference": "5c696b8de57e841a2bf3b6f6eecfd99acfdda80c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/62927369a572efc27ddbd89e466e17788329224b",
-                "reference": "62927369a572efc27ddbd89e466e17788329224b",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/5c696b8de57e841a2bf3b6f6eecfd99acfdda80c",
+                "reference": "5c696b8de57e841a2bf3b6f6eecfd99acfdda80c",
                 "shasum": ""
             },
             "require": {
@@ -5595,7 +5562,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/4.17.0"
+                "source": "https://github.com/getsentry/sentry-php/tree/4.17.1"
             },
             "funding": [
                 {
@@ -5607,7 +5574,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-10-20T12:57:02+00:00"
+            "time": "2025-10-23T15:19:24+00:00"
         },
         {
             "name": "spatie/backtrace",
@@ -11285,11 +11252,11 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": {},
-    "platform-dev": {},
+    "platform": [],
+    "platform-dev": [],
     "platform-overrides": {
         "php": "8.3"
     },

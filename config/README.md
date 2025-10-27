@@ -6,7 +6,7 @@ The configuration directory contains all Craft CMS settings, plugin configuratio
 
 ### Application Configuration
 
-- **`app.php`** - Core application settings including module registration and bootstrapping. Registers the General module and sets the application ID from environment variables.
+- **`app.php`** - Core application settings including module registration and bootstrapping. Registers the General module and sets the application ID from environment variables. Includes Sentry error tracking and performance monitoring configuration.
 
 - **`general.php`** - Main Craft CMS configuration covering security, performance, and site behavior settings. Includes timezone, URL handling, upload limits, session durations, and path aliases.
 
@@ -23,8 +23,6 @@ The configuration directory contains all Craft CMS settings, plugin configuratio
 - **`colour-swatches.php`** - Color swatches plugin settings for custom color picker functionality.
 
 - **`environment-label.php`** - Environment labeling plugin configuration for visual environment identification in the control panel.
-
-- **`sentry-sdk.php`** - Sentry error tracking and performance monitoring configuration.
 
 ### Custom Configuration
 
