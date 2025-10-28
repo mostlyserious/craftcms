@@ -17,14 +17,10 @@ return [
     ],
     'components' => [
         'log' => [
-            'targets' => [
-                // This configuration method adds the Sentry log target to the existing log component before loading any Craft plugins or modules.
-                // This way we are assured that all logs are sent to Sentry.
-                'sentry' => function (): ?object {
-                    if (!App::env('SENTRY_DSN')) {
-                        return null;
-                    }
-
+            'targets' => array_filter([
+                'sentry' => App::env('SENTRY_DSN') ? function (): ?object {
+                    // This configuration method adds the Sentry log target to the existing log component before loading any Craft plugins or modules.
+                    // This way we are assured that all logs are sent to Sentry.
                     if (!class_exists(SentryTarget::class)) {
                         Craft::warning('SentryTarget class not found. Sentry logging disabled.');
 
@@ -43,8 +39,8 @@ return [
                         'anonymous' => false,
                         'userPrivacy' => ['id', 'email', 'username', 'ip_address', 'cookies', 'permissions'],
                     ]);
-                },
-            ],
+                } : null,
+            ]),
         ],
     ],
 ];
