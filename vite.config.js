@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-import path from 'node:path'
+import { join } from 'node:path'
 import { defineConfig } from 'vite'
 import * as env from './utility/env'
 import tailwindcss from '@tailwindcss/vite'
@@ -10,13 +10,16 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 const { VITE_BASE, VITE_PORT, VITE_TEMP, PRIMARY_SITE_URL } = env.parse()
 
 export default defineConfig(() => {
-    if (fs.existsSync(`web${VITE_TEMP || VITE_BASE}`)) {
-        fs.rmSync(`web${VITE_TEMP || VITE_BASE}`, { recursive: true })
-    }
+    const outDir = join('web', VITE_TEMP || VITE_BASE)
+
+    fs.rmSync(outDir, {
+        recursive: true,
+        force: true,
+    })
 
     return {
         publicDir: false,
-        base: VITE_BASE,
+        base: join('/', VITE_BASE),
         plugins: [
             tailwindcss(),
             svelte(),
@@ -30,8 +33,8 @@ export default defineConfig(() => {
             },
         },
         build: {
+            outDir,
             manifest: true,
-            outDir: `web${VITE_TEMP || VITE_BASE}`,
             assetsInlineLimit: 0,
             cssMinify: 'lightningcss',
             rollupOptions: {
@@ -57,10 +60,10 @@ export default defineConfig(() => {
         },
         resolve: {
             alias: {
-                '$lib': path.resolve(__dirname, 'src/lib'),
-                '$css': path.resolve(__dirname, 'src/css'),
-                '$img': path.resolve(__dirname, 'src/img'),
-                '$fontawesome': path.resolve(__dirname, 'vendor/npm-asset/fortawesome--fontawesome-pro/svgs'),
+                '$lib': join(import.meta.dirname, 'src/lib'),
+                '$css': join(import.meta.dirname, 'src/css'),
+                '$img': join(import.meta.dirname, 'src/img'),
+                '$fontawesome': join(import.meta.dirname, 'vendor/npm-asset/fortawesome--fontawesome-pro/svgs'),
             },
         },
         server: {
