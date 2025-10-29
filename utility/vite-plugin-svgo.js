@@ -9,7 +9,7 @@ export default (options = {}) => ({
     generateBundle(_, bundler) {
         for (const [ path, asset ] of Object.entries(bundler)) {
             if ((/\.svg$/).test(path)) {
-                const { data } = optimize(asset.source.toString(), { path, ...options })
+                const { data } = optimize(asset.source.toString(), { ...options, path })
 
                 asset.source = Buffer.from(data, 'utf-8')
             }
