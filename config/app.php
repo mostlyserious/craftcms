@@ -18,14 +18,10 @@ return [
     'components' => [
         'log' => [
             'targets' => array_filter([
-                'sentry' => App::env('SENTRY_DSN') ? function (): ?object {
-                    // This configuration method adds the Sentry log target to the existing log component before loading any Craft plugins or modules.
-                    // This way we are assured that all logs are sent to Sentry.
-                    if (!class_exists(SentryTarget::class)) {
-                        Craft::warning('SentryTarget class not found. Sentry logging disabled.');
-
-                        return null;
-                    }
+                'sentry' => App::env('SENTRY_DSN') && class_exists(SentryTarget::class) ? function (): ?object {
+                    // This configuration method adds the Sentry log target to the existing
+                    // log component before loading any Craft plugins or modules.
+                    // Then we are assured that all logs are sent to Sentry.
 
                     return Craft::createObject([
                         'class' => SentryTarget::class,
