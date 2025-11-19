@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Craft;
 use craft\helpers\App;
 use modules\general\General;
+use yii\web\NotFoundHttpException;
 use diginov\sentrylogger\log\SentryTarget;
 
 return [
@@ -28,8 +29,9 @@ return [
                         'enabled' => App::env('CRAFT_ENVIRONMENT') !== 'dev',
                         'environment' => App::env('CRAFT_ENVIRONMENT'),
                         'dsn' => App::env('SENTRY_DSN'),
-                        'exceptCodes' => [400, 403, 404, 429],
                         'levels' => ['error', 'warning'],
+                        'except' => [NotFoundHttpException::class],
+                        'exceptCodes' => [400, 403, 404, 418, 429],
                         'exceptPatterns' => [],
                         'release' => null,
                         'anonymous' => false,
