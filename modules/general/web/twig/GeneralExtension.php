@@ -107,6 +107,10 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
                 $translations = [];
                 $files = glob(sprintf('%s/translations/%s/%s.php', CRAFT_BASE_PATH, $lang, $domain)) ?? [];
 
+                if (!$files) {
+                    return null;
+                }
+
                 foreach ($files as $file) {
                     $list = require $file;
 
