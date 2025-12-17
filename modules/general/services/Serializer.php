@@ -9,6 +9,7 @@ use yii\base\Component;
 use craft\elements\Asset;
 use craft\fields\data\LinkData;
 use verbb\iconpicker\models\Icon;
+use modules\general\web\twig\GeneralExtension;
 use spicyweb\embeddedassets\models\EmbeddedAsset;
 use spicyweb\embeddedassets\Plugin as EmbeddedAssets;
 
@@ -55,14 +56,13 @@ class Serializer extends Component
         return [];
     }
 
-    /** @return array<string, array> */
-    public static function icon(Icon $icon): array
+    public static function icon(Icon $icon): ?array
     {
-        return [
+        return $icon->value ? [
             'slug' => $icon->label,
             'path' => $icon->value,
-            'inline' => preg_replace('/<!--[^>]+-->/', '', $icon->getDisplayValue()),
-        ];
+            'inline' => GeneralExtension::svg($icon->getDisplayValue() ?: ''),
+        ] : null;
     }
 
     public static function image(?Asset $asset): ?array
@@ -86,7 +86,12 @@ class Serializer extends Component
         }
 
         if ($asset->mimeType === 'application/json') {
+            /** @var ?EmbeddedAsset */
             $embed = EmbeddedAssets::$plugin->methods->getEmbeddedAsset($asset);
+
+            if (!$embed) {
+                return null;
+            }
 
             return static::embed($embed);
         }
