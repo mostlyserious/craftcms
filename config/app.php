@@ -32,7 +32,9 @@ return [
                         'levels' => ['error', 'warning'],
                         'except' => [NotFoundHttpException::class],
                         'exceptCodes' => [400, 403, 404, 418, 429],
-                        'exceptPatterns' => [],
+                        'exceptPatterns' => [
+                            'Request didn’t meet the user agent and IP requirements for maintaining a user session.',
+                        ],
                         'release' => null,
                         'anonymous' => false,
                         'userPrivacy' => ['id', 'email', 'username', 'ip_address', 'cookies', 'permissions'],
