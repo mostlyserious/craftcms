@@ -34,6 +34,8 @@ export default async els => {
                     target,
                     props: { asset, playInline: true },
                 })
+            }).catch(error => {
+                console.error('Failed to load embed:', error)
             })
         }
     }

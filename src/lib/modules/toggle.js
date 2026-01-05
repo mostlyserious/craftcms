@@ -1,6 +1,11 @@
 const FOCUSABLE = 'a,button,input,select,textarea,[tabindex="0"]'
 
 /**
+ * @type {WeakMap<HTMLElement, AbortController>}
+ * */
+const controllers = new WeakMap()
+
+/**
  * @param {NodeListOf<Element>} els - A collection of DOM elements.
  * */
 export default els => {
@@ -72,14 +77,14 @@ export default els => {
 
                 if (target.classList.contains(className)) {
                     if (!required) {
-                        handleTrapFocus(trapFocusHandler, false, focusable)
+                        handleTrapFocus(trapFocusHandler, false, focusable, el)
                         handleInertables(target, true, className)
                         handleScroll(lockScroll, 'auto')
                         handleArias(el, false)
                         target.classList.remove(className)
                     }
                 } else {
-                    handleTrapFocus(trapFocusHandler, trapFocus, focusable)
+                    handleTrapFocus(trapFocusHandler, trapFocus, focusable, el)
                     handleInertables(target, false, className)
                     handleScroll(lockScroll, 'hidden')
                     handleArias(el, true)
@@ -167,12 +172,23 @@ function handleInertables(target, hide, className) {
  * @param {(event: KeyboardEvent, focusable: Element[]) => void} handler
  * @param {boolean} enabled
  * @param {Element[]} focusable
+ * @param {HTMLElement} el
  * */
-function handleTrapFocus(handler, enabled, focusable) {
+function handleTrapFocus(handler, enabled, focusable, el) {
+    const controller = controllers.get(el)
+
+    if (controller) {
+        controller.abort()
+        controllers.delete(el)
+    }
+
     if (enabled) {
-        addEventListener('keydown', event => handler(event, focusable))
-    } else {
-        removeEventListener('keydown', event => handler(event, focusable))
+        const controller = new AbortController()
+
+        controllers.set(el, controller)
+        addEventListener('keydown', event => handler(event, focusable), {
+            signal: controller.signal,
+        })
     }
 }
 

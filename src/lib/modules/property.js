@@ -1,23 +1,37 @@
 import propertyAccess from '$lib/util/property-access'
 
 /**
- * @type {ReturnType<typeof setInterval>}
+ * @type {WeakMap<NodeListOf<Element>, { resizeObserver: ResizeObserver, mutationObserver: MutationObserver }>}
  * */
-let interval
+const observers = new WeakMap()
 
 /**
  * @param {NodeListOf<Element>} els - A collection of DOM elements.
  * */
 export default els => {
-    if (interval) {
-        removeEventListener('resize', () => customProperties(els))
-        removeEventListener('load', () => customProperties(els))
-        clearInterval(interval)
+    const existing = observers.get(els)
+
+    if (existing) {
+        existing.resizeObserver.disconnect()
+        existing.mutationObserver.disconnect()
     }
 
-    addEventListener('resize', () => customProperties(els))
-    addEventListener('load', () => customProperties(els))
-    interval = setInterval(() => customProperties(els), 1000)
+    const resizeObserver = new ResizeObserver(() => customProperties(els))
+    const mutationObserver = new MutationObserver(() => customProperties(els))
+
+    for (const el of els) {
+        if (el instanceof HTMLElement) {
+            resizeObserver.observe(el)
+            mutationObserver.observe(el, {
+                attributes: true,
+                attributeFilter: [ 'data-property', 'data-property-scoped' ],
+                childList: false,
+                subtree: false,
+            })
+        }
+    }
+
+    observers.set(els, { resizeObserver, mutationObserver })
 
     customProperties(els)
 }

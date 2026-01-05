@@ -10,6 +10,11 @@ const groups = {}
 const DEFAULT_GROUP = 'default'
 
 /**
+ * @type {Set<string>}
+ * */
+const preloaded = new Set()
+
+/**
  * @param {NodeListOf<Element>} els - A collection of DOM elements.
  * */
 export default els => {
@@ -92,8 +97,14 @@ export default els => {
     /** @param {HTMLElement} el */
     const preload = el => {
         const src = el.dataset.lightbox ?? ''
+
+        if (!src || preloaded.has(src)) {
+            return
+        }
+
         const img = document.createElement('img')
 
+        preloaded.add(src)
         img.setAttribute('src', src)
     }
 
@@ -135,7 +146,7 @@ export default els => {
 
         const collection = groups[current.dataset.lightboxGroup || DEFAULT_GROUP]
         const n = next(collection.indexOf(current), collection.length)
-        const p = next(collection.indexOf(current), collection.length)
+        const p = prev(collection.indexOf(current), collection.length)
 
         preload(collection[n])
         preload(collection[p])
