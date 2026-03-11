@@ -13,10 +13,8 @@ fieldLayouts:
             elementCondition: null
             fieldUid: a38873a8-b147-4375-9298-ff2f0b6b8bf9
             handle: null
-            includeInCards: false
             instructions: null
             label: null
-            providesThumbs: false
             required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField

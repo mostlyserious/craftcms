@@ -1,4 +1,4 @@
-dateModified: 1761597393
+dateModified: 1773246893
 elementSources:
   craft\elements\Entry:
     -
@@ -107,7 +107,6 @@ meta:
     3f3ea580-ece0-4297-b0cd-f62546e76029: 'Rich Text' # Rich Text
     5ad412c1-8632-4d85-beed-9ac4a40468dd: SEO # SEO
     5eecffaf-e4d8-46fd-bcea-35d80e62ec3c: Script # Script
-    8a23ef88-0f26-4e54-9054-dfad645a92b4: Excerpt # Excerpt
     23e7a25a-326c-497d-b2d2-8a3f0441478d: Heading # Heading
     26a63b22-d0c1-40a5-b44e-95dac319f8d5: Header # Header
     70b357f9-e18b-4bd1-bdfb-3e74bc4a4a3b: Basic # Basic
@@ -115,10 +114,8 @@ meta:
     77e3d49f-4339-4267-8daf-3ba6445ee93e: 'Featured Image' # Featured Image
     0081e5eb-e59c-4ef4-b421-4aa0f565e036: Public # Public
     361bdcd1-449b-4fde-89f7-af2cd2d102b7: 'Module Listing' # Module Listing
-    956d09f4-3e86-4562-80f4-df0ac27ab166: Body # Body
     4133e941-2578-4d54-9009-6630aa7e39d4: $PRIMARY_SITE_NAME # $PRIMARY_SITE_NAME
     5966aa13-fd54-4d5d-bc19-0f672a8ce313: 'Font Awesome Brands' # Font Awesome Brands
-    079361a2-d9fc-47d8-b2d2-37532b257a50: Headings # Headings
     98068dc3-f30b-4dc2-a65c-9d18dc2b982e: Pages # Pages
     5044364f-faaa-4ebd-8f8c-8fc3abd5488e: Menu # Menu
     a3adc4b2-c0e3-46e1-b366-8c4c6fced6a8: Dropdown # Dropdown
@@ -137,7 +134,6 @@ meta:
     e379fc2b-f33d-4486-bc6b-04929aab786d: Group # Group
     e922fbfe-343f-41a8-9acf-779214516215: 'Font Awesome' # Font Awesome
     eeb06aa9-031a-4893-8a18-015d42d04022: Shared # Shared
-    f1ce3b8e-7185-4942-a3e1-217dbed2832a: Standard # Standard
     fb8b8ada-d276-4ad7-87ca-d2e1be1fba84: Body # Body
     fcc2fe10-7c1e-4017-9983-b337f8ad1e37: Navigation # Navigation
     fd17e42e-291b-4fb6-a3ae-58836dcf9589: Background # Background
@@ -149,7 +145,7 @@ plugins:
   ckeditor:
     edition: standard
     enabled: true
-    schemaVersion: 3.0.0.0
+    schemaVersion: 5.0.0.1
   colour-swatches:
     edition: standard
     enabled: true
@@ -577,7 +573,7 @@ system:
   live: true
   name: $PRIMARY_SITE_NAME
   retryDuration: null
-  schemaVersion: 5.8.0.3
+  schemaVersion: 5.9.0.8
   timeZone: America/Los_Angeles
 users:
   allowPublicRegistration: false

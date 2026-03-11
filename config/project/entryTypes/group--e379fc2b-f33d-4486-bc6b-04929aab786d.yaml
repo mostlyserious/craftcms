@@ -13,10 +13,8 @@ fieldLayouts:
             elementCondition: null
             fieldUid: 2b134bcf-b385-44d1-8d39-b3be84bed910 # Nested
             handle: null
-            includeInCards: false
             instructions: null
             label: null
-            providesThumbs: false
             required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
@@ -46,10 +44,8 @@ fieldLayouts:
             elementCondition: null
             fieldUid: fd17e42e-291b-4fb6-a3ae-58836dcf9589 # Background
             handle: null
-            includeInCards: false
             instructions: null
             label: null
-            providesThumbs: false
             required: false
             tip: null
             type: craft\fieldlayoutelements\CustomField
