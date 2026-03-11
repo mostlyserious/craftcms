@@ -153,15 +153,15 @@ export default [
         languageOptions: {
             globals: {
                 ...globals.browser,
+                ...globals.es2024,
             },
         },
     },
     {
-        files: [ '*.{js,jsx,ts,tsx}', 'utility/*.{js,jsx,ts,tsx}' ],
+        files: [ '*.{js,jsx,ts,tsx}', 'utility/*.{js,jsx,ts,tsx}', 'tests/**/*.{js,jsx,ts,tsx}' ],
         languageOptions: {
             globals: {
-                Bun: 'readonly',
-                ...globals.node,
+                ...globals.bunBuiltin,
             },
         },
     },
@@ -175,26 +175,6 @@ export default [
         files: [ '**/*.svelte' ],
         languageOptions: {
             parser: svelteParser,
-            parserOptions: {
-                svelteFeatures: {
-                    runes: true,
-                    experimentalGenerics: false,
-                },
-            },
-        },
-    },
-    {
-        files: [ '**/*.svelte', '**/*.svelte.js' ],
-        languageOptions: {
-            globals: {
-                $state: 'readonly',
-                $derived: 'readonly',
-                $effect: 'readonly',
-                $props: 'readonly',
-                $bindable: 'readonly',
-                $inspect: 'readonly',
-                $host: 'readonly',
-            },
         },
     },
 ]
