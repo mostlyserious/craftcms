@@ -2,7 +2,7 @@ import '$css/app.css'
 import init from '$lib/init'
 import { $screen } from '$lib/stores/global'
 
-import.meta.glob('./img/**/*')
+import.meta.glob('./img/**/*', { eager: true })
 
 init(document)
 
