@@ -7,6 +7,7 @@ export default defineConfig({
     arrowParens: 'avoid',
     sortTailwindcss: true,
     sortPackageJson: true,
+    ignorePatterns: ['.ddev/**', 'config/project/**'],
     sortImports: {
         newlinesBetween: false,
     },
