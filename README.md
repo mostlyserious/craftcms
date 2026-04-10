@@ -39,6 +39,8 @@ Use DDEV as the source of truth for app/runtime behavior:
 - `ddev vp fmt`
 - `ddev vp exec oxfmt --version`
 
+`ddev bun` and `ddev vp` are interactive-terminal friendly wrappers around the running DDEV web container, so color output and prompts behave like normal container shell commands.
+
 `ddev vp install` is available for container-side dependency installation, but it does not replace `bun install` on the host for IDE tooling. Host and container installs remain separate by design.
 
 Use host tooling for editor integrations and optional local JavaScript commands:

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+## Description: Run the project-local Vite+ CLI in the DDEV web container with terminal support
+## Usage: vp [args]
+## Example: "ddev vp check"
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+# shellcheck source=.ddev/commands/host/.exec-web-command
+. "$script_dir/.exec-web-command"
+
+container_id="$(require_web_container)"
+vp_bin='/var/www/html/node_modules/.bin/vp'
+
+if ! docker exec "$container_id" test -x "$vp_bin"; then
+    echo "Vite+ is not installed in the DDEV web container." >&2
+    echo "Run 'ddev bun install' and try again." >&2
+    exit 1
+fi
+
+exec_in_web_container "$container_id" "$vp_bin" "$@"

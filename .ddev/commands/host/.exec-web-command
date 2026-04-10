@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -eu
+
+get_web_container() {
+    docker ps \
+        --filter "label=com.ddev.site-name=${DDEV_SITENAME}" \
+        --filter "label=com.ddev.approot=${DDEV_APPROOT}" \
+        --filter "label=com.docker.compose.service=web" \
+        --format '{{.ID}}'
+}
+
+require_web_container() {
+    container_ids="$(get_web_container)"
+
+    if [ -z "$container_ids" ]; then
+        echo "Could not find the running DDEV web container for ${DDEV_SITENAME}." >&2
+        echo "Run 'ddev start' and try again." >&2
+        exit 1
+    fi
+
+    if [ "$(printf '%s\n' "$container_ids" | wc -l | tr -d ' ')" -ne 1 ]; then
+        echo "Found multiple running DDEV web containers for ${DDEV_SITENAME}." >&2
+        echo "Run 'ddev stop' and 'ddev start' to reset the project state." >&2
+        exit 1
+    fi
+
+    printf '%s\n' "$container_ids"
+}
+
+get_container_workdir() {
+    approot="$(cd "$DDEV_APPROOT" && pwd -P)"
+    current_dir="$(pwd -P)"
+
+    case "$current_dir" in
+        "$approot")
+            printf '/var/www/html\n'
+            ;;
+        "$approot"/*)
+            printf '/var/www/html/%s\n' "${current_dir#"$approot"/}"
+            ;;
+        *)
+            printf '/var/www/html\n'
+            ;;
+    esac
+}
+
+exec_in_web_container() {
+    container_id="$1"
+    shift
+
+    workdir="$(get_container_workdir)"
+
+    if [ -t 0 ] && [ -t 1 ]; then
+        exec docker exec -it --workdir "$workdir" "$container_id" "$@"
+    fi
+
+    exec docker exec -i --workdir "$workdir" "$container_id" "$@"
+}
