@@ -1,0 +1,19 @@
+#!/bin/bash
+
+## Description: Run the project-local Vite+ CLI in the web container
+## Usage: vp [args]
+## Example: "ddev vp check"
+## ExecRaw: true
+## HostWorkingDir: true
+## MutagenSync: true
+
+app_root="${DDEV_APPROOT:-/var/www/html}"
+vp_bin="$app_root/node_modules/.bin/vp"
+
+if [ ! -x "$vp_bin" ]; then
+    echo "Vite+ is not installed in the DDEV web container." >&2
+    echo "Run 'ddev bun install' and try again." >&2
+    exit 1
+fi
+
+exec "$vp_bin" "$@"

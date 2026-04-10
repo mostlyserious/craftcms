@@ -1,0 +1,34 @@
+# This project overrides DDEV's default Mutagen configuration.
+# Keep this file checked in so host and container node_modules stay separate.
+# Please do `ddev mutagen reset` after changing the file.
+# See DDEV Mutagen docs at
+# https://docs.ddev.com/en/stable/users/install/performance/#mutagen
+# For detailed information about mutagen configuration options, see
+# https://mutagen.io/documentation/introduction/configuration
+sync:
+  defaults:
+    mode: "two-way-resolved"
+    stageMode: "neighboring"
+    ignore:
+      paths:
+        # The top-level .git directory is ignored because where possible it's
+        # mounted into the container with a traditional docker bind-mount
+        - "/.git"
+        - "/.tarballs"
+        - "/.ddev/db_snapshots"
+        - "/.ddev/.importdb*"
+        - ".DS_Store"
+        - ".idea"
+        - "/node_modules"
+        - "/web/cpresources"
+        - "/storage"
+
+        # You can also exclude other directories from mutagen-syncing
+        # For example /var/www/html/var does not need to sync in TYPO3
+        # so you can add:
+        # - "/var"
+        # vcs like .git can be ignored for safety, but then some
+        # composer operations may fail if they use dev versions/git.
+        # vcs: true
+    symlink:
+      mode: "posix-raw"

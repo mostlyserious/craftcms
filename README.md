@@ -13,6 +13,42 @@
 composer create-project --no-install mostlyserious/craftcms $PROJECT_NAME
 ```
 
+## JavaScript Tooling
+
+This template uses a host-first dual-install model for JavaScript tooling:
+
+- `package.json` and `bun.lock` are the shared dependency definition
+- `bun install` on the host is supported for IDE integrations and optional local JavaScript commands
+- `ddev bun install` is supported for container runtime workflows
+
+The host and container each keep their own `node_modules` tree. That is expected. They are two platform-specific installs of the same dependency manifest, not a single shared artifact.
+
+This template keeps those installs separate by:
+
+- checking in a DDEV Mutagen override that excludes `/node_modules` from sync
+- mounting container-side `node_modules` on a dedicated Docker volume for the DDEV web container
+
+If you pull changes that affect `.ddev/mutagen/mutagen.yml`, run `ddev mutagen reset` before continuing.
+
+Use DDEV as the source of truth for app/runtime behavior:
+
+- `ddev craft ...`
+- `ddev bun run build`
+- `ddev bun run dev`
+- `ddev vp check`
+- `ddev vp fmt`
+- `ddev vp exec oxfmt --version`
+
+`ddev vp install` is available for container-side dependency installation, but it does not replace `bun install` on the host for IDE tooling. Host and container installs remain separate by design.
+
+Use host tooling for editor integrations and optional local JavaScript commands:
+
+- `bun install`
+- host-resolved formatter, linter, and language-server binaries from `node_modules`
+- optional local checks such as `bunx oxfmt --version`, `bunx oxlint --version`, and `bunx --bun vite --version`
+
+This template does not require devcontainers, remote development features, or shared host/container `node_modules` to be productive in Zed, VS Code, or other IDEs.
+
 ## Configuration Files
 
 This project includes several configuration files that define code quality standards, build processes, and development tooling:

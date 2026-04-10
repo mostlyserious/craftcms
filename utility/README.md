@@ -81,11 +81,13 @@ An automated setup script that initializes a new Craft CMS project with all nece
     - Configures DDEV project with directory-based naming
     - Starts the DDEV environment
     - Updates Composer dependencies
+    - Installs container-side JavaScript dependencies with `ddev bun install`
+    - Uses DDEV configuration that keeps container `node_modules` separate from the host tree
 
 3. **Craft CMS Installation**:
     - Generates security keys
     - Runs Craft installation process
-    - Updates Bun dependencies
+    - Leaves host-side JavaScript installation as a separate supported step for IDEs
 
 4. **API Key Integration** (if 1Password CLI is available):
     - Retrieves API keys from 1Password vault
@@ -95,6 +97,7 @@ An automated setup script that initializes a new Craft CMS project with all nece
 5. **Fallback Handling**:
     - Provides helpful instructions if 1Password CLI is not installed
     - Continues setup process without API keys
+    - Reminds the developer to run `bun install` on the host for IDE tooling
 
 #### Prerequisites
 
@@ -120,6 +123,17 @@ The install script includes automatic API key retrieval using the 1Password CLI 
 1. If 1Password CLI is detected, the script automatically retrieves and sets the API keys
 2. After setting the keys, it runs `ddev bun run build` to perform the initial asset build
 3. If 1Password CLI is not available, the script provides installation instructions and continues without the API keys
+
+#### JavaScript Dependency Model
+
+This template supports two valid JavaScript install contexts from the same `package.json` and `bun.lock`:
+
+- `ddev bun install` for the container runtime
+- `bun install` on the host for IDE integrations and optional local JavaScript commands
+
+These installs are expected to be separate platform-specific `node_modules` trees. The project does not require a shared host/container dependency directory.
+
+The DDEV configuration supports this by excluding `/node_modules` from Mutagen sync and by mounting container-side `node_modules` on its own Docker volume.
 
 **Benefits:**
 
