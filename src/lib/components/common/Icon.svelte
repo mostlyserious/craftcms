@@ -1,10 +1,11 @@
 <script>
     import markup from '$lib/util/markup'
-    import { ImportedSchema, IconPropsSchema } from '$lib/components/common/schemas'
+    import { ImportedSchema } from '$lib/schemas'
+    import { IconPropsSchema } from '$lib/components/common/schemas'
 
     /** @type {ZodInfer<typeof IconPropsSchema>} */
     const props = $props()
-    const { request, ...rest } = IconPropsSchema.parse(props)
+    const { request, ...rest } = $derived(IconPropsSchema.parse(props))
 </script>
 
 {#await request}

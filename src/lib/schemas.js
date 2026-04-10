@@ -1,4 +1,3 @@
-import { ImportedSchema } from '$lib/components/common/schemas'
 import * as z from 'zod/mini'
 
 /**
@@ -19,6 +18,10 @@ export const promise = _ => {
         message: 'Value must be a Promise',
     })
 }
+
+export const ImportedSchema = z.object({
+    default: z.string(),
+})
 
 export const ImageSchema = z.strictObject({
     uid: z.uuid(),

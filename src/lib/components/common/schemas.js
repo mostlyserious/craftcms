@@ -1,9 +1,5 @@
-import { promise, ImageSourceSchema } from '$lib/schemas'
+import { promise, ImageSourceSchema, ImportedSchema } from '$lib/schemas'
 import * as z from 'zod/mini'
-
-export const ImportedSchema = z.object({
-    default: z.string(),
-})
 
 export const IconPropsSchema = z.intersection(
     z.record(z.string(), z.any()),
