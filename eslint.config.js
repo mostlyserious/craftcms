@@ -1,4 +1,5 @@
 import globals from 'globals'
+import svelte from 'eslint-plugin-svelte'
 import parser from '@typescript-eslint/parser'
 import svelteParser from 'svelte-eslint-parser'
 
@@ -7,6 +8,7 @@ import svelteParser from 'svelte-eslint-parser'
  * @type {Array<FlatESLintConfig>}
  * */
 export default [
+    ...svelte.configs.recommended,
     {
         files: [ '**/*.{js,jsx,ts,tsx,svelte}' ],
         languageOptions: {
@@ -158,7 +160,33 @@ export default [
         },
     },
     {
-        files: [ '*.{js,jsx,ts,tsx}', 'utility/*.{js,jsx,ts,tsx}', 'tests/**/*.{js,jsx,ts,tsx}' ],
+        files: [ 'tests/**/*.{js,jsx,ts,tsx,svelte}' ],
+        languageOptions: {
+            globals: {
+                ...globals.vitest,
+            },
+        },
+    },
+    {
+        files: [ 'tests/components/**/*.{js,jsx,ts,tsx,svelte}' ],
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+                ...globals.vitest,
+            },
+        },
+    },
+    {
+        files: [ 'tests/api.test.{js,jsx,ts,tsx}', 'tests/pages.test.{js,jsx,ts,tsx}', 'tests/lib/**/*.{js,jsx,ts,tsx}', 'tests/setup/**/*.{js,jsx,ts,tsx}' ],
+        languageOptions: {
+            globals: {
+                ...globals.bunBuiltin,
+                ...globals.vitest,
+            },
+        },
+    },
+    {
+        files: [ '*.{js,jsx,ts,tsx}', 'utility/*.{js,jsx,ts,tsx}' ],
         languageOptions: {
             globals: {
                 ...globals.bunBuiltin,
@@ -175,6 +203,20 @@ export default [
         files: [ '**/*.svelte' ],
         languageOptions: {
             parser: svelteParser,
+            parserOptions: {
+                parser,
+                sourceType: 'module',
+                ecmaVersion: 'latest',
+                svelteFeatures: {
+                    runes: true,
+                },
+            },
+        },
+        rules: {
+            'svelte/valid-compile': 0,
+            'svelte/no-at-html-tags': 0,
+            'svelte/valid-style-parse': 0,
+            'svelte/no-navigation-without-resolve': 0,
         },
     },
 ]

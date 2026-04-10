@@ -1,7 +1,11 @@
 import * as z from 'zod/mini'
+import { loadEnv } from 'vite'
 
-export const parse = (defined = null) => {
-    const env = Schema.safeParse(defined ? defined : process.env)
+/**
+ * @param {string} mode
+ */
+export const parse = mode => {
+    const env = Schema.safeParse(loadEnv(mode, process.cwd(), ''))
 
     if (!env.success) {
         console.error(env.error.issues)
