@@ -35,7 +35,8 @@ Use DDEV as the source of truth for app/runtime behavior:
 - `ddev craft ...`
 - `ddev bun run build`
 - `ddev bun run dev`
-- `ddev vp check`
+- `ddev vp check` for Vite+ format and lint checks
+- `ddev bun run check` for full frontend validation, including TypeScript and Svelte diagnostics
 - `ddev vp fmt`
 - `ddev vp exec oxfmt --version`
 

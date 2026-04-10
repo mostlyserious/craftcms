@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "bunx --bun vite",
-        "build": "bunx --bun vite build"
+        "build": "bunx --bun vite build",
+        "check": "vp check && tsc --noEmit && svelte-check --tsconfig ./tsconfig.json"
     },
     "dependencies": {
         "motion": "^12.38.0",
@@ -29,6 +30,7 @@
         "sharp": "^0.34.5",
         "stylelint-config-hudochenkov": "^13.0.2",
         "stylelint-define-config": "^17.5.0",
+        "svelte-check": "^4.4.6",
         "svelte-eslint-parser": "^1.6.0",
         "svgo": "^4.0.1",
         "tinify": "^1.8.2",
