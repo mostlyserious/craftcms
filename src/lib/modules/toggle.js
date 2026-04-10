@@ -1,97 +1,130 @@
+import { lockScroll } from '$lib/util/scroll-lock'
+
+/**
+ * @typedef {Object} ToggleBinding
+ * @property {HTMLElement} el
+ * @property {HTMLElement} target
+ * @property {null|(() => void)} scrollRelease
+ * @property {string} className
+ * @property {boolean} lockScroll
+ * @property {boolean} trapFocus
+ * @property {boolean} required
+ * */
+
 const FOCUSABLE = 'a,button,input,select,textarea,[tabindex="0"]'
 
-/**
- * @type {WeakMap<HTMLElement, AbortController>}
- * */
-const controllers = new WeakMap()
+/** @type {Set<HTMLElement>} */
+const collection = new Set()
 
 /**
- * @param {NodeListOf<Element>} els - A collection of DOM elements.
+ * @param {NodeListOf<Element>} els
  * */
 export default els => {
-    document.body.addEventListener('click', () => closeAll(els))
+    /** @type {Map<HTMLElement, AbortController>} */
+    const controllers = new Map()
+    /** @type {ToggleBinding[]} */
+    const bindings = []
+    /** @type {Array<() => void>} */
+    const cleanups = []
 
-    addEventListener('keydown', ({ code }) => {
-        if (code === 'Escape') {
-            closeAll(els)
+    /**
+     * @param {EventTarget} target
+     * @param {string} type
+     * @param {(event: Event) => void} listener
+     * @param {AddEventListenerOptions|boolean} [options]
+     * */
+    const listen = (target, type, listener, options) => {
+        target.addEventListener(type, listener, options)
+        cleanups.push(() => target.removeEventListener(type, listener, options))
+    }
+
+    listen(document.body, 'click', () => closeAll(bindings, controllers))
+    listen(window, 'keydown', event => {
+        if (event instanceof KeyboardEvent && event.code === 'Escape') {
+            closeAll(bindings, controllers)
         }
     })
 
     for (const el of els) {
         if (el instanceof HTMLElement) {
-            const target = getTargetFor(el)
-            const lockScroll = el.dataset.toggleLockScroll !== undefined
-            const trapFocus = el.dataset.toggleTrapFocus !== undefined
-            const required = el.dataset.toggleRequired !== undefined
-            const className = el.dataset.toggle
-                ? el.dataset.toggle
-                : 'is-active'
+            if (collection.has(el)) {
+                continue
+            }
 
-            target.addEventListener('click', event => {
+            collection.add(el)
+
+            const target = getTargetFor(el)
+            const binding = {
+                el,
+                target,
+                scrollRelease: null,
+                className: el.dataset.toggle ? el.dataset.toggle : 'is-active',
+                lockScroll: el.dataset.toggleLockScroll !== undefined,
+                trapFocus: el.dataset.toggleTrapFocus !== undefined,
+                required: el.dataset.toggleRequired !== undefined,
+            }
+
+            bindings.push(binding)
+
+            listen(target, 'click', event => {
                 for (const node of getFocusableFor(target)) {
-                    if (event.target instanceof Node) {
-                        if (node.isSameNode(event.target)) {
-                            return
-                        }
+                    if (event.target instanceof Node && node.isSameNode(event.target)) {
+                        return
                     }
                 }
 
                 event.stopPropagation()
             })
 
-            handleArias(el, target.classList.contains(className))
-            handleInertables(target, !target.classList.contains(className), className)
+            handleArias(el, target.classList.contains(binding.className))
+            handleInertables(target, !target.classList.contains(binding.className), binding.className)
 
-            el.addEventListener('click', event => {
+            listen(el, 'click', event => {
                 const focusable = getFocusableFor(target)
 
                 focusable.unshift(el)
                 event.stopPropagation()
 
-                for (const elB of els) {
-                    if (elB instanceof HTMLElement) {
-                        const targetB = getTargetFor(elB)
+                for (const other of bindings) {
+                    const {
+                        toggleGroup: toggleGroupA,
+                        toggleScope: toggleScopeA,
+                    } = el.dataset
 
-                        const {
-                            toggle: toggleClassA = 'is-active',
-                            toggleGroup: toggleGroupA,
-                            toggleScope: toggleScopeA,
-                        } = el.dataset
+                    const {
+                        toggleGroup: toggleGroupB,
+                        toggleScope: toggleScopeB,
+                    } = other.el.dataset
 
-                        const {
-                            toggle: toggleClassB = 'is-active',
-                            toggleGroup: toggleGroupB,
-                            toggleScope: toggleScopeB,
-                        } = elB.dataset
-
-                        if (toggleClassB === toggleClassA
-                            && !targetB.isSameNode(target)
-                            && (!toggleGroupA || toggleGroupB !== toggleGroupA)
-                            && (!toggleScopeB || toggleScopeB === toggleScopeA)) {
-                            targetB.classList.remove(className)
-                            handleArias(elB, false)
-                            handleInertables(targetB, true, className)
-                        }
+                    if (other.className === binding.className
+                        && !other.target.isSameNode(target)
+                        && (!toggleGroupA || toggleGroupB !== toggleGroupA)
+                        && (!toggleScopeB || toggleScopeB === toggleScopeA)) {
+                        closeToggle(other, controllers, false)
                     }
                 }
 
-                if (target.classList.contains(className)) {
-                    if (!required) {
-                        handleTrapFocus(trapFocusHandler, false, focusable, el)
-                        handleInertables(target, true, className)
-                        handleScroll(lockScroll, 'auto')
-                        handleArias(el, false)
-                        target.classList.remove(className)
-                    }
+                if (target.classList.contains(binding.className)) {
+                    closeToggle(binding, controllers, false)
                 } else {
-                    handleTrapFocus(trapFocusHandler, trapFocus, focusable, el)
-                    handleInertables(target, false, className)
-                    handleScroll(lockScroll, 'hidden')
-                    handleArias(el, true)
-                    target.classList.add(className)
+                    openToggle(binding, controllers, focusable)
                 }
             })
         }
+    }
+
+    return () => {
+        for (const cleanup of cleanups.reverse()) {
+            cleanup()
+        }
+
+        closeAll(bindings, controllers, true)
+
+        for (const controller of controllers.values()) {
+            controller.abort()
+        }
+
+        controllers.clear()
     }
 }
 
@@ -104,8 +137,8 @@ function getFocusableFor(target) {
 }
 
 /**
- * @param {HTMLElement} el - The element to get the target for.
- * @returns {HTMLElement} - The target element or null.
+ * @param {HTMLElement} el
+ * @returns {HTMLElement}
  * */
 function getTargetFor(el) {
     const fallback = el.parentElement
@@ -126,27 +159,46 @@ function getTargetFor(el) {
 }
 
 /**
- * @param {NodeListOf<Element>} els
- * @returns {void}
+ * @param {ToggleBinding[]} bindings
+ * @param {Map<HTMLElement, AbortController>} controllers
+ * @param {boolean} [force]
  * */
-function closeAll(els) {
-    for (const el of els) {
-        if (el instanceof HTMLElement && !el.dataset.toggleScope) {
-            const target = getTargetFor(el)
-            const lockScroll = el.dataset.toggleLockScroll !== undefined
-            const required = el.dataset.toggleRequired !== undefined
-            const className = el.dataset.toggle
-                ? el.dataset.toggle
-                : 'is-active'
-
-            if (!required) {
-                target.classList.remove(className)
-                handleArias(el, false)
-                handleScroll(lockScroll, 'auto')
-                handleInertables(target, true, className)
-            }
+function closeAll(bindings, controllers, force = false) {
+    for (const binding of bindings) {
+        if (force || !binding.el.dataset.toggleScope) {
+            closeToggle(binding, controllers, force)
         }
     }
+}
+
+/**
+ * @param {ToggleBinding} binding
+ * @param {Map<HTMLElement, AbortController>} controllers
+ * @param {boolean} force
+ * */
+function closeToggle(binding, controllers, force) {
+    if (!force && binding.required) {
+        return
+    }
+
+    handleTrapFocus(controllers, trapFocusHandler, false, [], binding.el)
+    handleInertables(binding.target, true, binding.className)
+    handleScroll(binding, false)
+    handleArias(binding.el, false)
+    binding.target.classList.remove(binding.className)
+}
+
+/**
+ * @param {ToggleBinding} binding
+ * @param {Map<HTMLElement, AbortController>} controllers
+ * @param {Element[]} focusable
+ * */
+function openToggle(binding, controllers, focusable) {
+    handleTrapFocus(controllers, trapFocusHandler, binding.trapFocus, focusable, binding.el)
+    handleInertables(binding.target, false, binding.className)
+    handleScroll(binding, true)
+    handleArias(binding.el, true)
+    binding.target.classList.add(binding.className)
 }
 
 /**
@@ -169,12 +221,13 @@ function handleInertables(target, hide, className) {
 }
 
 /**
+ * @param {Map<HTMLElement, AbortController>} controllers
  * @param {(event: KeyboardEvent, focusable: Element[]) => void} handler
  * @param {boolean} enabled
  * @param {Element[]} focusable
  * @param {HTMLElement} el
  * */
-function handleTrapFocus(handler, enabled, focusable, el) {
+function handleTrapFocus(controllers, handler, enabled, focusable, el) {
     const controller = controllers.get(el)
 
     if (controller) {
@@ -183,11 +236,15 @@ function handleTrapFocus(handler, enabled, focusable, el) {
     }
 
     if (enabled) {
-        const controller = new AbortController()
+        const nextController = new AbortController()
 
-        controllers.set(el, controller)
-        addEventListener('keydown', event => handler(event, focusable), {
-            signal: controller.signal,
+        controllers.set(el, nextController)
+        window.addEventListener('keydown', event => {
+            if (event instanceof KeyboardEvent) {
+                handler(event, focusable)
+            }
+        }, {
+            signal: nextController.signal,
         })
     }
 }
@@ -230,11 +287,24 @@ function handleArias(el, expanded) {
 }
 
 /**
- * @param {boolean} lockScroll
- * @param {'auto'|'hidden'} value
+ * @param {ToggleBinding} binding
+ * @param {boolean} enabled
  * */
-function handleScroll(lockScroll, value) {
-    if (lockScroll) {
-        document.body.style.overflow = value
+function handleScroll(binding, enabled) {
+    if (!binding.lockScroll) {
+        return
+    }
+
+    if (enabled) {
+        if (!binding.scrollRelease) {
+            binding.scrollRelease = lockScroll()
+        }
+
+        return
+    }
+
+    if (binding.scrollRelease) {
+        binding.scrollRelease()
+        binding.scrollRelease = null
     }
 }
