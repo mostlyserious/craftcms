@@ -49,6 +49,8 @@ Use host tooling for editor integrations and optional local JavaScript commands:
 - host-resolved formatter, linter, and language-server binaries from `node_modules`
 - optional local checks such as `bunx oxfmt --version`, `bunx oxlint --version`, and `bunx --bun vite --version`
 
+This template also commits shared workspace settings for Zed and VS Code. VS Code users should install the recommended extensions when prompted. Host `bun install` is still required for local editor tooling resolution.
+
 This template does not require devcontainers, remote development features, or shared host/container `node_modules` to be productive in Zed, VS Code, or other IDEs.
 
 ## Configuration Files
