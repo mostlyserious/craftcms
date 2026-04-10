@@ -16,12 +16,14 @@
 
 @utility parallax-* {
     perspective: var(--parallax-perspective);
-    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y))
+        calc(var(--parallax-control) * var(--parallax-z));
 }
 
 @utility -parallax-* {
     perspective: var(--parallax-perspective);
-    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y))
+        calc(var(--parallax-control) * var(--parallax-z));
 }
 
 @utility parallax-x-* {

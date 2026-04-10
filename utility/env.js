@@ -1,5 +1,5 @@
+import { loadEnv } from 'vite-plus'
 import * as z from 'zod/mini'
-import { loadEnv } from 'vite'
 
 /**
  * @param {string} mode
@@ -20,7 +20,7 @@ export const Schema = z.looseObject({
     VITE_TEMP: z.optional(z.string()),
     VITE_PORT: z._default(z.coerce.number(), 5173),
     TINYPNG_KEY: z.string(),
-    CRAFT_ENVIRONMENT: z.enum([ 'dev', 'staging', 'production' ]),
+    CRAFT_ENVIRONMENT: z.enum(['dev', 'staging', 'production']),
     CRAFT_SECURITY_KEY: z.string(),
     CRAFT_APP_ID: z.string(),
     PRIMARY_SITE_NAME: z.string(),

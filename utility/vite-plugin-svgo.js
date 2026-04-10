@@ -7,7 +7,7 @@ import { optimize } from 'svgo'
 export default (options = {}) => ({
     name: 'vite-plugin-svgo',
     generateBundle(_, bundler) {
-        for (const [ path, asset ] of Object.entries(bundler)) {
+        for (const [path, asset] of Object.entries(bundler)) {
             if (path.endsWith('.svg')) {
                 const { data } = optimize(asset.source.toString(), { ...options, path })
 

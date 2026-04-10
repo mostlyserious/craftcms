@@ -1,5 +1,5 @@
-import * as z from 'zod/mini'
 import { promise } from '$lib/schemas'
+import * as z from 'zod/mini'
 
 export const CsrfSchema = z.object({
     name: z.string(),

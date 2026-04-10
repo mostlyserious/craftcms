@@ -51,7 +51,7 @@ return [
         // Development-specific settings
     ],
     'staging' => [
-        // Staging-specific settings  
+        // Staging-specific settings
     ],
     'production' => [
         // Production-specific settings
@@ -64,6 +64,7 @@ return [
 ### Project Config Sync
 
 Craft's project configuration system automatically syncs structural changes:
+
 - Changes made in the control panel are saved to YAML files
 - YAML files are version controlled and deployed across environments
 - Use `ddev craft up` to sync changes to database
@@ -71,6 +72,7 @@ Craft's project configuration system automatically syncs structural changes:
 ### Environment Variables
 
 Sensitive configuration values use environment variables:
+
 - Database credentials in `.env`
 - API keys and secrets in environment-specific files
 - Use `App::env()` helper for environment variable access

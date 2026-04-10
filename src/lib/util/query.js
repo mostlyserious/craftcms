@@ -38,16 +38,16 @@ export function commit(args, callback = () => undefined) {
  * @returns {string}
  * */
 export function generate(args, prepend = '') {
-    const queryString = qs.stringify(args, {
-        sort,
-        filter,
-        encode: false,
-        arrayFormat: 'brackets',
-    }).replace(/\s+/g, '+')
+    const queryString = qs
+        .stringify(args, {
+            sort,
+            filter,
+            encode: false,
+            arrayFormat: 'brackets',
+        })
+        .replace(/\s+/g, '+')
 
-    return queryString
-        ? prepend + queryString
-        : ''
+    return queryString ? prepend + queryString : ''
 }
 
 export function retrieve() {

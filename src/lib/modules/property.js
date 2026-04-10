@@ -24,7 +24,7 @@ export default els => {
             resizeObserver.observe(el)
             mutationObserver.observe(el, {
                 attributes: true,
-                attributeFilter: [ 'data-property', 'data-property-scoped' ],
+                attributeFilter: ['data-property', 'data-property-scoped'],
                 childList: false,
                 subtree: false,
             })
@@ -44,7 +44,10 @@ function customProperties(els) {
         if (el instanceof HTMLElement) {
             const scoped = 'propertyScoped' in el.dataset
             const properties = el.dataset.property
-                ? el.dataset.property.split(';').map(p => p.trim()).filter(Boolean)
+                ? el.dataset.property
+                      .split(';')
+                      .map(p => p.trim())
+                      .filter(Boolean)
                 : []
 
             for (const property of properties) {
@@ -56,15 +59,13 @@ function customProperties(els) {
                 let unit = ''
                 let key = ''
 
-                ;[ prop, key = '' ] = args.split(':').map(str => str.trim())
-                ;[ key, unit = '' ] = key.split('|').map(str => str.trim())
+                ;[prop, key = ''] = args.split(':').map(str => str.trim())
+                ;[key, unit = ''] = key.split('|').map(str => str.trim())
 
                 value = propertyAccess(el, key)
 
                 if (scoped) {
-                    target = el.dataset.propertyScoped === 'parent'
-                        ? el.parentElement || el
-                        : el
+                    target = el.dataset.propertyScoped === 'parent' ? el.parentElement || el : el
                 }
 
                 if (typeof value === 'string' || typeof value === 'number') {

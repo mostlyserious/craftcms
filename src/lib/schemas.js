@@ -1,4 +1,24 @@
+import { ImportedSchema } from '$lib/components/common/schemas'
 import * as z from 'zod/mini'
+
+/**
+ * @template T
+ * @typedef {{}} PendingValidation<T> - An optimistic type that assumes the shape of T without immediate validation. It should be validated later to ensure correctness.
+ * */
+
+/**
+ * Creates a custom Zod schema that validates if a value is a Promise.
+ * The inferred type is Promise<PendingValidation<z.infer<typeof innerSchema>>>, indicating an optimistic assumption about the resolved value.
+ * The actual validation of the resolved value should be performed later.
+ * @template {z.ZodMiniType} T
+ * @param {T} _ - The Zod schema for the expected resolved value of the Promise.
+ * @returns {z.ZodMiniType<Promise<PendingValidation<z.infer<T>>>>} A Zod schema that checks for Promise instances.
+ * */
+export const promise = _ => {
+    return z.custom(val => val instanceof Promise, {
+        message: 'Value must be a Promise',
+    })
+}
 
 export const ImageSchema = z.strictObject({
     uid: z.uuid(),
@@ -14,14 +34,30 @@ export const ImageSchema = z.strictObject({
     }),
 })
 
-export const ImageSourceSchema = z.tuple([
-    ImageSchema,
-    z.nullable(z.record(z.string(), z.union([
-        z.string(),
-        z.number(),
-    ]))),
-])
+export const ImageTransformArgsSchema = z.record(z.string(), z.union([z.string(), z.number()]))
 
+export const ImageSourceSchema = z.tuple([ImageSchema, z.nullable(ImageTransformArgsSchema)])
+
+export const PictureSourcesSchema = z.record(z.string(), ImageTransformArgsSchema)
+
+export const ImagePropsSchema = z.intersection(
+    z.record(z.string(), z.any()),
+    z.strictObject({
+        width: z.number(),
+        height: z.number(),
+        src: z.optional(ImageSourceSchema),
+        request: z.optional(promise(ImportedSchema)),
+    }),
+)
+
+export const PicturePropsSchema = z.intersection(
+    z.record(z.string(), z.any()),
+    z.strictObject({
+        src: ImageSourceSchema,
+        breakpoints: z.optional(PictureSourcesSchema),
+        loading: z.optional(z.literal(['lazy', 'eager'])),
+    }),
+)
 export const VideoSchema = z.strictObject({
     type: z.literal('upload'),
     uid: z.uuid(),
@@ -44,22 +80,3 @@ export const EmbedSchema = z.strictObject({
     image: z.url(),
     source: z.string(),
 })
-
-/**
- * @template T
- * @typedef {{}} PendingValidation<T> - An optimistic type that assumes the shape of T without immediate validation. It should be validated later to ensure correctness.
- * */
-
-/**
- * Creates a custom Zod schema that validates if a value is a Promise.
- * The inferred type is Promise<PendingValidation<z.infer<typeof innerSchema>>>, indicating an optimistic assumption about the resolved value.
- * The actual validation of the resolved value should be performed later.
- * @template {z.ZodMiniType} T
- * @param {T} _ - The Zod schema for the expected resolved value of the Promise.
- * @returns {z.ZodMiniType<Promise<PendingValidation<z.infer<T>>>>} A Zod schema that checks for Promise instances.
- * */
-export const promise = _ => {
-    return z.custom(val => val instanceof Promise, {
-        message: 'Value must be a Promise',
-    })
-}

@@ -1,16 +1,16 @@
-import * as z from 'zod/mini'
 import * as object from '$lib/util/object'
-import { mount, createRawSnippet } from 'svelte'
 import resolveValue from '$lib/util/resolve-value'
+import { mount, createRawSnippet } from 'svelte'
+import * as z from 'zod/mini'
 
 const components = {
-    'video': () => import('$lib/components/Video.svelte'),
+    video: () => import('$lib/components/Video.svelte'),
 }
 
 /** Processes elements to replace with Svelte components.
  * @param {NodeListOf<Element>} els - Elements to be processed.
  */
-export default function(els) {
+export default function (els) {
     const ComponentHandlesSchema = z.enum(object.keys(components))
 
     for (const target of els) {
@@ -20,43 +20,48 @@ export default function(els) {
             /** @type {Record<PropertyKey, unknown>} */
             const data = {}
 
-            request().then(({ default: Component }) => {
-                const templates = target.querySelectorAll(':scope > template')
-                /** @type {Record<PropertyKey, ReturnType<typeof createRawSnippet>>} */
-                const snippets = {}
+            request()
+                .then(({ default: Component }) => {
+                    const templates = target.querySelectorAll(':scope > template')
+                    /** @type {Record<PropertyKey, ReturnType<typeof createRawSnippet>>} */
+                    const snippets = {}
 
-                for (const template of templates) {
-                    const markup = template.innerHTML.trim()
-                    const name = template.getAttribute('snippet') || 'children'
+                    for (const template of templates) {
+                        const markup = template.innerHTML.trim()
+                        const name = template.getAttribute('snippet') || 'children'
 
-                    if (snippets[name]) {
-                        throw new Error(`[snippet=${name}] is already defined.`)
+                        if (snippets[name]) {
+                            throw new Error(`[snippet=${name}] is already defined.`)
+                        }
+
+                        snippets[name] = createRawSnippet(() => ({
+                            render: () => markup,
+                        }))
                     }
 
-                    snippets[name] = createRawSnippet(() => ({
-                        render: () => markup,
-                    }))
-                }
+                    target.innerHTML = ''
 
-                target.innerHTML = ''
+                    for (const [key, value] of object.entries(target.dataset)) {
+                        if (snippets[key]) {
+                            throw new Error(`[snippet=${key}] conflicts with [data-${key}].`)
+                        }
 
-                for (const [ key, value ] of object.entries(target.dataset)) {
-                    if (snippets[key]) {
-                        throw new Error(`[snippet=${key}] conflicts with [data-${key}].`)
+                        data[key] = typeof value === 'string' ? resolveValue(value) : value
                     }
 
-                    data[key] = (typeof value === 'string')
-                        ? resolveValue(value)
-                        : value
-                }
+                    mount(Component, {
+                        target,
+                        props: {
+                            ...data,
+                            ...snippets,
+                        },
+                    })
 
-                mount(Component, { target, props: {
-                    ...data,
-                    ...snippets,
-                } })
-
-                target.replaceWith(...target.childNodes)
-            })
+                    target.replaceWith(...target.childNodes)
+                })
+                .catch(error => {
+                    console.error(error)
+                })
         }
     }
 }

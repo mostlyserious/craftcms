@@ -6,14 +6,17 @@ import { scroll } from 'motion'
 export default els => {
     for (const el of els) {
         if (el instanceof HTMLElement) {
-            scroll(/** @param {number} progress */ progress => {
-                const control = progress * 2 - 1
+            scroll(
+                /** @param {number} progress */ progress => {
+                    const control = progress * 2 - 1
 
-                el.style.setProperty('--parallax-control', control.toFixed(4))
-            }, {
-                target: el,
-                offset: [ 'start end', 'end start' ],
-            })
+                    el.style.setProperty('--parallax-control', control.toFixed(4))
+                },
+                {
+                    target: el,
+                    offset: ['start end', 'end start'],
+                },
+            )
         }
     }
 }

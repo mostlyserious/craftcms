@@ -15,8 +15,13 @@ export default els => {
                     classes(el, target)
                 }
 
-                el.addEventListener('click', () => {
-                    target.paused ? target.play() : target.pause()
+                el.addEventListener('click', async () => {
+                    if (target.paused) {
+                        await target.play()
+                    } else {
+                        target.pause()
+                    }
+
                     classes(el, target)
                 })
             }

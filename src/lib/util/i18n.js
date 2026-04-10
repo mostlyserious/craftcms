@@ -8,9 +8,7 @@ import propertyAccess from '$lib/util/property-access'
  * */
 export const format = (string, tokens = {}) => {
     return string.replace(/{([\w\d.]+)}/g, (match, token) => {
-        return propertyAccess(tokens, token) !== undefined
-            ? String(propertyAccess(tokens, token))
-            : match
+        return propertyAccess(tokens, token) !== undefined ? String(propertyAccess(tokens, token)) : match
     })
 }
 

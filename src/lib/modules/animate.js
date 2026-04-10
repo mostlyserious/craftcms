@@ -1,8 +1,8 @@
-import * as z from 'zod/mini'
-import { inView } from 'motion'
-import { animate } from 'motion/mini'
 import { $screen } from '$lib/stores/global'
 import resolveValue from '$lib/util/resolve-value'
+import { inView } from 'motion'
+import { animate } from 'motion/mini'
+import * as z from 'zod/mini'
 
 const EasingSchema = z.enum([
     'linear',
@@ -28,10 +28,13 @@ export default els => {
         if ((el instanceof HTMLElement || el instanceof SVGElement) && typeof el.dataset.animate === 'string') {
             /** @type {Record<string,Array<string|number>>} */
             const args = {}
-            const properties = el.dataset.animate.split(';').map(s => s.trim()).filter(Boolean)
+            const properties = el.dataset.animate
+                .split(';')
+                .map(s => s.trim())
+                .filter(Boolean)
             const propertyEntries = properties.map(p => p.split(':').map(s => s.trim())).filter(Boolean)
 
-            for (const [ prop, valueString ] of propertyEntries) {
+            for (const [prop, valueString] of propertyEntries) {
                 const valueArray = valueString.split(',')
 
                 valueArray[1] = valueArray[1] || '0'
@@ -39,7 +42,7 @@ export default els => {
             }
 
             if (!args.opacity) {
-                args.opacity = [ 0, 1 ]
+                args.opacity = [0, 1]
             }
 
             const animation = animate(el, $screen.prefersReducedMotion.current ? { opacity: args.opacity } : args, {
@@ -50,25 +53,31 @@ export default els => {
 
             animation.pause()
 
-            inView(el, () => {
-                if (el instanceof HTMLImageElement) {
-                    if (el.complete) {
-                        animation.play()
+            inView(
+                el,
+                () => {
+                    if (el instanceof HTMLImageElement) {
+                        if (el.complete) {
+                            animation.play()
+                        } else {
+                            el.addEventListener('load', () => animation.play())
+                        }
                     } else {
-                        el.addEventListener('load', () => animation.play())
+                        animation.play()
                     }
-                } else {
-                    animation.play()
-                }
 
-                return el.dataset.animateRepeat === '' ? () => {
-                    animation.cancel()
-                    animation.play()
-                    animation.pause()
-                } : undefined
-            }, {
-                margin: '0px -60px',
-            })
+                    return el.dataset.animateRepeat === ''
+                        ? () => {
+                              animation.cancel()
+                              animation.play()
+                              animation.pause()
+                          }
+                        : undefined
+                },
+                {
+                    margin: '0px -60px',
+                },
+            )
         }
     }
 }

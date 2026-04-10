@@ -1,5 +1,5 @@
-@import "$css/setup/base.css" theme(reference);
-@import "$css/setup/theme.css" theme(reference);
+@import '$css/setup/base.css' theme(reference);
+@import '$css/setup/theme.css' theme(reference);
 
 @reference "tailwindcss";
 

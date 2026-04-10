@@ -32,14 +32,17 @@ const { VITE_BASE, VITE_PORT, PRIMARY_SITE_URL } = env.parse(customEnvObject)
 The schema validates the following environment variables:
 
 **Vite Configuration**:
+
 - `VITE_BASE` (required): Base URL for Vite
 - `VITE_TEMP` (optional): Temporary directory path
 - `VITE_PORT` (default: 5173): Development server port
 
 **External Services**:
+
 - `TINYPNG_KEY` (required): API key for TinyPNG image optimization
 
 **Craft CMS Configuration**:
+
 - `CRAFT_ENVIRONMENT` (required): Environment type (dev/staging/production)
 - `CRAFT_SECURITY_KEY` (required): Craft security key
 - `CRAFT_APP_ID` (required): Craft application ID
@@ -48,6 +51,7 @@ The schema validates the following environment variables:
 - `CRAFT_ENABLE_TEMPLATE_CACHING` (optional): Enable template caching
 
 **Database Configuration**:
+
 - `CRAFT_DB_DRIVER` (required): Database driver
 - `CRAFT_DB_SERVER` (required): Database server
 - `CRAFT_DB_USER` (required): Database username
@@ -58,6 +62,7 @@ The schema validates the following environment variables:
 - `CRAFT_DB_PORT` (default: 3306): Database port
 
 **Email Configuration**:
+
 - `SYSTEM_EMAIL_TEST_ADDRESS` (optional): Test email address
 - `SYSTEM_EMAIL_ADDRESS` (required): System email address
 
@@ -68,28 +73,28 @@ An automated setup script that initializes a new Craft CMS project with all nece
 #### What It Does
 
 1. **Environment Setup**:
-   - Copies `.env.example` to `.env`
-   - Automatically configures `PRIMARY_SITE_URL` based on current directory name
-   - Sets up `IMGIX_URL` for image optimization service with a sensible default
+    - Copies `.env.example` to `.env`
+    - Automatically configures `PRIMARY_SITE_URL` based on current directory name
+    - Sets up `IMGIX_URL` for image optimization service with a sensible default
 
 2. **DDEV Configuration**:
-   - Configures DDEV project with directory-based naming
-   - Starts the DDEV environment
-   - Updates Composer dependencies
+    - Configures DDEV project with directory-based naming
+    - Starts the DDEV environment
+    - Updates Composer dependencies
 
 3. **Craft CMS Installation**:
-   - Generates security keys
-   - Runs Craft installation process
-   - Updates Bun dependencies
+    - Generates security keys
+    - Runs Craft installation process
+    - Updates Bun dependencies
 
 4. **API Key Integration** (if 1Password CLI is available):
-   - Retrieves API keys from 1Password vault
-   - Automatically configures `TINYPNG_KEY`
-   - Triggers initial build process
+    - Retrieves API keys from 1Password vault
+    - Automatically configures `TINYPNG_KEY`
+    - Triggers initial build process
 
 5. **Fallback Handling**:
-   - Provides helpful instructions if 1Password CLI is not installed
-   - Continues setup process without API keys
+    - Provides helpful instructions if 1Password CLI is not installed
+    - Continues setup process without API keys
 
 #### Prerequisites
 
@@ -103,6 +108,7 @@ An automated setup script that initializes a new Craft CMS project with all nece
 The install script includes automatic API key retrieval using the 1Password CLI for a streamlined development setup experience. This integration eliminates the need to manually copy and paste API keys from the 1Password vault.
 
 **Requirements:**
+
 - 1Password CLI installed and authenticated
 - Access to the Mostly Serious team account (`mostlyserious.1password.com`)
 - Read access to the default `Employee` vault
@@ -110,11 +116,13 @@ The install script includes automatic API key retrieval using the 1Password CLI 
 - Field with label `TINYPNG_KEY` containing the TinyPNG API key
 
 **Installation Process:**
+
 1. If 1Password CLI is detected, the script automatically retrieves and sets the API keys
 2. After setting the keys, it runs `ddev bun run build` to perform the initial asset build
 3. If 1Password CLI is not available, the script provides installation instructions and continues without the API keys
 
 **Benefits:**
+
 - Eliminates manual API key configuration
 - Ensures consistent key management across team members
 - Reduces setup friction for new developers

@@ -86,20 +86,16 @@ export default els => {
                 event.stopPropagation()
 
                 for (const other of bindings) {
-                    const {
-                        toggleGroup: toggleGroupA,
-                        toggleScope: toggleScopeA,
-                    } = el.dataset
+                    const { toggleGroup: toggleGroupA, toggleScope: toggleScopeA } = el.dataset
 
-                    const {
-                        toggleGroup: toggleGroupB,
-                        toggleScope: toggleScopeB,
-                    } = other.el.dataset
+                    const { toggleGroup: toggleGroupB, toggleScope: toggleScopeB } = other.el.dataset
 
-                    if (other.className === binding.className
-                        && !other.target.isSameNode(target)
-                        && (!toggleGroupA || toggleGroupB !== toggleGroupA)
-                        && (!toggleScopeB || toggleScopeB === toggleScopeA)) {
+                    if (
+                        other.className === binding.className &&
+                        !other.target.isSameNode(target) &&
+                        (!toggleGroupA || toggleGroupB !== toggleGroupA) &&
+                        (!toggleScopeB || toggleScopeB === toggleScopeA)
+                    ) {
                         closeToggle(other, controllers, false)
                     }
                 }
@@ -143,9 +139,7 @@ function getFocusableFor(target) {
 function getTargetFor(el) {
     const fallback = el.parentElement
     /** @type {?HTMLElement} */
-    const prefered = el.dataset.toggleTarget
-        ? document.querySelector(el.dataset.toggleTarget)
-        : null
+    const prefered = el.dataset.toggleTarget ? document.querySelector(el.dataset.toggleTarget) : null
 
     if (prefered) {
         return prefered
@@ -239,13 +233,17 @@ function handleTrapFocus(controllers, handler, enabled, focusable, el) {
         const nextController = new AbortController()
 
         controllers.set(el, nextController)
-        window.addEventListener('keydown', event => {
-            if (event instanceof KeyboardEvent) {
-                handler(event, focusable)
-            }
-        }, {
-            signal: nextController.signal,
-        })
+        window.addEventListener(
+            'keydown',
+            event => {
+                if (event instanceof KeyboardEvent) {
+                    handler(event, focusable)
+                }
+            },
+            {
+                signal: nextController.signal,
+            },
+        )
     }
 }
 
