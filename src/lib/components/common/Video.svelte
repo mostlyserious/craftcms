@@ -137,7 +137,7 @@
 {#snippet preview()}
     {#snippet icon()}
         <div class="flex absolute p-4 text-black bg-white rounded-full transition inset-center group-hover:bg-brand-yellow">
-            <Icon request={import('$icons/phosphor/play.svg?raw')}
+            <Icon request={import('$fontawesome/solid/play.svg?raw')}
                 class="fill-current size-8 shrink-0" />
         </div>
     {/snippet}

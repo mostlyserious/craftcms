@@ -1,4 +1,4 @@
-import Video from '$lib/components/Video.svelte'
+import Video from '$lib/components/common/Video.svelte'
 import { EmbedSchema } from '$lib/schemas'
 import { $app } from '$lib/stores/global'
 import { CsrfSchema } from '$lib/stores/schemas'

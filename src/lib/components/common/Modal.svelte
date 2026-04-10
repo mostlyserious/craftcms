@@ -154,7 +154,7 @@
                     <button class="flex absolute top-4 right-4 z-10 items-center p-0.5 bg-white border transition hover:text-white hover:bg-black disabled:opacity-30 disabled:pointer-events-none"
                         aria-label="close modal"
                         onclick={close}>
-                        <Icon request={import('$icons/phosphor/x.svg?raw')}
+                        <Icon request={import('$fontawesome/solid/x.svg?raw')}
                             class="fill-current size-4" />
                     </button>
                     {@render children()}

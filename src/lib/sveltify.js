@@ -4,7 +4,7 @@ import { mount, createRawSnippet } from 'svelte'
 import * as z from 'zod/mini'
 
 const components = {
-    video: () => import('$lib/components/Video.svelte'),
+    video: () => import('$lib/components/common/Video.svelte'),
 }
 
 /** Processes elements to replace with Svelte components.
