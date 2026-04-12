@@ -1,22 +1,18 @@
 import { scroll } from 'motion'
+import { ModuleSchema } from '$lib/schemas'
 
-/**
- * @param {NodeListOf<Element>} els - A collection of DOM elements.
- * */
-export default els => {
+export default ModuleSchema.implement(els => {
     for (const el of els) {
-        if (el instanceof HTMLElement) {
-            scroll(
-                /** @param {number} progress */ progress => {
-                    const control = progress * 2 - 1
+        scroll(
+            /** @param {number} progress */ progress => {
+                const control = progress * 2 - 1
 
-                    el.style.setProperty('--parallax-control', control.toFixed(4))
-                },
-                {
-                    target: el,
-                    offset: ['start end', 'end start'],
-                },
-            )
-        }
+                el.style.setProperty('--parallax-control', control.toFixed(4))
+            },
+            {
+                target: el,
+                offset: ['start end', 'end start'],
+            },
+        )
     }
-}
+})

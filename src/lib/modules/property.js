@@ -1,3 +1,4 @@
+import { ModuleSchema } from '$lib/schemas'
 import propertyAccess from '$lib/util/property-access'
 
 /**
@@ -5,10 +6,7 @@ import propertyAccess from '$lib/util/property-access'
  * */
 const observers = new WeakMap()
 
-/**
- * @param {NodeListOf<Element>} els - A collection of DOM elements.
- * */
-export default els => {
+export default ModuleSchema.implement(els => {
     const existing = observers.get(els)
 
     if (existing) {
@@ -34,7 +32,7 @@ export default els => {
     observers.set(els, { resizeObserver, mutationObserver })
 
     customProperties(els)
-}
+})
 
 /**
  * @param {NodeListOf<Element>} els - A collection of DOM elements.

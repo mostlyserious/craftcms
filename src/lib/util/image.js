@@ -1,5 +1,5 @@
 import { ImageSourceSchema, PictureSourcesSchema } from '$lib/schemas'
-import { $app } from '$lib/stores/global'
+import { craft } from '$lib/stores/global'
 import * as object from '$lib/util/object'
 
 /**
@@ -163,7 +163,7 @@ export function imgix(url, query = {}) {
         return url
     }
 
-    url = url.replace($app.objectStorageUrl, $app.imgixUrl)
+    url = url.replace(craft.objectStorageUrl, craft.imgixUrl)
 
     query.auto = query.auto ? query.auto : 'format,compress'
 

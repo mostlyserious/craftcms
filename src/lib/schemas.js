@@ -11,13 +11,28 @@ import * as z from 'zod/mini'
  * The actual validation of the resolved value should be performed later.
  * @template {z.ZodMiniType} T
  * @param {T} _ - The Zod schema for the expected resolved value of the Promise.
- * @returns {z.ZodMiniType<Promise<PendingValidation<z.infer<T>>>>} A Zod schema that checks for Promise instances.
+ * @returns {z.ZodMiniType<Promise<PendingValidation<ZodInfer<T>>>>} A Zod schema that checks for Promise instances.
  * */
 export const promise = _ => {
-    return z.custom(val => val instanceof Promise, {
-        message: 'Value must be a Promise',
-    })
+    return z.custom(val => val instanceof Promise, 'Value must be a Promise')
 }
+
+/**
+ * @template {z.ZodMiniType} T
+ * @param {T} elements - The Zod schema for the elements in the NodeList.
+ * @returns {z.ZodMiniType<NodeListOf<ZodInfer<T>>>} A Zod schema that checks for NodeList instances.
+ * */
+export const nodeListOf = elements => {
+    return z.custom(
+        val => val instanceof NodeList && Array.from(val).every(el => elements.parse(el)),
+        `Value must be a NodeList<${elements._zod.def.type}>`,
+    )
+}
+
+export const ModuleSchema = z.function({
+    input: [nodeListOf(z.instanceof(HTMLElement))],
+    output: z.void(),
+})
 
 export const ImportedSchema = z.object({
     default: z.string(),

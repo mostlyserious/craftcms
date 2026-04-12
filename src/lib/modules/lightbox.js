@@ -1,5 +1,6 @@
 import leftArrowIcon from '$fontawesome/solid/chevron-left.svg?raw'
 import rightArrowIcon from '$fontawesome/solid/chevron-right.svg?raw'
+import { ModuleSchema } from '$lib/schemas'
 import { next, prev } from '$lib/util/cycle'
 import markup from '$lib/util/markup'
 
@@ -14,10 +15,7 @@ const DEFAULT_GROUP = 'default'
  * */
 const preloaded = new Set()
 
-/**
- * @param {NodeListOf<Element>} els - A collection of DOM elements.
- * */
-export default els => {
+export default ModuleSchema.implement(els => {
     const forward = document.createElement('button')
     const backward = document.createElement('button')
     const backdrop = document.createElement('div')
@@ -172,19 +170,17 @@ export default els => {
     }
 
     for (const el of els) {
-        if (el instanceof HTMLElement) {
-            const group = el.dataset.lightboxGroup || DEFAULT_GROUP
+        const group = el.dataset.lightboxGroup || DEFAULT_GROUP
 
-            if (!groups[group]) {
-                groups[group] = []
-            }
-
-            groups[group].push(el)
-
-            el.setAttribute('type', 'submit')
-            el.addEventListener('click', () => open(el))
-            el.addEventListener('mouseover', () => preload(el))
-            backdrop.addEventListener('click', () => close())
+        if (!groups[group]) {
+            groups[group] = []
         }
+
+        groups[group].push(el)
+
+        el.setAttribute('type', 'submit')
+        el.addEventListener('click', () => open(el))
+        el.addEventListener('mouseover', () => preload(el))
+        backdrop.addEventListener('click', () => close())
     }
-}
+})

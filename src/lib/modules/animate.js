@@ -1,7 +1,8 @@
 import { inView } from 'motion'
 import { animate } from 'motion/mini'
 import * as z from 'zod/mini'
-import { $screen } from '$lib/stores/global'
+import { ModuleSchema } from '$lib/schemas'
+import { screen } from '$lib/stores/global'
 import resolveValue from '$lib/util/resolve-value'
 
 const EasingSchema = z.enum([
@@ -21,11 +22,10 @@ const EasingSchema = z.enum([
 /**
  * IMPORTANT: if you want to use `x` or `y` translate values on animations, you will
  * need to import the `animate()` function from 'motion' instead of 'motion/mini'
- * @param {NodeListOf<Element>} els - A collection of DOM elements.
  * */
-export default els => {
+export default ModuleSchema.implement(els => {
     for (const el of els) {
-        if ((el instanceof HTMLElement || el instanceof SVGElement) && typeof el.dataset.animate === 'string') {
+        if (typeof el.dataset.animate === 'string') {
             /** @type {Record<string,Array<string|number>>} */
             const args = {}
             const properties = el.dataset.animate
@@ -45,7 +45,7 @@ export default els => {
                 args.opacity = [0, 1]
             }
 
-            const animation = animate(el, $screen.prefersReducedMotion.current ? { opacity: args.opacity } : args, {
+            const animation = animate(el, screen.prefersReducedMotion.current ? { opacity: args.opacity } : args, {
                 ease: EasingSchema.parse(el.dataset.animateEase || 'easeInOut'),
                 delay: (parseInt(el.dataset.animateDelay || '') || 0) / 1000,
                 duration: (parseInt(el.dataset.animateDuration || '') || 300) / 1000,
@@ -80,4 +80,4 @@ export default els => {
             )
         }
     }
-}
+})

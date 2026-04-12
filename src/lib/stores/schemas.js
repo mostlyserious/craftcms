@@ -20,7 +20,9 @@ export const AppSchema = z.object({
     objectStorageUrl: z.url(),
     lang: z.string(),
     i18n: z.nullable(z.record(z.string(), z.string())),
-    csrf: promise(CsrfSchema),
+    csrf: z.function({
+        output: promise(CsrfSchema),
+    }),
     palettes: z.object({
         background: z.object({
             default: PalletteSchema,

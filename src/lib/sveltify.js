@@ -1,6 +1,7 @@
 import { mount, createRawSnippet } from 'svelte'
 import * as z from 'zod/mini'
 import * as schemas from '$lib/components/schemas'
+import { ModuleSchema } from '$lib/schemas'
 import component from '$lib/util/component'
 import * as object from '$lib/util/object'
 import resolveValue from '$lib/util/resolve-value'
@@ -9,17 +10,13 @@ const components = {
     example: component(() => import('$lib/components/Example.svelte'), schemas.ExampleSchema),
 }
 
-/** Processes elements to replace with Svelte components.
- * @param {NodeListOf<Element>} els - Elements to be processed.
- */
-export default function sveltify(els) {
+/**
+ * Processes elements to replace with Svelte components.
+ * */
+export default ModuleSchema.implement(els => {
     const ComponentHandlesSchema = z.enum(object.keys(components))
 
     for (const target of els) {
-        if (!(target instanceof HTMLElement)) {
-            continue
-        }
-
         const component = ComponentHandlesSchema.parse(target.getAttribute('component'))
         const [request, schema] = components[component]
         /** @type {Record<PropertyKey, unknown>} */
@@ -73,4 +70,4 @@ export default function sveltify(els) {
                 console.error(`[sveltify] Failed to mount component "${component}"`, error)
             })
     }
-}
+})

@@ -3,9 +3,9 @@ import { AppSchema } from '$lib/stores/schemas'
 
 const root = getComputedStyle(document.body)
 
-export const $app = Object.freeze(AppSchema.parse(window.$app))
+export const craft = Object.freeze(AppSchema.parse(window.$app))
 
-export const $screen = Object.freeze({
+export const screen = Object.freeze({
     'prefersReducedMotion': new MediaQuery('prefers-reduced-motion: reduce'),
     '2xs': root.getPropertyValue('--breakpoint-2xs'), // custom
     'is2xs': new MediaQuery(`min-width: ${root.getPropertyValue('--breakpoint-2xs')}`),
