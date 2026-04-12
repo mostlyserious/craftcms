@@ -1,8 +1,8 @@
-import { $screen } from '$lib/stores/global'
-import resolveValue from '$lib/util/resolve-value'
 import { inView } from 'motion'
 import { animate } from 'motion/mini'
 import * as z from 'zod/mini'
+import { $screen } from '$lib/stores/global'
+import resolveValue from '$lib/util/resolve-value'
 
 const EasingSchema = z.enum([
     'linear',

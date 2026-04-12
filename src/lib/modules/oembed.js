@@ -1,9 +1,9 @@
+import { mount } from 'svelte'
 import Video from '$lib/components/common/Video.svelte'
 import { EmbedSchema } from '$lib/schemas'
 import { $app } from '$lib/stores/global'
 import { CsrfSchema } from '$lib/stores/schemas'
 import wrap from '$lib/util/wrap'
-import { mount } from 'svelte'
 
 /**
  * @param {NodeListOf<Element>} els - A collection of DOM elements.

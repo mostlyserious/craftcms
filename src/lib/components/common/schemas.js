@@ -1,5 +1,5 @@
-import * as s from '$lib/schemas'
 import * as z from 'zod/mini'
+import * as s from '$lib/schemas'
 
 export const IconPropsSchema = z.intersection(
     z.record(z.string(), z.any()),

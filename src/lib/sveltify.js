@@ -1,9 +1,9 @@
+import { mount, createRawSnippet } from 'svelte'
+import * as z from 'zod/mini'
 import * as schemas from '$lib/components/schemas'
 import component from '$lib/util/component'
 import * as object from '$lib/util/object'
 import resolveValue from '$lib/util/resolve-value'
-import { mount, createRawSnippet } from 'svelte'
-import * as z from 'zod/mini'
 
 const components = {
     example: component(() => import('$lib/components/Example.svelte'), schemas.ExampleSchema),

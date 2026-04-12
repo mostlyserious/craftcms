@@ -1,6 +1,6 @@
 <script>
-    import markup from '$lib/util/markup'
     import { ImportedSchema } from '$lib/schemas'
+    import markup from '$lib/util/markup'
 
     /**
      * @import { IconPropsSchema } from '$lib/components/common/schemas'

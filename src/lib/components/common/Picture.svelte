@@ -7,7 +7,7 @@
      * */
     let { src, breakpoints = {}, loading = 'lazy', ...rest } = $props()
 
-    const [ asset, args ] = $derived(src)
+    const [asset, args] = $derived(src)
     const width = $derived(args?.width ?? asset.width)
     const height = $derived(args?.height ?? asset.height)
     const style = $derived(`visibility:hidden;aspect-ratio:${width}/${height};max-width:${width}px;max-height:${height}px;`)

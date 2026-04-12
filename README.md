@@ -33,24 +33,23 @@ If you pull changes that affect `.ddev/mutagen/mutagen.yml`, run `ddev mutagen r
 Use DDEV as the source of truth for app/runtime behavior:
 
 - `ddev craft ...`
-- `ddev bun run build`
-- `ddev bun run dev`
+- `ddev vp build`
+- `ddev vp dev`
+- `ddev vp run fmt` for repo formatting, including Svelte script tags
 - `ddev vp check` for Vite+ format and lint checks
-- `ddev bun run check` for full frontend validation, including TypeScript and Svelte diagnostics
-- `ddev vp fmt`
+- `ddev vp run check` for full frontend validation, including TypeScript and Svelte diagnostics
+- `ddev vp fmt` for Oxfmt-only formatting
 - `ddev vp exec oxfmt --version`
 
-`ddev bun` and `ddev vp` are interactive-terminal friendly wrappers around the running DDEV web container, so color output and prompts behave like normal container shell commands.
-
-`ddev vp install` is available for container-side dependency installation, but it does not replace `bun install` on the host for IDE tooling. Host and container installs remain separate by design.
+`ddev vp install` is available for container-side dependency installation, but it does not replace `bun|vp install` on the host for IDE tooling. Host and container installs remain separate by design.
 
 Use host tooling for editor integrations and optional local JavaScript commands:
 
-- `bun install`
+- `bun|vp install`
 - host-resolved formatter, linter, and language-server binaries from `node_modules`
 - optional local checks such as `bunx oxfmt --version`, `bunx oxlint --version`, and `bunx --bun vite --version`
 
-This template also commits shared workspace settings for Zed and VS Code. VS Code users should install the recommended extensions when prompted. Host `bun install` is still required for local editor tooling resolution.
+This template also commits shared workspace settings for Zed and VS Code. VS Code users should install the recommended extensions when prompted. Host `bun|vp install` is still required for local editor tooling resolution.
 
 This template does not require devcontainers, remote development features, or shared host/container `node_modules` to be productive in Zed, VS Code, or other IDEs.
 

@@ -1,7 +1,7 @@
 <script>
-    import { image } from '$lib/util/image'
     import { fade } from 'svelte/transition'
     import { ImportedSchema } from '$lib/schemas'
+    import { image } from '$lib/util/image'
 
     /**
      * @import { ImagePropsSchema } from '$lib/components/common/schemas'

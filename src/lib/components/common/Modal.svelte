@@ -16,18 +16,18 @@
 
 <script>
     import { blur } from 'svelte/transition'
-    import { lockScroll } from '$lib/util/scroll-lock'
     import Icon from '$lib/components/common/Icon.svelte'
+    import { lockScroll } from '$lib/util/scroll-lock'
 
     /**
      * @typedef {'top-left'|'top'|'top-right'|'right'|'bottom-right'|'bottom'|'bottom-left'|'left'} ModalPosition
      * */
 
-     /**
-      * @import { Snippet } from 'svelte'
-      * @type {{ id: string; position?: ?ModalPosition; overlay?: 'polite'|'assertive'; container?: `max-w-${string}`; onclose?: () => void; children?: Snippet<[]> }}
-      * */
-      const { id, position = null, overlay = 'assertive', container = 'max-w-7xl', onclose, children } = $props()
+    /**
+     * @import { Snippet } from 'svelte'
+     * @type {{ id: string; position?: ?ModalPosition; overlay?: 'polite'|'assertive'; container?: `max-w-${string}`; onclose?: () => void; children?: Snippet<[]> }}
+     * */
+    const { id, position = null, overlay = 'assertive', container = 'max-w-7xl', onclose, children } = $props()
 
     /** @type {NodeListOf<Element>?} */
     let focusable = $state(null)
