@@ -1,5 +1,10 @@
 {
     "lsp": {
+        "eslint": {
+            "settings": {
+                "onIgnoredFiles": "off"
+            }
+        },
         "oxlint": {
             "initialization_options": {
                 "settings": {
@@ -113,6 +118,13 @@
                     }
                 }
             ]
+        },
+        "Svelte": {
+            "linked_edits": false,
+            "format_on_save": "on",
+            "code_actions_on_format": {
+                "source.fixAll.eslint": true
+            }
         },
         "YAML": {
             "format_on_save": "on",

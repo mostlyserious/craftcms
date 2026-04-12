@@ -64,7 +64,7 @@ export default defineConfig({
         {
             files: ['**/*.{js,jsx,ts,tsx,svelte}'],
             rules: {
-                curly: 'warn',
+                'curly': 'warn',
                 'no-else-return': 'warn',
                 'no-global-assign': 'warn',
                 'no-unmodified-loop-condition': 'warn',
@@ -85,7 +85,7 @@ export default defineConfig({
                 'prefer-template': 'warn',
                 'require-yield': 'warn',
                 'guard-for-in': 'warn',
-                eqeqeq: 'warn',
+                'eqeqeq': 'warn',
                 'no-unused-vars': [
                     'warn',
                     {

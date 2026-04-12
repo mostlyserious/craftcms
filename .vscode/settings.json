@@ -3,8 +3,16 @@
     "oxc.fmt.configPath": "./oxfmt.config.ts",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
+    "oxc.typeAware": true,
+    "eslint.onIgnoredFiles": "off",
     "editor.codeActionsOnSave": {
         "source.fixAll.oxc": "explicit"
     },
-    "oxc.typeAware": true
+    "[svelte]": {
+        "editor.defaultFormatter": "svelte.svelte-vscode",
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        },
+        "editor.linkedEditing": false
+    }
 }
