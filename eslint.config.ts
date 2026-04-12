@@ -4,20 +4,11 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 import globals from 'globals'
 import svelteParser from 'svelte-eslint-parser'
 
-const svelteFiles = ['**/*.svelte']
-
-const svelteRecommended = svelte.configs.recommended
-    .filter(config => config.name !== 'svelte:base:setup-for-svelte-script')
-    .map(config => ({
-        ...config,
-        files: svelteFiles,
-    }))
-
 export default defineConfig([
-    globalIgnores(['**/*.js', '**/*.ts']),
-    ...svelteRecommended,
+    globalIgnores(['**/*.js', '**/*.ts', '!**/*.svelte.js', '!**/*.svelte.ts']),
+    ...svelte.configs.recommended,
     {
-        files: svelteFiles,
+        files: ['**/*.svelte', '**/*.svelte.js', '**/*.svelte.ts'],
         languageOptions: {
             parser: svelteParser,
             parserOptions: {
