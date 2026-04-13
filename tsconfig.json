@@ -10,7 +10,6 @@
     "compilerOptions": {
         "checkJs": true,
         "jsx": "preserve",
-        "jsxImportSource": "solid-js",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
