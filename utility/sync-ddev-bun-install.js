@@ -13,7 +13,7 @@ function main() {
         return
     }
 
-    const result = Bun.spawnSync(['ddev', 'bun', 'install'], {
+    const result = Bun.spawnSync(['ddev', 'vp', 'install'], {
         stdin: 'inherit',
         stdout: 'inherit',
         stderr: 'inherit',
@@ -40,14 +40,14 @@ function getDdevProjectStatus() {
         if (result.exitCode === 1 && stderr.includes('Executable not found in $PATH: "ddev"')) {
             return {
                 running: false,
-                message: 'Skipping container Bun sync because ddev is not installed on the host.',
+                message: 'Skipping container Vite+ sync because ddev is not installed on the host.',
             }
         }
 
         return {
             running: false,
             message:
-                'Skipping container Bun sync because the DDEV web container is not running. Start DDEV and run `ddev bun install` when you want to refresh container dependencies.',
+                'Skipping container Vite+ sync because the DDEV web container is not running. Start DDEV and run `ddev vp install` when you want to refresh container dependencies.',
         }
     }
 
@@ -65,7 +65,7 @@ function getDdevProjectStatus() {
     return {
         running: false,
         message:
-            'Skipping container Bun sync because the DDEV web container is not running. Start DDEV and run `ddev bun install` when you want to refresh container dependencies.',
+            'Skipping container Vite+ sync because the DDEV web container is not running. Start DDEV and run `ddev vp install` when you want to refresh container dependencies.',
     }
 }
 
