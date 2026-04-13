@@ -2,11 +2,11 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "deps": "vp install && ddev vp install",
         "dev": "ddev bun x --bun vp dev",
         "build": "ddev bun x --bun vp build",
-        "fmt": "ddev bun ./utility/fmt.js",
-        "check": "ddev bun x --bun vp check && ddev bun x --bun tsc --noEmit && ddev bun x --bun svelte-check --tsconfig ./tsconfig.json"
+        "fmt": "ddev bun --bun utility/fmt.js",
+        "check": "ddev bun x --bun vp check && ddev bun x --bun tsc --noEmit && ddev bun x --bun svelte-check --tsconfig ./tsconfig.json",
+        "postinstall": "bun --bun utility/sync-ddev-bun-install.js"
     },
     "dependencies": {
         "motion": "^12.38.0",

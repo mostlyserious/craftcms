@@ -21,6 +21,8 @@ This template uses a host-first dual-install model for JavaScript tooling:
 - `bun install` on the host is supported for IDE integrations and optional local JavaScript commands
 - `ddev bun install` is supported for container runtime workflows
 
+Host Bun package-manager commands also perform a best-effort container refresh. When DDEV is running, host `bun install`, `bun update`, `bun add`, and `bun remove` will follow up with `ddev bun install`. If DDEV is not running, the host Bun command still succeeds and prints a warning instead of failing.
+
 The host and container each keep their own `node_modules` tree. That is expected. They are two platform-specific installs of the same dependency manifest, not a single shared artifact.
 
 This template keeps those installs separate by:
@@ -41,15 +43,16 @@ Use DDEV as the source of truth for app/runtime behavior:
 - `ddev bun x --bun oxfmt --version`
 - avoid `ddev bun run ...`, which nests DDEV inside the container
 
-`ddev vp install` is available for container-side dependency installation, but it does not replace `bun|vp install` on the host for IDE tooling. Host and container installs remain separate by design.
+`ddev vp install` is available for container-side dependency installation, but it does not replace host installs for IDE tooling. Host and container installs remain separate by design. `vp install` on the host does not trigger the Bun post-install DDEV sync.
 
 Use host tooling for editor integrations and optional local JavaScript commands:
 
-- `bun|vp install`
+- `bun install` as the standard host dependency install path
+- `vp install` for host-only Vite+ package-manager workflows that should not sync DDEV automatically
 - host-resolved formatter, linter, and language-server binaries from `node_modules`
 - optional local checks such as `bunx oxfmt --version`, `bunx oxlint --version`, and `bunx vp --version`
 
-This template also commits shared workspace settings for Zed and VS Code. VS Code users should install the recommended extensions when prompted. Host `bun|vp install` is still required for local editor tooling resolution.
+This template also commits shared workspace settings for Zed and VS Code. VS Code users should install the recommended extensions when prompted. Host `bun install` is still required for local editor tooling resolution.
 
 This template does not require devcontainers, remote development features, or shared host/container `node_modules` to be productive in Zed, VS Code, or other IDEs.
 
