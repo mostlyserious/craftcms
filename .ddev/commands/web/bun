@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+## Description: Run bun in the web container
+## Usage: bun
+## Example: "ddev bun"
+## ExecRaw: true
+## HostWorkingDir: true
+## MutagenSync: true
+
+if [ -t 0 ] && [ -t 1 ]; then
+    exec env -u NO_COLOR bun "$@"
+fi
+
+exec bun "$@"
