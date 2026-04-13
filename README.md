@@ -18,8 +18,9 @@ composer create-project --no-install mostlyserious/craftcms $PROJECT_NAME
 This template uses a host-first dual-install model for JavaScript tooling:
 
 - `package.json` and `bun.lock` are the shared dependency definition
-- `bun install` on the host is supported for IDE integrations and optional local JavaScript commands
-- `ddev bun install` is supported for container runtime workflows
+- run Bun package-manager commands from the host
+- run `package.json` scripts from the host with `bun run ...`
+- use `ddev bun install` only as a manual recovery command when you need to refresh container dependencies explicitly
 
 Host Bun package-manager commands also perform a best-effort container refresh. When DDEV is running, host `bun install`, `bun update`, `bun add`, and `bun remove` will follow up with `ddev bun install`. If DDEV is not running, the host Bun command still succeeds and prints a warning instead of failing.
 
@@ -43,7 +44,7 @@ Use DDEV as the source of truth for app/runtime behavior:
 - `ddev bun x --bun oxfmt --version`
 - avoid `ddev bun run ...`, which nests DDEV inside the container
 
-`ddev vp install` is available for container-side dependency installation, but it does not replace host installs for IDE tooling. Host and container installs remain separate by design. `vp install` on the host does not trigger the Bun post-install DDEV sync.
+`ddev vp install` is available for manual container-side dependency installation, but it does not replace host installs for IDE tooling. Host and container installs remain separate by design. `vp install` on the host does not trigger the Bun post-install DDEV sync.
 
 Use host tooling for editor integrations and optional local JavaScript commands:
 
