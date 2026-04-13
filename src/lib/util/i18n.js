@@ -1,4 +1,4 @@
-import { $app } from '$lib/stores/global'
+import { craft } from '$lib/stores/global'
 import propertyAccess from '$lib/util/property-access'
 
 /** Formats a string by replacing tokens with their corresponding values.
@@ -8,9 +8,7 @@ import propertyAccess from '$lib/util/property-access'
  * */
 export const format = (string, tokens = {}) => {
     return string.replace(/{([\w\d.]+)}/g, (match, token) => {
-        return propertyAccess(tokens, token) !== undefined
-            ? String(propertyAccess(tokens, token))
-            : match
+        return propertyAccess(tokens, token) !== undefined ? String(propertyAccess(tokens, token)) : match
     })
 }
 
@@ -20,11 +18,11 @@ export const format = (string, tokens = {}) => {
  * @returns {string} - The translated (and possibly formatted) string.
  * */
 export const t = (str, tokens = {}) => {
-    if (!$app.i18n || typeof $app.i18n[str] === 'undefined') {
+    if (!craft.i18n || typeof craft.i18n[str] === 'undefined') {
         return format(str, tokens)
     }
 
-    return format($app.i18n[str], tokens)
+    return format(craft.i18n[str], tokens)
 }
 
 /** Formats a number into a localized string representation.
@@ -33,7 +31,7 @@ export const t = (str, tokens = {}) => {
  * @returns {string} - The localized number string.
  * */
 export const number = (details, args = {}) => {
-    return new Intl.NumberFormat($app.lang, args).format(details)
+    return new Intl.NumberFormat(craft.lang, args).format(details)
 }
 
 /** Formats a date into a localized string representation.
@@ -42,7 +40,7 @@ export const number = (details, args = {}) => {
  * @returns {string} - The localized date string.
  * */
 export const date = (details, args = {}) => {
-    return new Date(details).toLocaleDateString($app.lang, args)
+    return new Date(details).toLocaleDateString(craft.lang, args)
 }
 
 /** Formats a time into a localized string representation.
@@ -51,5 +49,5 @@ export const date = (details, args = {}) => {
  * @returns {string} - The localized time string.
  * */
 export const time = (details, args = {}) => {
-    return new Date(details).toLocaleTimeString($app.lang, args)
+    return new Date(details).toLocaleTimeString(craft.lang, args)
 }

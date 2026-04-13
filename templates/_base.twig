@@ -65,7 +65,7 @@
             palettes: craft.app.config.custom.colors,
         })|json_encode|raw }};
 
-        window.$app.csrf = fetch('/actions/users/session-info/', {
+        window.$app.csrf = () => fetch('/actions/users/session-info/', {
             headers: { 'Accept': 'application/json' },
         }).then(res => res.json()).then(res => ({
             name: res.csrfTokenName,

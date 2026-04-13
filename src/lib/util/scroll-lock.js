@@ -6,8 +6,8 @@
  * @property {number} y
  * */
 
-const HTML_STYLE_KEYS = [ 'overflow' ]
-const BODY_STYLE_KEYS = [ 'overflow', 'position', 'top', 'left', 'right', 'width' ]
+const HTML_STYLE_KEYS = ['overflow']
+const BODY_STYLE_KEYS = ['overflow', 'position', 'top', 'left', 'right', 'width']
 
 let lockCount = 0
 /** @type {?ScrollLockSnapshot} */
@@ -34,7 +34,7 @@ function captureStyles(el, keys) {
  * @param {Record<string, string>} styles
  * */
 function restoreStyles(el, styles) {
-    for (const [ key, value ] of Object.entries(styles)) {
+    for (const [key, value] of Object.entries(styles)) {
         if (value) {
             el.style.setProperty(key, value)
         } else {

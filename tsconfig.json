@@ -6,11 +6,7 @@
         "./src/**/*.ts",
         "./src/**/*.svelte"
     ],
-    "exclude": [
-        "./node_modules/**/*",
-        "./vendor/**/*",
-        "./web/**/*"
-    ],
+    "exclude": ["./node_modules/**/*", "./vendor/**/*", "./web/**/*"],
     "compilerOptions": {
         "checkJs": true,
         "jsx": "preserve",
@@ -29,23 +25,18 @@
         "noErrorTruncation": true,
         "types": [],
         "outDir": "./web/static",
-        "baseUrl": ".",
-        "rootDirs": [ "./src" ],
+        "rootDir": "./src",
         "paths": {
-            "$lib": [ "./src/lib" ],
-            "$lib/*": [ "./src/lib/*" ],
-            "$css": [ "./src/css" ],
-            "$css/*": [ "./src/css/*" ],
-            "$img": [ "./src/img" ],
-            "$img/*": [ "./src/img/*" ],
-            "$fontawesome": [ "./vendor/npm-asset/fortawesome--fontawesome-pro/svgs" ],
-            "$fontawesome/*": [ "./vendor/npm-asset/fortawesome--fontawesome-pro/svgs/*" ]
+            "$lib": ["./src/lib"],
+            "$lib/*": ["./src/lib/*"],
+            "$css": ["./src/css"],
+            "$css/*": ["./src/css/*"],
+            "$img": ["./src/img"],
+            "$img/*": ["./src/img/*"],
+            "$fontawesome": ["./vendor/npm-asset/fortawesome--fontawesome-pro/svgs"],
+            "$fontawesome/*": ["./vendor/npm-asset/fortawesome--fontawesome-pro/svgs/*"]
         },
-        "lib": [
-            "esnext",
-            "DOM",
-            "DOM.Iterable"
-        ],
+        "lib": ["esnext", "DOM", "DOM.Iterable"],
         "moduleResolution": "bundler",
         "module": "esnext",
         "target": "esnext",

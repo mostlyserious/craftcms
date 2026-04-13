@@ -1,31 +1,29 @@
 import { mount } from 'svelte'
-import wrap from '$lib/util/wrap'
-import { $app } from '$lib/stores/global'
-import { EmbedSchema } from '$lib/schemas'
+import Video from '$lib/components/common/Video.svelte'
+import { EmbedSchema, ModuleSchema } from '$lib/schemas'
+import { craft } from '$lib/stores/global'
 import { CsrfSchema } from '$lib/stores/schemas'
-import Video from '$lib/components/Video.svelte'
+import wrap from '$lib/util/wrap'
 
-/**
- * @param {NodeListOf<Element>} els - A collection of DOM elements.
- * */
-export default async els => {
-    const { name: csrfTokenName, value: csrfTokenValue } = CsrfSchema.parse(await $app.csrf)
+export default ModuleSchema.implement(async els => {
+    const { name: csrfTokenName, value: csrfTokenValue } = CsrfSchema.parse(await craft.csrf())
 
     for (const el of els) {
-        if (el instanceof HTMLElement) {
-            const target = wrap(el)
+        const target = wrap(el)
 
-            fetch('/actions/general/oembed/', {
-                method: 'POST',
-                mode: 'cors',
-                cache: 'no-cache',
-                credentials: 'same-origin',
-                redirect: 'follow',
-                body: new URLSearchParams({
-                    [csrfTokenName]: csrfTokenValue,
-                    url: el.getAttribute('url') || '',
-                }),
-            }).then(res => res.json()).then(res => {
+        fetch('/actions/general/oembed/', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            redirect: 'follow',
+            body: new URLSearchParams({
+                [csrfTokenName]: csrfTokenValue,
+                url: el.getAttribute('url') || '',
+            }),
+        })
+            .then(res => res.json())
+            .then(res => {
                 const asset = EmbedSchema.parse(res)
 
                 target.innerHTML = ''
@@ -34,9 +32,9 @@ export default async els => {
                     target,
                     props: { asset, playInline: true },
                 })
-            }).catch(error => {
+            })
+            .catch(error => {
                 console.error('Failed to load embed:', error)
             })
-        }
     }
-}
+})

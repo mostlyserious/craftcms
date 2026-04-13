@@ -1,0 +1,8 @@
+services:
+    web:
+        volumes:
+            - node_modules:/var/www/html/node_modules
+
+volumes:
+    node_modules:
+        name: craftcms_node_modules

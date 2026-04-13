@@ -61,7 +61,7 @@ export function useSession(key, schema) {
  * @param {number} [defaultExpires=3.154e+7] - Default expiration in milliseconds (default: 1 year)
  * @return {[ () => ?ZodInfer<T>, (value: ZodInfer<T>, expires?: number) => ZodInfer<T> ]}
  * */
-export function useCookie(key, schema, defaultExpires = 3.154e+7) {
+export function useCookie(key, schema, defaultExpires = 3.154e7) {
     return [
         () => {
             try {

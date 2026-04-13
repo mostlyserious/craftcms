@@ -5,15 +5,15 @@
  * @return {Promise<ReturnType<T>>}
  * */
 function closure(handler, ...args) {
-    return new Promise(async resolve => {
+    return new Promise(resolve => {
         if (!document.startViewTransition) {
-            resolve(await handler(...args))
+            resolve(handler(...args))
 
             return
         }
 
-        document.startViewTransition(async () => {
-            resolve(await handler(...args))
+        document.startViewTransition(() => {
+            resolve(handler(...args))
         })
     })
 }

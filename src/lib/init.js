@@ -15,11 +15,13 @@ const modules = {
  * @param {Document|Element} scope - The root element or document where the search will be executed.
  * */
 export default function init(scope) {
-    for (const [ selector, request ] of object.entries(modules)) {
+    for (const [selector, request] of object.entries(modules)) {
         const els = scope.querySelectorAll(selector)
 
         if (els.length) {
-            request().then(({ default: module }) => module(els))
+            request()
+                .then(({ default: module }) => module(els))
+                .catch(error => console.error(error))
         }
     }
 

@@ -1,15 +1,20 @@
 <script>
+    import { ImportedSchema } from '$lib/schemas'
     import markup from '$lib/util/markup'
-    import { ImportedSchema, IconPropsSchema } from '$lib/components/common/schemas'
 
-    /** @type {ZodInfer<typeof IconPropsSchema>} */
-    const props = $props()
-    const { request, ...rest } = IconPropsSchema.parse(props)
+    /**
+     * @import { IconPropsSchema } from '$lib/components/common/schemas'
+     * @type {ZodInfer<typeof IconPropsSchema>}
+     * */
+    const { request, ...rest } = $props()
+
+    const { default: svg } = $derived(ImportedSchema.parse(await request))
 </script>
 
-{#await request}
-    <div {...rest} style:visibility="hidden"></div>
-{:then response}
-    {@const { default: svg } = ImportedSchema.parse(response)}
+<svelte:boundary>
     {@html markup(svg, rest)}
-{/await}
+
+    {#snippet pending()}
+        <div {...rest} style:visibility="hidden"></div>
+    {/snippet}
+</svelte:boundary>

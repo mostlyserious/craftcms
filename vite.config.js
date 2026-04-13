@@ -1,16 +1,18 @@
 import fs from 'node:fs'
 import { join } from 'node:path'
-import { defineConfig } from 'vite'
-import * as env from './utility/env'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
 import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from 'vite-plus'
+import * as env from './utility/env'
+import { toBasePath } from './utility/index'
 import svgo from './utility/vite-plugin-svgo'
 import tinify from './utility/vite-plugin-tinify'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
 
-const { VITE_BASE, VITE_PORT, VITE_TEMP, PRIMARY_SITE_URL } = env.parse()
+export default defineConfig(({ mode }) => {
+    const { VITE_BASE, VITE_PORT, VITE_TEMP, PRIMARY_SITE_URL } = env.parse(mode)
 
-export default defineConfig(() => {
-    const outDir = join('web', VITE_TEMP || VITE_BASE)
+    const basePath = toBasePath(VITE_BASE)
+    const outDir = join('web', VITE_TEMP ? toBasePath(VITE_TEMP) : basePath)
 
     fs.rmSync(outDir, {
         recursive: true,
@@ -19,13 +21,8 @@ export default defineConfig(() => {
 
     return {
         publicDir: false,
-        base: join('/', VITE_BASE),
-        plugins: [
-            tailwindcss(),
-            svelte(),
-            tinify(),
-            svgo(),
-        ],
+        base: `/${basePath}/`,
+        plugins: [tailwindcss(), svelte(), tinify(), svgo()],
         css: {
             transformer: 'lightningcss',
             lightningcss: {
@@ -38,10 +35,7 @@ export default defineConfig(() => {
             assetsInlineLimit: 0,
             cssMinify: 'lightningcss',
             rollupOptions: {
-                input: [
-                    'src/app',
-                    'src/dashboard',
-                ],
+                input: ['src/app', 'src/dashboard'],
                 output: {
                     entryFileNames: '[name].[hash].js',
                     chunkFileNames: '[name].[hash].js',
@@ -60,10 +54,10 @@ export default defineConfig(() => {
         },
         resolve: {
             alias: {
-                '$lib': join(import.meta.dirname, 'src/lib'),
-                '$css': join(import.meta.dirname, 'src/css'),
-                '$img': join(import.meta.dirname, 'src/img'),
-                '$fontawesome': join(import.meta.dirname, 'vendor/npm-asset/fortawesome--fontawesome-pro/svgs'),
+                $lib: join(import.meta.dirname, 'src/lib'),
+                $css: join(import.meta.dirname, 'src/css'),
+                $img: join(import.meta.dirname, 'src/img'),
+                $fontawesome: join(import.meta.dirname, 'vendor/npm-asset/fortawesome--fontawesome-pro/svgs'),
             },
         },
         server: {
@@ -73,11 +67,7 @@ export default defineConfig(() => {
             host: '0.0.0.0',
             strictPort: true,
             watch: {
-                ignored: [
-                    '**/vendor/**',
-                    '**/storage/**',
-                    '**/config/project/**',
-                ],
+                ignored: ['**/vendor/**', '**/storage/**', '**/config/project/**'],
             },
         },
     }

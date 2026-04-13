@@ -109,11 +109,13 @@ All `data-*` attributes on the target element are automatically converted to com
 **Data Attribute Examples:**
 
 ```html
-<x-svelte component="video"
+<x-svelte
+    component="video"
     data-uid="123e4567-e89b-12d3-a456-426614174000"
     data-play-inline="true"
     data-config='{"autoplay": false, "controls": true}'
-    data-delay="1500">
+    data-delay="1500"
+>
 </x-svelte>
 ```
 
@@ -168,11 +170,11 @@ Svelte components used with sveltify must follow these patterns:
 **Component Props Validation:**
 
 ```javascript
-import { CardSchema } from "$lib/components/schemas";
+import { CardSchema } from '$lib/components/schemas'
 
 /** @type {ZodInfer<typeof CardSchema>} */
-const props = $props();
-const { title, featured = false, header, actions } = CardSchema.parse(props);
+const props = $props()
+const { title, featured = false, header, actions } = CardSchema.parse(props)
 ```
 
 **Snippet Usage in Components:**
@@ -205,16 +207,14 @@ const { title, featured = false, header, actions } = CardSchema.parse(props);
 **Card Component with Custom Content:**
 
 ```html
-<x-svelte component="card"
-    data-title="Featured Product"
-    data-featured="true">
+<x-svelte component="card" data-title="Featured Product" data-featured="true">
     <template snippet="header">
         <div class="flex items-center justify-between">
             <span class="badge badge-new">New Arrival</span>
             <span class="price">$29.99</span>
         </div>
     </template>
-    
+
     <template snippet="actions">
         <button class="btn-primary w-full">Add to Cart</button>
         <button class="btn-link">View Details</button>
@@ -225,9 +225,7 @@ const { title, featured = false, header, actions } = CardSchema.parse(props);
 **Modal Video Player:**
 
 ```html
-<x-svelte component="video"
-    data-uid="123e4567-e89b-12d3-a456-426614174000"
-    data-play-inline="false">
+<x-svelte component="video" data-uid="123e4567-e89b-12d3-a456-426614174000" data-play-inline="false">
     <!-- Opens in full-screen modal when triggered -->
 </x-svelte>
 ```

@@ -9,6 +9,7 @@ The modules directory contains custom Craft CMS modules that extend the core fun
 The General module provides core application functionality including content serialization, Twig extensions, and oEmbed integration.
 
 **Key Features:**
+
 - **Content Serialization**: Standardized data transformation for frontend consumption
 - **Enhanced Twig Functions**: Custom template functions for assets, links, and media handling
 - **oEmbed Integration**: External content embedding via the `spicyweb/embeddedassets` plugin
@@ -36,6 +37,7 @@ modules/
 ### Core Components
 
 #### Main Module Class (`General.php`)
+
 - **Namespace Registration**: Sets up module aliases and controller namespaces
 - **Service Registration**: Configures the Serializer service for dependency injection
 - **Event Listeners**: Handles Craft CMS events for template roots, asset replacement, and control panel integration
@@ -43,9 +45,11 @@ modules/
 - **Environment Hooks**: Adds environment-specific CSS classes and development tools
 
 #### Serializer Service (`services/Serializer.php`)
+
 Provides standardized methods for transforming Craft CMS content into frontend-consumable formats:
 
 **Key Methods:**
+
 - `plain()` - Strip HTML tags for plain text output
 - `heading()` - Sanitize heading content with allowed tags
 - `relatedTo()` - Transform related element collections
@@ -56,16 +60,19 @@ Provides standardized methods for transforming Craft CMS content into frontend-c
 - `link()` - Serialize LinkData objects with all attributes
 
 #### Twig Extension (`web/twig/GeneralExtension.php`)
+
 Extends Twig with custom functions and filters for enhanced template capabilities.
 
 📖 **[View Detailed Twig Extension Documentation](general/web/twig/README.md)**
 
 **Global Variables:**
+
 - `screen` - Responsive breakpoint definitions
 - `palettes` - Custom color configuration
 - `DATE_FORMAT`, `TIME_FORMAT`, `HEADING_TAGS` - Formatting constants
 
 **Custom Functions:**
+
 - `image()` - Advanced image rendering with Imgix optimization
 - `src()` - Generate optimized image URLs
 - `link()` - Render LinkData objects as HTML
@@ -76,6 +83,7 @@ Extends Twig with custom functions and filters for enhanced template capabilitie
 - `localizations()` - Translation file access
 
 **Custom Filters:**
+
 - `tel` - Format telephone numbers
 - `mailto` - Format email addresses
 - `plain` - Strip HTML tags
@@ -83,7 +91,9 @@ Extends Twig with custom functions and filters for enhanced template capabilitie
 - `heading` - Sanitize heading content
 
 #### oEmbed Controller (`controllers/OembedController.php`)
+
 Provides an API endpoint for fetching and serializing external content embeddings:
+
 - **Endpoint**: Accepts POST requests with URL parameter
 - **Integration**: Uses `spicyweb/embeddedassets` plugin for content fetching
 - **Output**: Returns standardized embed data via Serializer service
@@ -124,24 +134,28 @@ ddev craft make queue-job --module=general JobName
 ### Development Guidelines
 
 **Service Development:**
+
 - Extend `yii\base\Component` for services
 - Use static methods for utility functions that don't require state
 - Implement proper type hints and return types
 - Follow the Serializer pattern for data transformation methods
 
 **Controller Development:**
+
 - Extend `craft\web\Controller` for web controllers
 - Use `$allowAnonymous` property to control access
 - Implement proper request validation (`requirePostRequest()`, etc.)
 - Return JSON responses for API endpoints using `asJson()`
 
 **Twig Extension Development:**
+
 - Implement `GlobalsInterface` for global variables
 - Use `HTML_SAFE` constant for functions that return HTML
 - Follow naming conventions for functions and filters
 - Provide comprehensive parameter validation
 
 **Event Handling:**
+
 - Use Craft's event system for extending core functionality
 - Register event listeners in the main module's `init()` method
 - Follow proper event naming and handling patterns
@@ -149,16 +163,19 @@ ddev craft make queue-job --module=general JobName
 ### Integration Patterns
 
 **Plugin Integration:**
+
 - Use plugin services through their static `$plugin` property
 - Check plugin availability before accessing functionality
 - Handle graceful fallbacks when plugins are unavailable
 
 **Frontend Integration:**
+
 - Use the Serializer service to standardize data formats
 - Ensure data structures match frontend schema expectations (see `src/lib/schemas.js`)
 - Provide consistent API endpoints for AJAX functionality
 
 **Asset Optimization:**
+
 - Leverage environment variables for asset URL transformation
 - Implement proper Imgix integration for image optimization
 - Handle both local and external asset sources
@@ -168,21 +185,22 @@ ddev craft make queue-job --module=general JobName
 When creating new modules:
 
 1. **Generate Module Structure:**
-   ```bash
-   ddev craft make module ModuleName
-   ```
+
+    ```bash
+    ddev craft make module ModuleName
+    ```
 
 2. **Register Module**: Add to `config/app.php` modules array
 
 3. **Follow Naming Conventions**:
-   - Use PascalCase for class names
-   - Use kebab-case for module IDs
-   - Follow PSR-4 autoloading standards
+    - Use PascalCase for class names
+    - Use kebab-case for module IDs
+    - Follow PSR-4 autoloading standards
 
 4. **Implement Core Patterns**:
-   - Service registration in module `init()`
-   - Event listener registration
-   - Proper namespace and alias setup
+    - Service registration in module `init()`
+    - Event listener registration
+    - Proper namespace and alias setup
 
 ## Development Workflow
 

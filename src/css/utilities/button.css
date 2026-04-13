@@ -22,7 +22,7 @@
     max-width: 100%;
     padding: --spacing(2.5) --spacing(7);
     border: var(--button-border-width) solid var(--button-border-color);
-    border-radius: calc(infinity * 1px);
+    border-radius: calc(infinity* 1px);
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
     font-weight: 600;
