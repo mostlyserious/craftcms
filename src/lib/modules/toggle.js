@@ -1,4 +1,4 @@
-import * as z from 'zod/mini'
+import { FocusableSchema } from '$lib/schemas/app'
 import { ModuleSchema } from '$lib/schemas/core'
 import { lockScroll } from '$lib/util/scroll-lock'
 
@@ -17,7 +17,6 @@ const FOCUSABLE = 'a,button,input,select,textarea,[tabindex="0"]'
 
 /** @type {Set<HTMLElement>} */
 const collection = new Set()
-const FocusableSchema = z.array(z.instanceof(HTMLElement))
 
 export default ModuleSchema.implement(els => {
     /** @type {Map<HTMLElement, AbortController>} */

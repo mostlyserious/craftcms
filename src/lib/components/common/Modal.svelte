@@ -17,6 +17,7 @@
 <script>
     import { blur } from 'svelte/transition'
     import Icon from '$lib/components/common/Icon.svelte'
+    import { FocusableSchema } from '$lib/schemas/app'
     import { lockScroll } from '$lib/util/scroll-lock'
 
     /**
@@ -29,7 +30,7 @@
      * */
     const { id, position = null, overlay = 'assertive', container = 'max-w-7xl', onclose, children } = $props()
 
-    /** @type {NodeListOf<Element>?} */
+    /** @type {HTMLElement[]?} */
     let focusable = $state(null)
     let wasActive = $state(false)
 
@@ -76,11 +77,11 @@
             const last = focusable[focusable.length - 1]
 
             if (event.shiftKey) {
-                if (document.activeElement === first && last instanceof HTMLElement) {
+                if (document.activeElement === first) {
                     event.preventDefault()
                     last.focus()
                 }
-            } else if (document.activeElement === last && first instanceof HTMLElement) {
+            } else if (document.activeElement === last) {
                 event.preventDefault()
                 first.focus()
             }
@@ -113,7 +114,7 @@
         let releaseScroll = null
 
         if (overlay === 'assertive') {
-            focusable = el ? el.querySelectorAll(FOCUSABLE) : null
+            focusable = el ? FocusableSchema.parse(el.querySelectorAll(FOCUSABLE)) : null
 
             focusTimeout = setTimeout(() => {
                 releaseScroll = lockScroll()

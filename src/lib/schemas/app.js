@@ -12,6 +12,8 @@ export const CsrfSchema = z.strictObject({
     value: z.string(),
 })
 
+export const FocusableSchema = z.array(z.instanceof(HTMLElement))
+
 export const AppSchema = z.strictObject({
     isPreview: z.boolean(),
     isAdmin: z.boolean(),
