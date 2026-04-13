@@ -2,13 +2,14 @@
 /// <reference types="vite-plus/client" />
 
 import * as z from 'zod/mini'
+import type { infer as Infered } from 'zod/mini'
 
 declare global {
     interface Window {
         $app: unknown
     }
 
-    type ZodInfer<T> = z.infer<T>
+    type ZodInfer<T> = Prettify<Infered<T>>
 
     type Prettify<T> = { [K in keyof T]: T[K] } & {}
 
