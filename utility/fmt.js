@@ -29,7 +29,7 @@ function main() {
     const { svelteFiles, vpTargets } = classifyTargets(resolvedTargets)
 
     if (vpTargets.length) {
-        execFileSync('vp', ['fmt', ...vpTargets], {
+        runBunTool('vp', ['fmt', ...vpTargets], {
             stdio: 'inherit',
         })
     }
@@ -165,11 +165,22 @@ function runEslintFixes(files) {
     }
 
     for (let index = 0; index < files.length; index += ESLINT_BATCH_SIZE) {
-        execFileSync('bunx', ['eslint', '--fix', ...files.slice(index, index + ESLINT_BATCH_SIZE)], {
+        runBunTool('eslint', ['--fix', ...files.slice(index, index + ESLINT_BATCH_SIZE)], {
             stdio: 'inherit',
-            cwd: SCRIPT_CWD,
         })
     }
+}
+
+/**
+ * @param {string} tool
+ * @param {string[]} args
+ * @param {import('node:child_process').ExecFileSyncOptions=} options
+ */
+function runBunTool(tool, args, options = {}) {
+    return execFileSync('bun', ['x', '--bun', tool, ...args], {
+        cwd: SCRIPT_CWD,
+        ...options,
+    })
 }
 
 /**
@@ -188,7 +199,7 @@ function formatScript(source, extension) {
         return source
     }
 
-    return execFileSync('oxfmt', ['--stdin-filepath', `component-script.${extension}`], {
+    return runBunTool('oxfmt', ['--stdin-filepath', `component-script.${extension}`], {
         encoding: 'utf8',
         input: source,
     }).replace(/\n$/, '')
