@@ -33,13 +33,13 @@ If you pull changes that affect `.ddev/mutagen/mutagen.yml`, run `ddev mutagen r
 Use DDEV as the source of truth for app/runtime behavior:
 
 - `ddev craft ...`
-- `ddev vp build`
-- `ddev vp dev`
-- `ddev vp run fmt` for repo formatting, including Svelte script tags
-- `ddev vp check` for Vite+ format and lint checks
-- `ddev vp run check` for full frontend validation, including TypeScript and Svelte diagnostics
-- `ddev vp fmt` for Oxfmt-only formatting
-- `ddev vp exec oxfmt --version`
+- `bun run build` to build assets inside DDEV
+- `bun run dev` to start Vite+ inside DDEV
+- `bun run fmt` for repo formatting, including Svelte script tags, inside DDEV
+- `bun run check` for full frontend validation, including TypeScript and Svelte diagnostics, inside DDEV
+- `ddev bun x --bun vp fmt` for Oxfmt-only formatting
+- `ddev bun x --bun oxfmt --version`
+- avoid `ddev bun run ...`, which nests DDEV inside the container
 
 `ddev vp install` is available for container-side dependency installation, but it does not replace `bun|vp install` on the host for IDE tooling. Host and container installs remain separate by design.
 
@@ -47,7 +47,7 @@ Use host tooling for editor integrations and optional local JavaScript commands:
 
 - `bun|vp install`
 - host-resolved formatter, linter, and language-server binaries from `node_modules`
-- optional local checks such as `bunx oxfmt --version`, `bunx oxlint --version`, and `bunx --bun vite --version`
+- optional local checks such as `bunx oxfmt --version`, `bunx oxlint --version`, and `bunx vp --version`
 
 This template also commits shared workspace settings for Zed and VS Code. VS Code users should install the recommended extensions when prompted. Host `bun|vp install` is still required for local editor tooling resolution.
 
