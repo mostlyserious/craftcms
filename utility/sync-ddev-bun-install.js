@@ -1,79 +1,72 @@
+import os from 'node:os'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { defaultWarn, getDdevProjectStatus } from './sync-ddev-bun-install-worker.js'
+
+const workerScript = fileURLToPath(new URL('./sync-ddev-bun-install-worker.js', import.meta.url))
+const workerLog = path.join(os.tmpdir(), 'craftcms-ddev-dependency-sync.log')
+const workerRuntime = process.execPath
+
 /**
- * Sync container-side dependencies after a host Bun package-manager command.
+ * Schedule a best-effort DDEV dependency sync after the host Bun command finishes.
  */
-function main() {
-    if (Bun.env.IS_DDEV_PROJECT === 'true') {
+export function main({
+    env = Bun.env,
+    spawnSync = Bun.spawnSync,
+    warn = defaultWarn,
+    spawnWorker = defaultSpawnWorker,
+} = {}) {
+    if (env.IS_DDEV_PROJECT === 'true') {
         return
     }
 
-    const status = getDdevProjectStatus()
+    const status = getDdevProjectStatus(spawnSync)
 
     if (!status.running) {
         warn(status.message)
         return
     }
 
-    const result = Bun.spawnSync(['ddev', 'vp', 'install'], {
-        stdin: 'inherit',
-        stdout: 'inherit',
-        stderr: 'inherit',
-    })
-
-    if (!result.success) {
-        process.exit(result.exitCode)
+    try {
+        spawnWorker({ env })
+    } catch {
+        warn(
+            'Skipping container dependency sync because the background worker could not be started. Run `ddev bun install` when you want to refresh container dependencies.',
+        )
     }
 }
 
 /**
- * @returns {{ running: boolean, message: string }}
+ * Spawn the background worker in a detached Bun process so host package-manager
+ * commands can finish before the DDEV sync begins.
  */
-function getDdevProjectStatus() {
-    const result = Bun.spawnSync(['ddev', 'describe', '-j'], {
-        stdin: 'ignore',
-        stdout: 'pipe',
-        stderr: 'pipe',
-    })
+export function defaultSpawnWorker({ env = Bun.env } = {}) {
+    const result = Bun.spawnSync(
+        [
+            '/bin/sh',
+            '-lc',
+            `nohup ${shellQuote(workerRuntime)} ${shellQuote(workerScript)} >>${shellQuote(workerLog)} 2>&1 &`,
+        ],
+        {
+            cwd: process.cwd(),
+            env: { ...process.env, ...env },
+            stdin: 'ignore',
+            stdout: 'ignore',
+            stderr: 'ignore',
+        },
+    )
 
     if (!result.success) {
-        const stderr = result.stderr.toString()
-
-        if (result.exitCode === 1 && stderr.includes('Executable not found in $PATH: "ddev"')) {
-            return {
-                running: false,
-                message: 'Skipping container Vite+ sync because ddev is not installed on the host.',
-            }
-        }
-
-        return {
-            running: false,
-            message:
-                'Skipping container Vite+ sync because the DDEV web container is not running. Start DDEV and run `ddev vp install` when you want to refresh container dependencies.',
-        }
+        throw result.error ?? new Error(`Worker launcher exited with status ${result.exitCode}`)
     }
 
-    const description = JSON.parse(result.stdout.toString())
-    const projectStatus = description.raw?.status
-    const webStatus = description.raw?.services?.web?.status
-
-    if (projectStatus === 'running' && webStatus === 'running') {
-        return {
-            running: true,
-            message: '',
-        }
-    }
-
-    return {
-        running: false,
-        message:
-            'Skipping container Vite+ sync because the DDEV web container is not running. Start DDEV and run `ddev vp install` when you want to refresh container dependencies.',
-    }
+    return result
 }
 
-/**
- * @param {string} message
- */
-function warn(message) {
-    process.stderr.write(`[postinstall] ${message}\n`)
+function shellQuote(value) {
+    return `'${value.replaceAll("'", "'\\''")}'`
 }
 
-main()
+if (import.meta.main) {
+    main()
+}

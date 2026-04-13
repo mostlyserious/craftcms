@@ -97,7 +97,7 @@ An automated setup script that initializes a new Craft CMS project with all nece
 5. **Fallback Handling**:
     - Provides helpful instructions if 1Password CLI is not installed
     - Continues setup process without API keys
-    - Keeps manual container refresh available via `ddev bun install` if DDEV needs to be resynced later
+    - Keeps manual container refresh available via `ddev bun install` if the background sync is skipped or needs to be rerun later
 
 #### Prerequisites
 
@@ -129,9 +129,9 @@ The install script includes automatic API key retrieval using the 1Password CLI 
 This template supports two valid JavaScript install contexts from the same `package.json` and `bun.lock`:
 
 - `bun install` on the host as the standard dependency-management path
-- `ddev bun install` as a manual recovery command when you need to refresh container dependencies explicitly
+- `ddev bun install` as a manual recovery command when you need to prune and refresh container dependencies explicitly
 
-When DDEV is running, host `bun install`, `bun update`, `bun add`, and `bun remove` trigger a best-effort `ddev bun install` refresh automatically.
+When DDEV is running, host `bun install`, `bun update`, `bun add`, and `bun remove` schedule an asynchronous background sync that waits for `package.json` and `bun.lock` to settle, runs `ddev mutagen sync`, prunes the container `node_modules` volume, and then runs `ddev bun install --frozen-lockfile`.
 
 These installs are expected to be separate platform-specific `node_modules` trees. The project does not require a shared host/container dependency directory.
 

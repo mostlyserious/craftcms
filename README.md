@@ -20,9 +20,9 @@ This template uses a host-first dual-install model for JavaScript tooling:
 - `package.json` and `bun.lock` are the shared dependency definition
 - run Bun package-manager commands from the host
 - run `package.json` scripts from the host with `bun run ...`
-- use `ddev bun install` only as a manual recovery command when you need to refresh container dependencies explicitly
+- use `ddev bun install` only as a manual recovery command when you need to prune and refresh container dependencies explicitly
 
-Host Bun package-manager commands also perform a best-effort container refresh. When DDEV is running, host `bun install`, `bun update`, `bun add`, and `bun remove` will follow up with `ddev bun install`. If DDEV is not running, the host Bun command still succeeds and prints a warning instead of failing.
+Host Bun package-manager commands also schedule a best-effort container refresh. When DDEV is running, host `bun install`, `bun update`, `bun add`, and `bun remove` start a background worker that waits for `package.json` and `bun.lock` to settle, runs `ddev mutagen sync`, then prunes container `node_modules` and finishes with `ddev bun install --frozen-lockfile`. If DDEV is not running, the host Bun command still succeeds and prints a warning instead of failing.
 
 The host and container each keep their own `node_modules` tree. That is expected. They are two platform-specific installs of the same dependency manifest, not a single shared artifact.
 
@@ -44,7 +44,7 @@ Use DDEV as the source of truth for app/runtime behavior:
 - `ddev bun x --bun oxfmt --version`
 - avoid `ddev bun run ...`, which nests DDEV inside the container
 
-`ddev vp install` is available for manual container-side dependency installation, but it does not replace host installs for IDE tooling. Host and container installs remain separate by design. `vp install` on the host does not trigger the Bun post-install DDEV sync.
+`ddev bun install` is the manual container-side dependency recovery command, but it does not replace host installs for IDE tooling. Host and container installs remain separate by design. The Bun post-install DDEV sync is asynchronous and best-effort; use `ddev bun install` if the background worker warns or is skipped. `vp install` on the host remains a host-only package-manager workflow and does not trigger the Bun post-install DDEV sync.
 
 Use host tooling for editor integrations and optional local JavaScript commands:
 
