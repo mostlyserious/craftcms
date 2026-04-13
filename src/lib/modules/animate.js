@@ -1,7 +1,7 @@
 import { inView } from 'motion'
 import { animate } from 'motion/mini'
 import * as z from 'zod/mini'
-import { ModuleSchema } from '$lib/schemas'
+import { ModuleSchema } from '$lib/schemas/core'
 import { screen } from '$lib/stores/global'
 import resolveValue from '$lib/util/resolve-value'
 

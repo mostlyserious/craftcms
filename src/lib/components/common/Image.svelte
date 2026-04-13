@@ -1,10 +1,10 @@
 <script>
     import { fade } from 'svelte/transition'
-    import { ImportedSchema } from '$lib/schemas'
+    import { ImportedSchema } from '$lib/schemas/core'
     import { image } from '$lib/util/image'
 
     /**
-     * @import { ImagePropsSchema } from '$lib/components/common/schemas'
+     * @import { ImagePropsSchema } from '$lib/components/common/props'
      * @type {ZodInfer<typeof ImagePropsSchema>}
      * */
     let { src, request, width, height, ...rest } = $props()

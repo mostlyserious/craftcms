@@ -171,7 +171,7 @@ ddev craft make queue-job --module=general JobName
 **Frontend Integration:**
 
 - Use the Serializer service to standardize data formats
-- Ensure data structures match frontend schema expectations (see `src/lib/schemas.js`)
+- Ensure data structures match the shared frontend schemas in `src/lib/schemas/`
 - Provide consistent API endpoints for AJAX functionality
 
 **Asset Optimization:**

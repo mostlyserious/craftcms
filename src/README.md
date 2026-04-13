@@ -46,10 +46,10 @@ The lib directory contains reusable application logic organized by architectural
 lib/
 ├── components/    # Reusable UI components
 ├── modules/       # Feature-specific modules
+├── schemas/       # Shared runtime schemas and helpers
 ├── stores/        # Global state management
 ├── util/          # Pure utility functions
 ├── init.js        # Module initialization system
-├── schemas.js     # Validation schemas
 └── sveltify.js    # DOM-to-Svelte integration
 ```
 
@@ -70,12 +70,12 @@ Implements a selector-based module loading system that scans the DOM for data at
 - Minimal initial bundle size
 - Progressive enhancement
 
-**`schemas.js` - Validation Layer**
-Centralizes Zod schemas for data validation, including specialized schemas for:
+**`schemas/` - Validation Layer**
+Centralize shared runtime contracts and generic schema helpers under one namespace:
 
-- Image and video assets with metadata
-- Embed content from external sources
-- Promise-based validation for async operations
+- `schemas/` contains domain-level schemas plus generic combinators such as DOM and promise validators
+- `components/props.js` holds schemas shared by sibling components in that directory
+- `components/common/props.js` holds schemas shared by the common component set
 
 **`sveltify.js` - Component Integration**
 
@@ -170,11 +170,11 @@ Svelte components used with sveltify must follow these patterns:
 **Component Props Validation:**
 
 ```javascript
-import { CardSchema } from '$lib/components/schemas'
+import { ExampleSchema } from '$lib/components/props'
 
-/** @type {ZodInfer<typeof CardSchema>} */
+/** @type {ZodInfer<typeof ExampleSchema>} */
 const props = $props()
-const { title, featured = false, header, actions } = CardSchema.parse(props)
+const { message } = ExampleSchema.parse(props)
 ```
 
 **Snippet Usage in Components:**
@@ -325,6 +325,6 @@ The source architecture supports modern development practices:
 
 1. **Component Development**: Use `reference.css` imports for full PostCSS feature access
 2. **Feature Addition**: Add modules with corresponding DOM selectors for automatic loading
-3. **Schema Definition**: Define data contracts in `schemas.js` for validation and type safety
+3. **Schema Definition**: Define shared runtime schemas in `schemas/`, and use directory-level `props.js` files for component prop schemas
 4. **Progressive Enhancement**: Build components that enhance existing markup
 5. **Context Separation**: Choose appropriate entry points for different application areas

@@ -1,6 +1,6 @@
 import leftArrowIcon from '$fontawesome/solid/chevron-left.svg?raw'
 import rightArrowIcon from '$fontawesome/solid/chevron-right.svg?raw'
-import { ModuleSchema } from '$lib/schemas'
+import { ModuleSchema } from '$lib/schemas/core'
 import { next, prev } from '$lib/util/cycle'
 import markup from '$lib/util/markup'
 

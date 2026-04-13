@@ -1,5 +1,5 @@
 import { MediaQuery } from 'svelte/reactivity'
-import { AppSchema } from '$lib/stores/schemas'
+import { AppSchema } from '$lib/schemas/app'
 
 const root = getComputedStyle(document.body)
 

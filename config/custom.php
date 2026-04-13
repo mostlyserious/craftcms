@@ -9,7 +9,6 @@ return [
         // 'google' => '',
         // 'adobe' => '',
     ],
-    // you must also update `src/lib/stores/schemas.js` when you add/edit values here.
     'colors' => [
         'background' => [
             'default' => Collection::make([

@@ -1,5 +1,5 @@
 import { scroll } from 'motion'
-import { ModuleSchema } from '$lib/schemas'
+import { ModuleSchema } from '$lib/schemas/core'
 
 export default ModuleSchema.implement(els => {
     for (const el of els) {

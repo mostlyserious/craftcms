@@ -1,4 +1,4 @@
-import { ModuleSchema } from '$lib/schemas'
+import { ModuleSchema } from '$lib/schemas/core'
 import propertyAccess from '$lib/util/property-access'
 
 /**

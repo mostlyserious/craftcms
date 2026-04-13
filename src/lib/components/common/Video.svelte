@@ -3,7 +3,7 @@
     import Modal, { open } from '$lib/components/common/Modal.svelte'
 
     /**
-     * @import { VideoBlockSchema } from '$lib/components/common/schemas'
+     * @import { VideoBlockSchema } from '$lib/components/common/props'
      * @type {ZodInfer<typeof VideoBlockSchema>}
      * */
     const { asset, playInline = true } = $props()

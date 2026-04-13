@@ -1,7 +1,7 @@
 <script>
     /**
-     * @import * as schemas from '$lib/components/schemas'
-     * @type {ZodInfer<schemas.ExampleSchema>}
+     * @import { ExampleSchema } from '$lib/components/props'
+     * @type {ZodInfer<typeof ExampleSchema>}
      * */
     const { message } = $props()
 </script>

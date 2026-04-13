@@ -2,7 +2,7 @@
     import { picture } from '$lib/util/image'
 
     /**
-     * @import { PicturePropsSchema } from '$lib/components/common/schemas'
+     * @import { PicturePropsSchema } from '$lib/components/common/props'
      * @type {ZodInfer<typeof PicturePropsSchema>}
      * */
     let { src, breakpoints = {}, loading = 'lazy', ...rest } = $props()

@@ -1,4 +1,4 @@
-import { ImageSourceSchema, PictureSourcesSchema } from '$lib/schemas'
+import { ImageSourceSchema, PictureSourcesSchema } from '$lib/schemas/media'
 import { craft } from '$lib/stores/global'
 import * as object from '$lib/util/object'
 
