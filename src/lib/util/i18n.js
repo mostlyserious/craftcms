@@ -3,18 +3,20 @@ import propertyAccess from '$lib/util/property-access'
 
 /** Formats a string by replacing tokens with their corresponding values.
  * @param {string} string - The string to format.
- * @param {Record<PropertyKey, any>} tokens - An object containing token-value pairs.
+ * @param {Record<PropertyKey, unknown>} tokens - An object containing token-value pairs.
  * @returns {string} - The formatted string.
  * */
 export const format = (string, tokens = {}) => {
     return string.replace(/{([\w\d.]+)}/g, (match, token) => {
-        return propertyAccess(tokens, token) !== undefined ? String(propertyAccess(tokens, token)) : match
+        const resolved = propertyAccess(tokens, token)
+
+        return resolved !== undefined ? String(resolved) : match
     })
 }
 
 /** Translates a string into the current language if a translation exists.
  * @param {string} str - The string to translate.
- * @param {Record<PropertyKey, string|number>} [tokens={}] - An object containing token-value pairs for formatting.
+ * @param {Record<PropertyKey, unknown>} [tokens={}] - An object containing token-value pairs for formatting.
  * @returns {string} - The translated (and possibly formatted) string.
  * */
 export const t = (str, tokens = {}) => {

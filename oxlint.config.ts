@@ -62,6 +62,7 @@ export default defineConfig({
                 'require-yield': 'warn',
                 'guard-for-in': 'warn',
                 'eqeqeq': 'warn',
+                'typescript/no-explicit-any': 'warn',
                 'no-unused-vars': [
                     'warn',
                     {

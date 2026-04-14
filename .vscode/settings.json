@@ -5,6 +5,7 @@
     "editor.formatOnSaveMode": "file",
     "oxc.typeAware": true,
     "eslint.onIgnoredFiles": "off",
+    "eslint.validate": ["javascript", "javascriptreact", "svelte"],
     "editor.codeActionsOnSave": {
         "source.fixAll.oxc": "explicit"
     },

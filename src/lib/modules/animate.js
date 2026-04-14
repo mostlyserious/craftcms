@@ -38,7 +38,7 @@ export default ModuleSchema.implement(els => {
                 const valueArray = valueString.split(',')
 
                 valueArray[1] = valueArray[1] || '0'
-                args[prop] = valueArray.map(resolveValue)
+                args[prop] = /** @type {Array<string | number>} */ (valueArray.map(resolveValue))
             }
 
             if (!args.opacity) {

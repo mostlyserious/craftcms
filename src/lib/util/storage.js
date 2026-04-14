@@ -103,7 +103,8 @@ function expiration(expires) {
 }
 
 /**
- * @param {any} value
+ * @param {string | null} value
+ * @returns {unknown}
  * */
 function safeParse(value) {
     try {

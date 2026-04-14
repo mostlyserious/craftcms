@@ -25,7 +25,7 @@ declare global {
         ? T
         : T extends { toJSON(): infer R }
           ? R
-          : T extends undefined | ((...args: Array<any>) => any)
+          : T extends undefined | ((...args: Array<unknown>) => unknown)
             ? never
             : T extends object
               ? ParsedJson<T>

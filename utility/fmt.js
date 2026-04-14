@@ -5,7 +5,6 @@ import { parse } from 'svelte/compiler'
 
 const SCRIPT_CWD = process.cwd()
 const BASE_CWD = process.env.INIT_CWD ? path.resolve(process.env.INIT_CWD) : SCRIPT_CWD
-const ESLINT_BATCH_SIZE = 50
 const SKIP_DIRECTORIES = new Set([
     '.ddev',
     '.git',
@@ -20,8 +19,7 @@ const SKIP_DIRECTORIES = new Set([
 ])
 
 /**
- * Format project files, using Oxfmt for regular files, script-only formatting for Svelte files,
- * and ESLint fixes for Svelte components.
+ * Format project files, using Oxfmt for regular files and script-only formatting for Svelte files.
  */
 function main() {
     const targets = process.argv.slice(2)
@@ -37,8 +35,6 @@ function main() {
     for (const file of svelteFiles) {
         formatSvelteScripts(file)
     }
-
-    runEslintFixes(svelteFiles)
 }
 
 /**
@@ -153,21 +149,6 @@ function formatSvelteScripts(file) {
 
     if (formatted !== source) {
         fs.writeFileSync(file, formatted)
-    }
-}
-
-/**
- * @param {string[]} files
- */
-function runEslintFixes(files) {
-    if (!files.length) {
-        return
-    }
-
-    for (let index = 0; index < files.length; index += ESLINT_BATCH_SIZE) {
-        runBunTool('eslint', ['--fix', ...files.slice(index, index + ESLINT_BATCH_SIZE)], {
-            stdio: 'inherit',
-        })
     }
 }
 

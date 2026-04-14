@@ -122,6 +122,7 @@
         "Svelte": {
             "linked_edits": false,
             "format_on_save": "on",
+            "language_servers": ["eslint", "..."],
             "code_actions_on_format": {
                 "source.fixAll.eslint": true
             }

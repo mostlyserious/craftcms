@@ -67,7 +67,7 @@
         return iframe => {
             const contentWindow = iframe.contentWindow
 
-            /** @type {?(this: GlobalEventHandlers, event: Event) => any} */
+            /** @type {((this: GlobalEventHandlers, event: Event) => void) | null} */
             let onLoad = null
 
             if (!contentWindow) {
@@ -115,12 +115,12 @@
 
     /**
      * @template {Array<unknown>} T
-     * @template {(...args: T) => any} F
-     * @param {?F} handler
-     * @returns {(...args: T) => ReturnType<F>}
+     * @template R
+     * @param {((...args: T) => R) | null} handler
+     * @returns {(...args: T) => R | undefined}
      * */
     function once(handler) {
-        /** @type {ReturnType<F>} */
+        /** @type {R | undefined} */
         let returned
 
         return (...args) => {

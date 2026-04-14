@@ -13,17 +13,17 @@ const sort = (a, b) => b.localeCompare(a)
 const filter = (_, value) => value || undefined
 
 /** Updates the URL query string with the provided arguments.
- * @template {Record<PropertyKey, any>} T
+ * @template {Record<PropertyKey, unknown>} T
  * @param {{ [K in keyof T]?: T[K] }} args - The arguments to update the query with.
  * @param {(args: Partial<T>) => void} callback - The callback function to execute after updating the query.
  * @returns {void}
  * */
 export function commit(args, callback = () => undefined) {
-    args = { ...retrieve(), ...args }
+    const nextArgs = /** @type {Partial<T>} */ ({ ...retrieve(), ...args })
 
-    callback(args)
+    callback(nextArgs)
 
-    const query = generate(args)
+    const query = generate(nextArgs)
 
     if (query) {
         history.pushState(undefined, '', `${window.location.pathname}?${query}`)
@@ -33,7 +33,7 @@ export function commit(args, callback = () => undefined) {
 }
 
 /**
- * @param {Record<PropertyKey, any>} args
+ * @param {Record<PropertyKey, unknown>} args
  * @param {string} prepend
  * @returns {string}
  * */
@@ -53,5 +53,5 @@ export function generate(args, prepend = '') {
 export function retrieve() {
     const query = (window.location.search || '').replace(/^\?/, '')
 
-    return qs.parse(query)
+    return /** @type {Record<string, unknown>} */ (qs.parse(query))
 }

@@ -5,7 +5,7 @@
         "dev": "ddev vp dev",
         "build": "ddev vp build",
         "fmt": "ddev bun utility/fmt.js",
-        "check": "ddev vp check && ddev vp exec tsc --noEmit && ddev vp exec svelte-check --tsconfig tsconfig.json",
+        "check": "ddev vp check && ddev vp exec eslint 'src/**/*.{js,svelte}' && ddev vp exec tsc --noEmit && ddev vp exec svelte-check --tsconfig tsconfig.json",
         "postinstall": "bun utility/sync-ddev-bun-install.js"
     },
     "dependencies": {
@@ -21,8 +21,8 @@
         "@tailwindcss/vite": "^4.2.2",
         "@types/bun": "^1.3.12",
         "@types/qs": "^6.15.0",
-        "@typescript-eslint/parser": "^8.58.1",
         "eslint": "^9.0.0",
+        "eslint-plugin-jsdoc": "^62.9.0",
         "eslint-plugin-svelte": "^3.17.0",
         "globals": "^17.5.0",
         "jsdom": "^29.0.2",
@@ -33,7 +33,6 @@
         "stylelint-config-hudochenkov": "^13.0.2",
         "stylelint-define-config": "^17.5.0",
         "svelte-check": "^4.4.6",
-        "svelte-eslint-parser": "^1.6.0",
         "svgo": "^4.0.1",
         "tinify": "^1.8.2",
         "typescript": "^6.0.2",
