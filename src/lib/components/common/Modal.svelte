@@ -138,7 +138,7 @@
 <svelte:window on:keydown={onKeydown} />
 
 {#if active === id && children}
-    <div class="flex py-6 fixed inset-0 z-50 h-dvh-100 shadow-lg {overlay === 'assertive' ? 'bg-black/20' : ''} {alignment(position)}"
+    <div class="flex py-6 fixed inset-0 z-50 shadow-lg h-dvh-100 {overlay === 'assertive' ? 'bg-black/20' : ''} {alignment(position)}"
         class:pointer-events-none={overlay === 'polite'}
         tabindex="-1"
         role="dialog"
@@ -148,15 +148,15 @@
         transition:blur={{ duration: 150 }}
         {@attach modal}>
         <div class="container {container}">
-            <div class="overflow-auto max-h-vh-90">
-                <div class="overflow-hidden relative pointer-events-auto"
+            <div class="max-h-vh-90 overflow-auto">
+                <div class="pointer-events-auto relative overflow-hidden"
                     class:border={overlay === 'polite'}
                     class:border-brand-blue-light={overlay === 'polite'}>
-                    <button class="flex absolute top-4 right-4 z-10 items-center p-0.5 bg-white border transition hover:text-white hover:bg-black disabled:opacity-30 disabled:pointer-events-none"
+                    <button class="absolute top-4 right-4 z-10 flex items-center border bg-white p-0.5 transition hover:bg-black hover:text-white disabled:pointer-events-none disabled:opacity-30"
                         aria-label="close modal"
                         onclick={close}>
                         <Icon request={import('$fontawesome/solid/x.svg?raw')}
-                            class="fill-current size-4" />
+                            class="size-4 fill-current" />
                     </button>
                     {@render children()}
                 </div>

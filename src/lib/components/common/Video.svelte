@@ -136,9 +136,9 @@
 
 {#snippet preview()}
     {#snippet icon()}
-        <div class="flex absolute p-4 text-black bg-white rounded-full transition inset-center group-hover:bg-brand-yellow">
+        <div class="inset-center group-hover:bg-brand-yellow absolute flex rounded-full bg-white p-4 text-black transition">
             <Icon request={import('$fontawesome/solid/play.svg?raw')}
-                class="fill-current size-8 shrink-0" />
+                class="size-8 shrink-0 fill-current" />
         </div>
     {/snippet}
 
@@ -146,24 +146,24 @@
         <button type="button"
             onmouseenter={once(warmup)}
             onclick={playInline ? activateInline : openModal}
-            class="relative w-full group"
+            class="group relative w-full"
             aria-label="play video"
             style:--focusable-color="currentcolor">
             {@render icon()}
             <img width={embed.width} height={embed.height}
                 src={embed.image}
                 alt={embed.title}
-                class="object-cover m-0 w-full rounded-lg aspect-video"
+                class="m-0 aspect-video w-full rounded-lg object-cover"
                 loading="lazy">
         </button>
     {:else if upload}
         <button type="button"
             onclick={playInline ? activateInline : openModal}
-            class="relative w-full group"
+            class="group relative w-full"
             aria-label="play video"
             style:--focusable-color="currentcolor">
             {@render icon()}
-            <video class="block w-full bg-black rounded-lg pointer-events-none aspect-video"
+            <video class="pointer-events-none block aspect-video w-full rounded-lg bg-black"
                 muted
                 playsinline
                 preload="metadata">
@@ -188,7 +188,7 @@
             </iframe>
         </div>
     {:else if upload}
-        <video class="block w-full bg-black rounded-lg aspect-video"
+        <video class="block aspect-video w-full rounded-lg bg-black"
             controls
             autoplay
             playsinline

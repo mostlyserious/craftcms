@@ -5,6 +5,7 @@ import { parse } from 'svelte/compiler'
 
 const SCRIPT_CWD = process.cwd()
 const BASE_CWD = process.env.INIT_CWD ? path.resolve(process.env.INIT_CWD) : SCRIPT_CWD
+const SORTED_CLASS_CACHE = new Map()
 const SKIP_DIRECTORIES = new Set([
     '.ddev',
     '.git',
@@ -19,10 +20,16 @@ const SKIP_DIRECTORIES = new Set([
 ])
 
 /**
- * Format project files, using Oxfmt for regular files and script-only formatting for Svelte files.
+ * Format project files, using Oxfmt for regular files and conservative script/class formatting for Svelte files.
  */
 function main() {
-    const targets = process.argv.slice(2)
+    const { stdinFilepath, targets } = parseArguments(process.argv.slice(2))
+
+    if (stdinFilepath) {
+        process.stdout.write(formatBufferedTarget(fs.readFileSync(0, 'utf8'), stdinFilepath))
+        return
+    }
+
     const resolvedTargets = targets.length ? targets : ['.']
     const { svelteFiles, vpTargets } = classifyTargets(resolvedTargets)
 
@@ -35,6 +42,50 @@ function main() {
     for (const file of svelteFiles) {
         formatSvelteScripts(file)
     }
+}
+
+/**
+ * @param {string[]} args
+ */
+function parseArguments(args) {
+    /** @type {string | undefined} */
+    let stdinFilepath
+    /** @type {string[]} */
+    const targets = []
+
+    for (let index = 0; index < args.length; index += 1) {
+        const arg = args[index]
+
+        if (arg === '--stdin-filepath') {
+            stdinFilepath = args[index + 1]
+
+            if (!stdinFilepath) {
+                throw new Error('Missing value for --stdin-filepath')
+            }
+
+            index += 1
+            continue
+        }
+
+        targets.push(arg)
+    }
+
+    return {
+        stdinFilepath,
+        targets,
+    }
+}
+
+/**
+ * @param {string} source
+ * @param {string} target
+ */
+function formatBufferedTarget(source, target) {
+    if (target.toLowerCase().endsWith('.svelte')) {
+        return formatSvelteSource(source)
+    }
+
+    return source
 }
 
 /**
@@ -129,6 +180,25 @@ function findSvelteFiles(directory) {
  */
 function formatSvelteScripts(file) {
     const source = fs.readFileSync(file, 'utf8')
+    const formatted = formatSvelteSource(source)
+
+    if (formatted !== source) {
+        fs.writeFileSync(file, formatted)
+    }
+}
+
+/**
+ * @param {string} source
+ */
+function formatSvelteSource(source) {
+    const scriptFormatted = formatSvelteScriptsInSource(source)
+    return sortSvelteClasses(scriptFormatted)
+}
+
+/**
+ * @param {string} source
+ */
+function formatSvelteScriptsInSource(source) {
     const ast = parse(source)
     const blocks = [ast.module, ast.instance].filter(Boolean).sort((a, b) => b.content.start - a.content.start)
     let formatted = source
@@ -147,8 +217,133 @@ function formatSvelteScripts(file) {
         formatted = `${formatted.slice(0, block.content.start)}${padScript(next, original)}${formatted.slice(block.content.end)}`
     }
 
-    if (formatted !== source) {
-        fs.writeFileSync(file, formatted)
+    return formatted
+}
+
+/**
+ * @param {string} source
+ */
+function sortSvelteClasses(source) {
+    const replacements = collectSvelteClassReplacements(parse(source).html)
+    let formatted = source
+
+    for (const replacement of replacements.sort((a, b) => b.start - a.start)) {
+        formatted = `${formatted.slice(0, replacement.start)}${replacement.value}${formatted.slice(replacement.end)}`
+    }
+
+    return formatted
+}
+
+/**
+ * @param {unknown} node
+ * @param {{ start: number; end: number; value: string }[]} replacements
+ */
+function collectSvelteClassReplacements(node, replacements = []) {
+    if (!node || typeof node !== 'object') {
+        return replacements
+    }
+
+    if (Array.isArray(node)) {
+        for (const child of node) {
+            collectSvelteClassReplacements(child, replacements)
+        }
+
+        return replacements
+    }
+
+    if (Array.isArray(node.attributes)) {
+        for (const attribute of node.attributes) {
+            const classValue = getStaticClassAttributeValue(attribute)
+
+            if (!classValue) {
+                continue
+            }
+
+            const sortedValue = sortClassAttributeValue(classValue.value)
+
+            if (!sortedValue || sortedValue === classValue.value) {
+                continue
+            }
+
+            replacements.push({
+                start: classValue.start,
+                end: classValue.end,
+                value: sortedValue,
+            })
+        }
+    }
+
+    for (const value of Object.values(node)) {
+        collectSvelteClassReplacements(value, replacements)
+    }
+
+    return replacements
+}
+
+/**
+ * @param {unknown} attribute
+ */
+function getStaticClassAttributeValue(attribute) {
+    if (!attribute || typeof attribute !== 'object' || attribute.type !== 'Attribute' || attribute.name !== 'class') {
+        return null
+    }
+
+    if (!Array.isArray(attribute.value) || attribute.value.length !== 1) {
+        return null
+    }
+
+    const [value] = attribute.value
+
+    if (!value || typeof value !== 'object' || value.type !== 'Text') {
+        return null
+    }
+
+    const classValue = value.data ?? value.raw ?? ''
+
+    if (!classValue || /[{}]/.test(classValue)) {
+        return null
+    }
+
+    return {
+        start: value.start,
+        end: value.end,
+        value: classValue,
+    }
+}
+
+/**
+ * @param {string} classValue
+ */
+function sortClassAttributeValue(classValue) {
+    if (!classValue.trim()) {
+        return classValue
+    }
+
+    const cached = SORTED_CLASS_CACHE.get(classValue)
+
+    if (cached) {
+        return cached
+    }
+
+    const formatted = formatHtmlSnippet(`<div class="${classValue}"></div>`)
+    const match = formatted.match(/\bclass=(['"])(.*?)\1/s)
+    const sortedValue = match?.[2] ?? classValue
+
+    SORTED_CLASS_CACHE.set(classValue, sortedValue)
+    return sortedValue
+}
+
+/**
+ * @param {string} source
+ */
+function formatHtmlSnippet(source) {
+    try {
+        return runBunTool('oxfmt', ['--stdin-filepath', 'component-markup.html'], {
+            encoding: 'utf8',
+            input: source,
+        }).trim()
+    } catch {
+        return source
     }
 }
 
