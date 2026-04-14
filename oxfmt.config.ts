@@ -2,6 +2,7 @@ import { defineConfig } from 'oxfmt'
 
 export default defineConfig({
     printWidth: 120,
+    tabWidth: 4,
     semi: false,
     singleQuote: true,
     arrowParens: 'avoid',

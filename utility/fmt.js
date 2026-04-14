@@ -1,7 +1,9 @@
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
+import { format as formatWithOxfmt } from 'oxfmt'
 import { parse } from 'svelte/compiler'
+import oxfmtConfig from '../oxfmt.config.ts'
 
 const SCRIPT_CWD = process.cwd()
 const BASE_CWD = process.env.INIT_CWD ? path.resolve(process.env.INIT_CWD) : SCRIPT_CWD
@@ -22,11 +24,11 @@ const SKIP_DIRECTORIES = new Set([
 /**
  * Format project files, using Oxfmt for regular files and conservative script/class formatting for Svelte files.
  */
-function main() {
+async function main() {
     const { stdinFilepath, targets } = parseArguments(process.argv.slice(2))
 
     if (stdinFilepath) {
-        process.stdout.write(formatBufferedTarget(fs.readFileSync(0, 'utf8'), stdinFilepath))
+        process.stdout.write(await formatBufferedTarget(fs.readFileSync(0, 'utf8'), stdinFilepath))
         return
     }
 
@@ -40,7 +42,7 @@ function main() {
     }
 
     for (const file of svelteFiles) {
-        formatSvelteScripts(file)
+        await formatSvelteScripts(file)
     }
 }
 
@@ -178,9 +180,9 @@ function findSvelteFiles(directory) {
 /**
  * @param {string} file
  */
-function formatSvelteScripts(file) {
+async function formatSvelteScripts(file) {
     const source = fs.readFileSync(file, 'utf8')
-    const formatted = formatSvelteSource(source)
+    const formatted = await formatSvelteSource(source)
 
     if (formatted !== source) {
         fs.writeFileSync(file, formatted)
@@ -190,15 +192,15 @@ function formatSvelteScripts(file) {
 /**
  * @param {string} source
  */
-function formatSvelteSource(source) {
-    const scriptFormatted = formatSvelteScriptsInSource(source)
+async function formatSvelteSource(source) {
+    const scriptFormatted = await formatSvelteScriptsInSource(source)
     return sortSvelteClasses(scriptFormatted)
 }
 
 /**
  * @param {string} source
  */
-function formatSvelteScriptsInSource(source) {
+async function formatSvelteScriptsInSource(source) {
     const ast = parse(source)
     const blocks = [ast.module, ast.instance].filter(Boolean).sort((a, b) => b.content.start - a.content.start)
     let formatted = source
@@ -208,7 +210,7 @@ function formatSvelteScriptsInSource(source) {
         const openingTag = formatted.slice(block.start, block.content.start)
         const extension = getScriptExtension(openingTag)
         const script = stripScriptPadding(original)
-        const next = formatScript(script, extension)
+        const next = await formatScript(script, extension)
 
         if (next === script) {
             continue
@@ -223,11 +225,19 @@ function formatSvelteScriptsInSource(source) {
 /**
  * @param {string} source
  */
-function sortSvelteClasses(source) {
+async function sortSvelteClasses(source) {
     const replacements = collectSvelteClassReplacements(parse(source).html)
     let formatted = source
 
-    for (const replacement of replacements.sort((a, b) => b.start - a.start)) {
+    const resolvedReplacements = await Promise.all(
+        replacements.map(async replacement => {
+            const value = await sortClassAttributeValue(replacement.value)
+
+            return value && value !== replacement.value ? { ...replacement, value } : null
+        }),
+    )
+
+    for (const replacement of resolvedReplacements.filter(Boolean).sort((a, b) => b.start - a.start)) {
         formatted = `${formatted.slice(0, replacement.start)}${replacement.value}${formatted.slice(replacement.end)}`
     }
 
@@ -259,17 +269,7 @@ function collectSvelteClassReplacements(node, replacements = []) {
                 continue
             }
 
-            const sortedValue = sortClassAttributeValue(classValue.value)
-
-            if (!sortedValue || sortedValue === classValue.value) {
-                continue
-            }
-
-            replacements.push({
-                start: classValue.start,
-                end: classValue.end,
-                value: sortedValue,
-            })
+            replacements.push(classValue)
         }
     }
 
@@ -314,7 +314,7 @@ function getStaticClassAttributeValue(attribute) {
 /**
  * @param {string} classValue
  */
-function sortClassAttributeValue(classValue) {
+async function sortClassAttributeValue(classValue) {
     if (!classValue.trim()) {
         return classValue
     }
@@ -325,7 +325,7 @@ function sortClassAttributeValue(classValue) {
         return cached
     }
 
-    const formatted = formatHtmlSnippet(`<div class="${classValue}"></div>`)
+    const formatted = await formatHtmlSnippet(`<div class="${classValue}"></div>`)
     const match = formatted.match(/\bclass=(['"])(.*?)\1/s)
     const sortedValue = match?.[2] ?? classValue
 
@@ -336,12 +336,9 @@ function sortClassAttributeValue(classValue) {
 /**
  * @param {string} source
  */
-function formatHtmlSnippet(source) {
+async function formatHtmlSnippet(source) {
     try {
-        return runBunTool('oxfmt', ['--stdin-filepath', 'component-markup.html'], {
-            encoding: 'utf8',
-            input: source,
-        }).trim()
+        return (await formatWithOxfmt('component-markup.html', source, oxfmtConfig)).code.trim()
     } catch {
         return source
     }
@@ -370,15 +367,12 @@ function stripScriptPadding(source) {
  * @param {string} source
  * @param {'js'|'ts'} extension
  */
-function formatScript(source, extension) {
+async function formatScript(source, extension) {
     if (!source.trim()) {
         return source
     }
 
-    return runBunTool('oxfmt', ['--stdin-filepath', `component-script.${extension}`], {
-        encoding: 'utf8',
-        input: source,
-    }).replace(/\n$/, '')
+    return (await formatWithOxfmt(`component-script.${extension}`, source, oxfmtConfig)).code.replace(/\n$/, '')
 }
 
 /**
@@ -418,4 +412,4 @@ function getScriptExtension(openingTag) {
     return value.toLowerCase().startsWith('ts') ? 'ts' : 'js'
 }
 
-main()
+await main()
