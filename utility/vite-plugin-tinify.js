@@ -1,6 +1,6 @@
+import crypto from 'crypto'
 import fs from 'fs'
 import tinify from 'tinify'
-import crypto from 'crypto'
 
 /**
  * @type {() => import('vite').Plugin}
@@ -8,8 +8,8 @@ import crypto from 'crypto'
 export default () => ({
     name: 'vite-plugin-tinify',
     async generateBundle(_, bundler) {
-        for (const [ path, asset ] of Object.entries(bundler)) {
-            if ((/\.(png|jpe?g)$/).test(path)) {
+        for (const [path, asset] of Object.entries(bundler)) {
+            if (/\.(png|jpe?g)$/.test(path)) {
                 const checksum = crypto.createHash('sha1').update(asset.source.toString()).digest('hex')
                 const checksumfile = `node_modules/.vite/tinify/${checksum}`
 
@@ -27,7 +27,9 @@ export default () => ({
                             const full = `${current}/${next}`
 
                             try {
-                                full !== '/' && fs.mkdirSync(full)
+                                if (full !== '/') {
+                                    fs.mkdirSync(full)
+                                }
                             } catch (error) {
                                 if (error.code !== 'EEXIST') {
                                     throw new Error(`vite-plugin-tinify: ${error.message}`)

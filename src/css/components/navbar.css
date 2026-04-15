@@ -1,8 +1,4 @@
 @layer components {
-    .navbar {
-
-    }
-
     .navbar-inner {
         display: flex;
         justify-content: space-between;
@@ -61,12 +57,12 @@
             background-color: --alpha(currentcolor / 0.15);
         }
 
-        &[target="_blank"]::after {
-            content: " ";
+        &[target='_blank']::after {
+            content: ' ';
             display: block;
             width: --spacing(2.5);
             height: --spacing(2.5);
-            background-image: url("$fontawesome/solid/arrow-up-right-from-square.svg");
+            background-image: url('$fontawesome/solid/arrow-up-right-from-square.svg');
             background-size: contain;
             background-repeat: no-repeat;
         }
@@ -126,7 +122,7 @@
         }
     }
 
-    .navbar-toggle[aria-expanded="true"] {
+    .navbar-toggle[aria-expanded='true'] {
         color: var(--color-blue-500);
 
         & .navbar-toggle-line:nth-of-type(1) {

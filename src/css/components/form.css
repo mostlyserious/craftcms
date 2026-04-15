@@ -9,18 +9,18 @@
     }
 
     .form-input {
+        appearance: none;
         width: 100%;
         padding-inline: --spacing(3);
         padding-block: --spacing(2);
         border-width: 1px;
         border-color: var(--color-neutral-200);
         border-radius: var(--radius-sm);
-        appearance: none;
     }
 
-    [type="search"].form-input {
+    [type='search'].form-input {
         padding-right: --spacing(12);
-        background-image: url("$fontawesome/solid/magnifying-glass.svg");
+        background-image: url('$fontawesome/solid/magnifying-glass.svg');
         background-position: right 0.75rem top calc(50% + 1px);
         background-size: auto --spacing(4);
         background-repeat: no-repeat;
@@ -28,7 +28,7 @@
 
     select:not([multiple]).form-input {
         padding-right: --spacing(10);
-        background-image: url("$fontawesome/solid/chevron-down.svg");
+        background-image: url('$fontawesome/solid/chevron-down.svg');
         background-position: right 0.75rem top calc(50% + 1px);
         background-size: auto --spacing(4);
         background-repeat: no-repeat;

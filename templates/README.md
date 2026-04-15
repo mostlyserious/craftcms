@@ -63,6 +63,7 @@ templates/
 The base template establishes the HTML document structure and provides:
 
 **Core Features:**
+
 - Semantic HTML5 document structure
 - Meta tags and SEO optimization integration
 - Performance optimizations (preconnect, preload)
@@ -71,6 +72,7 @@ The base template establishes the HTML document structure and provides:
 - Accessibility features (skip links, focus management)
 
 **Block Structure:**
+
 ```twig
 {% block navigation %}   <!-- Site navigation -->
 {% block main %}         <!-- Main content area -->
@@ -78,6 +80,7 @@ The base template establishes the HTML document structure and provides:
 ```
 
 **Key Patterns:**
+
 - Environment-based asset optimization
 - Web font loading with `display: swap`
 - Frontend configuration via JavaScript globals
@@ -88,6 +91,7 @@ The base template establishes the HTML document structure and provides:
 Extends `_base.twig` and provides the standard site layout:
 
 **Responsibilities:**
+
 - Access control for protected sections
 - Navigation and footer inclusion
 - Block system integration
@@ -113,6 +117,7 @@ Follow a consistent pattern for content rendering:
 ```
 
 **Key Characteristics:**
+
 - Always extend `_main.twig`
 - Include header and block sections
 - Pass configuration via context variables
@@ -125,6 +130,7 @@ Follow a consistent pattern for content rendering:
 The central component that manages block rendering with sophisticated logic:
 
 **Core Features:**
+
 - Dynamic block loading based on type handle
 - Intelligent padding and spacing management
 - Color palette and theming system
@@ -133,6 +139,7 @@ The central component that manages block rendering with sophisticated logic:
 - Nested block support
 
 **Key Variables:**
+
 - `blocks`: Collection of blocks to render
 - `nested`: Boolean for nested block contexts
 - `branded`: Boolean for brand-specific styling
@@ -140,6 +147,7 @@ The central component that manages block rendering with sophisticated logic:
 - `padding`: Responsive spacing classes
 
 **Caching Strategy:**
+
 ```twig
 {% cache using key block.uid ~ block.dateUpdated.format('U') %}
 {{ include("blocks/_#{block.type.handle}", ignore_missing=true) }}
@@ -151,6 +159,7 @@ The central component that manages block rendering with sophisticated logic:
 Each block type follows consistent patterns:
 
 **Standard Structure:**
+
 ```twig
 {# Conditional rendering based on content #}
 {% if block.content|plain %}
@@ -163,6 +172,7 @@ Each block type follows consistent patterns:
 ```
 
 **Common Patterns:**
+
 - Content existence checks using `|plain` filter
 - Color theming via `swatch()` function
 - Animation attributes with `data-animate`
@@ -172,6 +182,7 @@ Each block type follows consistent patterns:
 ### Navigation System (`common/`)
 
 #### Primary Navigation (`_navigation.twig`)
+
 - Dropdown menu support with keyboard navigation
 - Mobile toggle integration
 - ARIA labels for accessibility
@@ -179,12 +190,14 @@ Each block type follows consistent patterns:
 - Conditional button styling
 
 #### Mobile Navigation (`_mobileNavigation.twig`)
+
 - Touch-optimized interface
 - Collapsible menu structure
 - Focus trap for accessibility
 - Scroll lock when open
 
 #### Footer (`_footer.twig`)
+
 - Legal link integration
 - Copyright information
 - Responsive layout adaptation
@@ -193,11 +206,13 @@ Each block type follows consistent patterns:
 ### Header System (`headers/`)
 
 Dynamic header rendering based on block types:
+
 ```twig
 {{ include("headers/_#{block.type.handle|default('header')}", ignore_missing=true) }}
 ```
 
 **Default Header Features:**
+
 - Background image support with CSS optimization
 - Overlay effects for text readability
 - Responsive typography scaling
@@ -208,6 +223,7 @@ Dynamic header rendering based on block types:
 ### Content Existence Checking
 
 Always check for content before rendering:
+
 ```twig
 {% if block.richText|plain or block.heading|plain %}
     <!-- Render content -->
@@ -221,17 +237,19 @@ Always check for content before rendering:
 ### Color Theming System
 
 Consistent theming across all components:
+
 ```twig
 {# Block-level theming #}
 <section class="{{ swatch(palette, 'background', 'text') }}">
 
-{# Global theming #}  
+{# Global theming #}
 <section class="{{ swatch(palettes.misc.footer, 'background', 'text') }}">
 ```
 
 ### Animation Integration
 
 Consistent animation attributes for frontend JavaScript using Motion One library:
+
 ```twig
 <div data-animate>                           <!-- Basic fade-in animation -->
 <div data-animate="y: 20px, 0">            <!-- Slide up from 20px -->
@@ -240,19 +258,21 @@ Consistent animation attributes for frontend JavaScript using Motion One library
 ```
 
 **Animation System Features:**
+
 - **Property Syntax**: `property: startValue, endValue` (endValue defaults to 0 if omitted)
 - **Multiple Properties**: Separated by semicolons (`;`)
 - **Default Opacity**: Automatically adds `opacity: 0, 1` if not specified
-- **Timing Controls**: 
-  - `data-animate-duration="0.5"` - Animation duration in seconds
-  - `data-animate-delay="0.2"` - Delay before animation starts
-  - `data-animate-ease="easeOut"` - Easing function
-  - `data-animate-repeat` - Repeats animation when re-entering viewport
+- **Timing Controls**:
+    - `data-animate-duration="0.5"` - Animation duration in seconds
+    - `data-animate-delay="0.2"` - Delay before animation starts
+    - `data-animate-ease="easeOut"` - Easing function
+    - `data-animate-repeat` - Repeats animation when re-entering viewport
 - **Smart Image Loading**: Waits for image load before animating
 
 ### Responsive Design Patterns
 
 Mobile-first responsive design using Tailwind utilities:
+
 ```twig
 {# Progressive disclosure #}
 <span class="block md:inline">
@@ -268,6 +288,7 @@ Mobile-first responsive design using Tailwind utilities:
 ### Asset Optimization Patterns
 
 Leveraging custom Twig functions for performance:
+
 ```twig
 {# Responsive images with breakpoints #}
 {{ image(asset, baseArgs, {
@@ -286,6 +307,7 @@ style="background-image: url({{ src(asset, {
 ### Template Inclusion Patterns
 
 Consistent include syntax with proper context:
+
 ```twig
 {# Safe inclusion with fallback #}
 {{ include('component/_name', ignore_missing=true) }}
@@ -301,6 +323,7 @@ Consistent include syntax with proper context:
 ### Error Handling and Debugging
 
 Development-friendly debugging support:
+
 ```twig
 {# Development mode block markers #}
 {{ craft.app.config.general.devMode ? ("<!-- START #{block.type.handle}:#{block.id} -->")|raw }}
@@ -312,17 +335,20 @@ Development-friendly debugging support:
 ### Performance Optimization Strategies
 
 #### Template Caching
+
 - Block-level caching based on UID and modification time
 - Selective caching exclusion for dynamic content
 - Cache invalidation through content updates
 
 #### Asset Loading
+
 - Preconnect hints for external resources
 - Preload directives for critical assets
 - Lazy loading for images and media
 - CDN optimization through environment variables
 
 #### JavaScript Integration
+
 - Progressive enhancement patterns
 - Custom element definitions for Svelte components
 - Configuration injection via global variables
@@ -354,18 +380,21 @@ Development-friendly debugging support:
 ## Integration Points
 
 ### Frontend Asset System
+
 - Vite integration for development and production builds
 - Asset path resolution through `craft.vite.asset()`
 - Environment-based CDN switching
 - Automatic cache busting
 
 ### Craft CMS Integration
+
 - Entry and matrix field rendering
 - User authentication and permissions
 - Template caching system
 - SEOmatic integration for meta tags
 
-### Custom Module Integration  
+### Custom Module Integration
+
 - Twig extension functions and filters
 - Serializer service for data formatting
 - Color palette configuration

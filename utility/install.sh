@@ -22,12 +22,12 @@ ddev start
 ddev composer update
 ddev craft setup/keys
 ddev craft install/craft
-ddev bun update
+bun install
 
 if command -v op &> /dev/null
 then
     set_env TINYPNG_KEY $(get_op TINYPNG_KEY)
-    ddev bun run build
+    bun run build
 else
     echo "1Password CLI not found."
     echo "Install it for a better experience. https://developer.1password.com/docs/cli/get-started/"

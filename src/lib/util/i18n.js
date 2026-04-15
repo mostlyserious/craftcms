@@ -1,30 +1,30 @@
-import { $app } from '$lib/stores/global'
+import { craft } from '$lib/stores/global'
 import propertyAccess from '$lib/util/property-access'
 
 /** Formats a string by replacing tokens with their corresponding values.
  * @param {string} string - The string to format.
- * @param {Record<PropertyKey, any>} tokens - An object containing token-value pairs.
+ * @param {Record<PropertyKey, unknown>} tokens - An object containing token-value pairs.
  * @returns {string} - The formatted string.
  * */
 export const format = (string, tokens = {}) => {
     return string.replace(/{([\w\d.]+)}/g, (match, token) => {
-        return propertyAccess(tokens, token) !== undefined
-            ? String(propertyAccess(tokens, token))
-            : match
+        const resolved = propertyAccess(tokens, token)
+
+        return resolved !== undefined ? String(resolved) : match
     })
 }
 
 /** Translates a string into the current language if a translation exists.
  * @param {string} str - The string to translate.
- * @param {Record<PropertyKey, string|number>} [tokens={}] - An object containing token-value pairs for formatting.
+ * @param {Record<PropertyKey, unknown>} [tokens={}] - An object containing token-value pairs for formatting.
  * @returns {string} - The translated (and possibly formatted) string.
  * */
 export const t = (str, tokens = {}) => {
-    if (!$app.i18n || typeof $app.i18n[str] === 'undefined') {
+    if (!craft.i18n || typeof craft.i18n[str] === 'undefined') {
         return format(str, tokens)
     }
 
-    return format($app.i18n[str], tokens)
+    return format(craft.i18n[str], tokens)
 }
 
 /** Formats a number into a localized string representation.
@@ -33,7 +33,7 @@ export const t = (str, tokens = {}) => {
  * @returns {string} - The localized number string.
  * */
 export const number = (details, args = {}) => {
-    return new Intl.NumberFormat($app.lang, args).format(details)
+    return new Intl.NumberFormat(craft.lang, args).format(details)
 }
 
 /** Formats a date into a localized string representation.
@@ -42,7 +42,7 @@ export const number = (details, args = {}) => {
  * @returns {string} - The localized date string.
  * */
 export const date = (details, args = {}) => {
-    return new Date(details).toLocaleDateString($app.lang, args)
+    return new Date(details).toLocaleDateString(craft.lang, args)
 }
 
 /** Formats a time into a localized string representation.
@@ -51,5 +51,5 @@ export const date = (details, args = {}) => {
  * @returns {string} - The localized time string.
  * */
 export const time = (details, args = {}) => {
-    return new Date(details).toLocaleTimeString($app.lang, args)
+    return new Date(details).toLocaleTimeString(craft.lang, args)
 }

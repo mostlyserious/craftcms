@@ -1,5 +1,9 @@
 /.idea
 /.vscode
+!/.vscode/
+/.vscode/*
+!/.vscode/settings.json
+!/.vscode/extensions.json
 /.claude/*.local.*
 /.cache
 /vendor

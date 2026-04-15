@@ -32,7 +32,6 @@ function isFloat(arg) {
 
 /**
  * @param {string} value
- * @returns {any}
  * */
 export default function resolveValue(value) {
     switch (value) {
@@ -48,7 +47,7 @@ export default function resolveValue(value) {
 
     switch (true) {
         case isInt(value):
-            return parseInt(value)
+            return parseInt(value, 10)
         case isFloat(value):
             return parseFloat(value)
         case isJson(value):

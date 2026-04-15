@@ -1,3 +1,5 @@
+import { FocusableSchema } from '$lib/schemas/app'
+import { ModuleSchema } from '$lib/schemas/core'
 import { lockScroll } from '$lib/util/scroll-lock'
 
 /**
@@ -16,10 +18,7 @@ const FOCUSABLE = 'a,button,input,select,textarea,[tabindex="0"]'
 /** @type {Set<HTMLElement>} */
 const collection = new Set()
 
-/**
- * @param {NodeListOf<Element>} els
- * */
-export default els => {
+export default ModuleSchema.implement(els => {
     /** @type {Map<HTMLElement, AbortController>} */
     const controllers = new Map()
     /** @type {ToggleBinding[]} */
@@ -46,71 +45,65 @@ export default els => {
     })
 
     for (const el of els) {
-        if (el instanceof HTMLElement) {
-            if (collection.has(el)) {
-                continue
-            }
-
-            collection.add(el)
-
-            const target = getTargetFor(el)
-            const binding = {
-                el,
-                target,
-                scrollRelease: null,
-                className: el.dataset.toggle ? el.dataset.toggle : 'is-active',
-                lockScroll: el.dataset.toggleLockScroll !== undefined,
-                trapFocus: el.dataset.toggleTrapFocus !== undefined,
-                required: el.dataset.toggleRequired !== undefined,
-            }
-
-            bindings.push(binding)
-
-            listen(target, 'click', event => {
-                for (const node of getFocusableFor(target)) {
-                    if (event.target instanceof Node && node.isSameNode(event.target)) {
-                        return
-                    }
-                }
-
-                event.stopPropagation()
-            })
-
-            handleArias(el, target.classList.contains(binding.className))
-            handleInertables(target, !target.classList.contains(binding.className), binding.className)
-
-            listen(el, 'click', event => {
-                const focusable = getFocusableFor(target)
-
-                focusable.unshift(el)
-                event.stopPropagation()
-
-                for (const other of bindings) {
-                    const {
-                        toggleGroup: toggleGroupA,
-                        toggleScope: toggleScopeA,
-                    } = el.dataset
-
-                    const {
-                        toggleGroup: toggleGroupB,
-                        toggleScope: toggleScopeB,
-                    } = other.el.dataset
-
-                    if (other.className === binding.className
-                        && !other.target.isSameNode(target)
-                        && (!toggleGroupA || toggleGroupB !== toggleGroupA)
-                        && (!toggleScopeB || toggleScopeB === toggleScopeA)) {
-                        closeToggle(other, controllers, false)
-                    }
-                }
-
-                if (target.classList.contains(binding.className)) {
-                    closeToggle(binding, controllers, false)
-                } else {
-                    openToggle(binding, controllers, focusable)
-                }
-            })
+        if (collection.has(el)) {
+            continue
         }
+
+        collection.add(el)
+
+        const target = getTargetFor(el)
+        const binding = {
+            el,
+            target,
+            scrollRelease: null,
+            className: el.dataset.toggle ? el.dataset.toggle : 'is-active',
+            lockScroll: el.dataset.toggleLockScroll !== undefined,
+            trapFocus: el.dataset.toggleTrapFocus !== undefined,
+            required: el.dataset.toggleRequired !== undefined,
+        }
+
+        bindings.push(binding)
+
+        listen(target, 'click', event => {
+            for (const node of getFocusableFor(target)) {
+                if (event.target instanceof Node && node.isSameNode(event.target)) {
+                    return
+                }
+            }
+
+            event.stopPropagation()
+        })
+
+        handleArias(el, target.classList.contains(binding.className))
+        handleInertables(target, !target.classList.contains(binding.className), binding.className)
+
+        listen(el, 'click', event => {
+            const focusable = getFocusableFor(target)
+
+            focusable.unshift(el)
+            event.stopPropagation()
+
+            for (const other of bindings) {
+                const { toggleGroup: toggleGroupA, toggleScope: toggleScopeA } = el.dataset
+
+                const { toggleGroup: toggleGroupB, toggleScope: toggleScopeB } = other.el.dataset
+
+                if (
+                    other.className === binding.className &&
+                    !other.target.isSameNode(target) &&
+                    (!toggleGroupA || toggleGroupB !== toggleGroupA) &&
+                    (!toggleScopeB || toggleScopeB === toggleScopeA)
+                ) {
+                    closeToggle(other, controllers, false)
+                }
+            }
+
+            if (target.classList.contains(binding.className)) {
+                closeToggle(binding, controllers, false)
+            } else {
+                openToggle(binding, controllers, focusable)
+            }
+        })
     }
 
     return () => {
@@ -126,26 +119,22 @@ export default els => {
 
         controllers.clear()
     }
-}
+})
 
 /**
  * @param {HTMLElement} target
- * @returns {Array<Element>}
  * */
 function getFocusableFor(target) {
-    return target ? Array.from(target.querySelectorAll(FOCUSABLE)) : []
+    return FocusableSchema.parse(target.querySelectorAll(FOCUSABLE))
 }
 
 /**
  * @param {HTMLElement} el
- * @returns {HTMLElement}
  * */
 function getTargetFor(el) {
     const fallback = el.parentElement
     /** @type {?HTMLElement} */
-    const prefered = el.dataset.toggleTarget
-        ? document.querySelector(el.dataset.toggleTarget)
-        : null
+    const prefered = el.dataset.toggleTarget ? document.querySelector(el.dataset.toggleTarget) : null
 
     if (prefered) {
         return prefered
@@ -191,7 +180,7 @@ function closeToggle(binding, controllers, force) {
 /**
  * @param {ToggleBinding} binding
  * @param {Map<HTMLElement, AbortController>} controllers
- * @param {Element[]} focusable
+ * @param {HTMLElement[]} focusable
  * */
 function openToggle(binding, controllers, focusable) {
     handleTrapFocus(controllers, trapFocusHandler, binding.trapFocus, focusable, binding.el)
@@ -205,7 +194,6 @@ function openToggle(binding, controllers, focusable) {
  * @param {HTMLElement} target
  * @param {boolean} hide
  * @param {string} className
- * @returns {void}
  * */
 function handleInertables(target, hide, className) {
     /** @type {NodeListOf<HTMLElement>} */
@@ -222,9 +210,9 @@ function handleInertables(target, hide, className) {
 
 /**
  * @param {Map<HTMLElement, AbortController>} controllers
- * @param {(event: KeyboardEvent, focusable: Element[]) => void} handler
+ * @param {(event: KeyboardEvent, focusable: HTMLElement[]) => void} handler
  * @param {boolean} enabled
- * @param {Element[]} focusable
+ * @param {HTMLElement[]} focusable
  * @param {HTMLElement} el
  * */
 function handleTrapFocus(controllers, handler, enabled, focusable, el) {
@@ -239,19 +227,23 @@ function handleTrapFocus(controllers, handler, enabled, focusable, el) {
         const nextController = new AbortController()
 
         controllers.set(el, nextController)
-        window.addEventListener('keydown', event => {
-            if (event instanceof KeyboardEvent) {
-                handler(event, focusable)
-            }
-        }, {
-            signal: nextController.signal,
-        })
+        window.addEventListener(
+            'keydown',
+            event => {
+                if (event instanceof KeyboardEvent) {
+                    handler(event, focusable)
+                }
+            },
+            {
+                signal: nextController.signal,
+            },
+        )
     }
 }
 
 /**
  * @param {KeyboardEvent} event
- * @param {Element[]} focusable
+ * @param {HTMLElement[]} focusable
  * */
 function trapFocusHandler(event, focusable) {
     if (event.code === 'Tab') {
@@ -263,11 +255,11 @@ function trapFocusHandler(event, focusable) {
         }
 
         if (event.shiftKey) {
-            if (document.activeElement === first && last instanceof HTMLElement) {
+            if (document.activeElement === first) {
                 event.preventDefault()
                 last.focus()
             }
-        } else if (document.activeElement === last && first instanceof HTMLElement) {
+        } else if (document.activeElement === last) {
             event.preventDefault()
             first.focus()
         }

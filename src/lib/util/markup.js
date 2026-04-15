@@ -26,7 +26,7 @@ export default function markup(string, attrs = {}, returnNode = false) {
     const fragment = parse(string || '').firstChild
 
     if (fragment instanceof HTMLElement || fragment instanceof SVGElement) {
-        for (const [ key, value ] of Object.entries(attrs)) {
+        for (const [key, value] of Object.entries(attrs)) {
             fragment.setAttribute(key, String(value))
         }
 

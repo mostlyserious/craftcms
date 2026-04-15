@@ -1,19 +1,19 @@
 /**
  * @template {Function} T
  * @param {T} handler
- * @param {Array<any>} args
+ * @param {Array<unknown>} args
  * @return {Promise<ReturnType<T>>}
  * */
 function closure(handler, ...args) {
-    return new Promise(async resolve => {
+    return new Promise(resolve => {
         if (!document.startViewTransition) {
-            resolve(await handler(...args))
+            resolve(handler(...args))
 
             return
         }
 
-        document.startViewTransition(async () => {
-            resolve(await handler(...args))
+        document.startViewTransition(() => {
+            resolve(handler(...args))
         })
     })
 }
@@ -21,7 +21,7 @@ function closure(handler, ...args) {
 /**
  * @template {Function} T
  * @param {T} handler
- * @param {Array<any>} args [description]
+ * @param {Array<unknown>} args [description]
  * @return {() => Promise<ReturnType<T>>}
  * */
 function viewTransitionClosure(handler, ...args) {
@@ -31,7 +31,7 @@ function viewTransitionClosure(handler, ...args) {
 /**
  * @template {Function} T
  * @param {T} handler
- * @param {Array<any>} args [description]
+ * @param {Array<unknown>} args [description]
  * @return {Promise<ReturnType<T>>}
  * */
 function viewTransition(handler, ...args) {

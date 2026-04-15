@@ -1,7 +1,11 @@
+import { loadEnv } from 'vite-plus'
 import * as z from 'zod/mini'
 
-export const parse = (defined = null) => {
-    const env = Schema.safeParse(defined ? defined : process.env)
+/**
+ * @param {string} mode
+ */
+export const parse = mode => {
+    const env = Schema.safeParse(loadEnv(mode, process.cwd(), ''))
 
     if (!env.success) {
         console.error(env.error.issues)
@@ -16,7 +20,7 @@ export const Schema = z.looseObject({
     VITE_TEMP: z.optional(z.string()),
     VITE_PORT: z._default(z.coerce.number(), 5173),
     TINYPNG_KEY: z.string(),
-    CRAFT_ENVIRONMENT: z.enum([ 'dev', 'staging', 'production' ]),
+    CRAFT_ENVIRONMENT: z.enum(['dev', 'staging', 'production']),
     CRAFT_SECURITY_KEY: z.string(),
     CRAFT_APP_ID: z.string(),
     PRIMARY_SITE_NAME: z.string(),

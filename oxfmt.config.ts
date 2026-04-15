@@ -1,0 +1,17 @@
+import { defineConfig } from 'oxfmt'
+
+export default defineConfig({
+    printWidth: 120,
+    tabWidth: 4,
+    semi: false,
+    singleQuote: true,
+    arrowParens: 'avoid',
+    sortTailwindcss: true,
+    sortPackageJson: true,
+    quoteProps: 'consistent',
+    ignorePatterns: ['.ddev/**', 'config/project/**'],
+    sortImports: {
+        newlinesBetween: false,
+        internalPattern: ['$'],
+    },
+})

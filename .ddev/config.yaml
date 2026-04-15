@@ -1,21 +1,19 @@
 name: craftcms
 type: craftcms
 docroot: web
-php_version: "8.3"
+php_version: '8.5'
 webserver_type: nginx-fpm
 xdebug_enabled: false
 additional_hostnames: []
 additional_fqdns: []
 database:
   type: mysql
-  version: "8.0"
+  version: '8.0'
 upload_dirs:
   - cpresources
-  - ../vendor
   - ../storage
-  - ../node_modules
 use_dns_when_possible: true
-composer_version: "2"
+composer_version: '2'
 web_environment: []
 corepack_enable: false
 web_extra_exposed_ports:

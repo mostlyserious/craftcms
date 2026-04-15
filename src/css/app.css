@@ -1,28 +1,28 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-@import "$css/setup/base.css";
-@import "$css/setup/theme.css";
+@import '$css/setup/base.css';
+@import '$css/setup/theme.css';
 
-@import "$css/utilities/button.css";
-@import "$css/utilities/container.css";
-@import "$css/utilities/grid-fill.css";
-@import "$css/utilities/misc.css";
-@import "$css/utilities/parallax.css";
-@import "$css/utilities/viewport.css";
+@import '$css/utilities/button.css';
+@import '$css/utilities/container.css';
+@import '$css/utilities/grid-fill.css';
+@import '$css/utilities/misc.css';
+@import '$css/utilities/parallax.css';
+@import '$css/utilities/viewport.css';
 
-@import "$css/components/drawer.css";
-@import "$css/components/dropdown.css";
-@import "$css/components/form.css";
-@import "$css/components/navbar.css";
-@import "$css/components/pagination.css";
-@import "$css/components/prose.css";
+@import '$css/components/drawer.css';
+@import '$css/components/dropdown.css';
+@import '$css/components/form.css';
+@import '$css/components/navbar.css';
+@import '$css/components/pagination.css';
+@import '$css/components/prose.css';
 
 @layer base {
     html {
+        scroll-padding: 2rem 4rem;
         background-color: var(--color-neutral-800);
         font-size: 16px;
         text-rendering: geometricPrecision;
-        scroll-padding: 2rem 4rem;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
@@ -38,7 +38,9 @@
         --root-color: var(--color-neutral-800);
         --focusable-color: var(--color-blue-500);
         --default-border-style: solid;
-        --default-transition-properties: color, background-color, border-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+        --default-transition-properties:
+            color, background-color, border-color, text-decoration-color, fill, stroke, --tw-gradient-from,
+            --tw-gradient-via, --tw-gradient-to;
     }
 
     :where(*, *:before, *:after) {
@@ -59,8 +61,8 @@
 
     :where(button) {
         text-align: unset;
-        cursor: pointer;
         text-underline-offset: 2px;
+        cursor: pointer;
 
         & :where(svg, span) {
             pointer-events: none;
@@ -73,7 +75,7 @@
         transition: opacity 400ms;
     }
 
-    :where(address){
+    :where(address) {
         font-style: normal;
     }
 
@@ -98,7 +100,9 @@
         outline: transparent;
     }
 
-    :is(body.is-tabbing :where(:any-link, button, input, select, textarea, [tabindex="0"]):where(:focus, :focus-visible)) {
+    :is(
+        body.is-tabbing :where(:any-link, button, input, select, textarea, [tabindex='0']):where(:focus, :focus-visible)
+    ) {
         border-radius: var(--radius-sm);
         outline: 2px solid var(--focusable-color, currentcolor);
         outline-offset: 2px;

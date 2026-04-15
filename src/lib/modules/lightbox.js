@@ -1,7 +1,8 @@
-import markup from '$lib/util/markup'
-import { next, prev } from '$lib/util/cycle'
 import leftArrowIcon from '$fontawesome/solid/chevron-left.svg?raw'
 import rightArrowIcon from '$fontawesome/solid/chevron-right.svg?raw'
+import { ModuleSchema } from '$lib/schemas/core'
+import { next, prev } from '$lib/util/cycle'
+import markup from '$lib/util/markup'
 
 /**
  * @type {Record<PropertyKey, Array<HTMLElement>>}
@@ -14,10 +15,7 @@ const DEFAULT_GROUP = 'default'
  * */
 const preloaded = new Set()
 
-/**
- * @param {NodeListOf<Element>} els - A collection of DOM elements.
- * */
-export default els => {
+export default ModuleSchema.implement(els => {
     const forward = document.createElement('button')
     const backward = document.createElement('button')
     const backdrop = document.createElement('div')
@@ -31,10 +29,22 @@ export default els => {
     backdrop.append(forward)
     backdrop.append(backward)
 
-    backward.setAttribute('class', 'flex fixed left-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-brand-orange')
-    forward.setAttribute('class', 'flex fixed right-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-brand-orange')
-    backdrop.setAttribute('class', 'fixed inset-0 z-20 opacity-0 transition pointer-events-none bg-brand-gray-darker/95')
-    dialog.setAttribute('class', 'overflow-auto fixed top-1/2 left-1/2 z-50 max-w-7xl rounded-md transform -translate-x-1/2 -translate-y-1/2 w-[90dvw] max-h-[90dvh]')
+    backward.setAttribute(
+        'class',
+        'flex fixed left-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-brand-orange',
+    )
+    forward.setAttribute(
+        'class',
+        'flex fixed right-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-brand-orange',
+    )
+    backdrop.setAttribute(
+        'class',
+        'fixed inset-0 z-20 opacity-0 transition pointer-events-none bg-brand-gray-darker/95',
+    )
+    dialog.setAttribute(
+        'class',
+        'overflow-auto fixed top-1/2 left-1/2 z-50 max-w-7xl rounded-md transform -translate-x-1/2 -translate-y-1/2 w-[90dvw] max-h-[90dvh]',
+    )
 
     forward.innerHTML = markup(rightArrowIcon, {
         class: 'm-auto fill-current size-8',
@@ -160,19 +170,17 @@ export default els => {
     }
 
     for (const el of els) {
-        if (el instanceof HTMLElement) {
-            const group = el.dataset.lightboxGroup || DEFAULT_GROUP
+        const group = el.dataset.lightboxGroup || DEFAULT_GROUP
 
-            if (!groups[group]) {
-                groups[group] = []
-            }
-
-            groups[group].push(el)
-
-            el.setAttribute('type', 'submit')
-            el.addEventListener('click', () => open(el))
-            el.addEventListener('mouseover', () => preload(el))
-            backdrop.addEventListener('click', () => close())
+        if (!groups[group]) {
+            groups[group] = []
         }
+
+        groups[group].push(el)
+
+        el.setAttribute('type', 'submit')
+        el.addEventListener('click', () => open(el))
+        el.addEventListener('mouseover', () => preload(el))
+        backdrop.addEventListener('click', () => close())
     }
-}
+})

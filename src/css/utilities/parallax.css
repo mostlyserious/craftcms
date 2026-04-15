@@ -15,13 +15,15 @@
 }
 
 @utility parallax-* {
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y))
+        calc(var(--parallax-control) * var(--parallax-z));
     perspective: var(--parallax-perspective);
-    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
 }
 
 @utility -parallax-* {
+    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y))
+        calc(var(--parallax-control) * var(--parallax-z));
     perspective: var(--parallax-perspective);
-    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y)) calc(var(--parallax-control) * var(--parallax-z));
 }
 
 @utility parallax-x-* {

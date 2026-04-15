@@ -19,31 +19,38 @@ The extension follows these core architectural principles:
 ### Class Constants
 
 #### `HTML_SAFE`
+
 ```php
 const HTML_SAFE = ['is_safe' => ['html']];
 ```
+
 Applied to functions that return sanitized HTML content, telling Twig not to double-escape the output.
 
 #### `IMGIX_DEFAULTS`
+
 ```php
 const IMGIX_DEFAULTS = ['auto' => 'format,compress'];
 ```
+
 Default Imgix parameters for automatic format optimization and compression.
 
 #### `LINK_ATTRS`
+
 ```php
 const LINK_ATTRS = [
-    'label', 'urlSuffix', 'target', 'title', 'class', 
+    'label', 'urlSuffix', 'target', 'title', 'class',
     'id', 'rel', 'ariaLabel', 'download'
 ];
 ```
+
 Whitelisted attributes for the `link()` function, ensuring only valid HTML attributes are processed.
 
 #### `LINK_TYPES`
+
 ```php
 const LINK_TYPES = [
     'category' => CategoryLink::class,
-    'asset' => AssetLink::class, 
+    'asset' => AssetLink::class,
     'email' => EmailLink::class,
     'entry' => EntryLink::class,
     'phone' => PhoneLink::class,
@@ -51,6 +58,7 @@ const LINK_TYPES = [
     'url' => UrlLink::class,
 ];
 ```
+
 Maps string identifiers to Craft CMS LinkData type classes for the `createLink()` function.
 
 ## Global Variables
@@ -58,6 +66,7 @@ Maps string identifiers to Craft CMS LinkData type classes for the `createLink()
 The extension provides several globally accessible variables in Twig templates:
 
 ### `screen`
+
 Responsive breakpoint definitions matching Tailwind CSS conventions, specifically designed for use with the `image()` function's responsive sources parameter:
 
 ```twig
@@ -112,7 +121,9 @@ Responsive breakpoint definitions matching Tailwind CSS conventions, specificall
 ```
 
 ### `palettes`
+
 Access to custom color configuration from Craft's config, used extensively with the `swatch()` function:
+
 ```twig
 {# From templates/common/_footer.twig #}
 {{ swatch(palettes.misc.footer, 'background', 'text') }}
@@ -122,14 +133,17 @@ Access to custom color configuration from Craft's config, used extensively with 
 ```
 
 ### `DATE_FORMAT`, `TIME_FORMAT`, `HEADING_TAGS`
+
 Constants from the Serializer service for consistent formatting across templates.
 
 ## Custom Functions
 
-### `image(asset, args, sources, lazy, tag)` 
+### `image(asset, args, sources, lazy, tag)`
+
 **Most Complex Function** - Advanced responsive image rendering with Imgix optimization.
 
 **Parameters:**
+
 - `asset` (Asset|string|null): Craft Asset, placeholder seed string, or null
 - `args` (array): Image transformation parameters (width, height, fit, etc.)
 - `sources` (array): Responsive breakpoint definitions for `<picture>` element
@@ -137,6 +151,7 @@ Constants from the Serializer service for consistent formatting across templates
 - `tag` (string): HTML tag to generate ('img' or 'source')
 
 **Key Features:**
+
 - **Automatic 2x Retina Support**: Generates 2x resolution sources automatically
 - **Focal Point Integration**: Uses Craft Asset focal points for intelligent cropping
 - **GIF Handling**: Bypasses optimization for animated GIFs
@@ -146,6 +161,7 @@ Constants from the Serializer service for consistent formatting across templates
 - **Asset URL Transformation**: Handles both local and CDN/Imgix URLs
 
 **Real Usage Examples:**
+
 ```twig
 {# Billboard background image - templates/blocks/_billboard.twig #}
 {{ image(backgroundImage, {
@@ -190,19 +206,23 @@ Constants from the Serializer service for consistent formatting across templates
 ```
 
 ### `src(asset, args)`
+
 Generates optimized image URLs without HTML markup, primarily used for CSS background images. Automatically applies `IMGIX_DEFAULTS` (`auto: 'format,compress'`) for optimization.
 
 **Parameters:**
+
 - `asset` (Asset|string|null): Asset or placeholder seed
 - `args` (array): Transformation parameters
 
 **Key Features:**
+
 - **Automatic Optimization**: Applies `IMGIX_DEFAULTS` for format and compression optimization
 - **Focal Point Support**: Uses Asset focal points for intelligent cropping
 - **GIF Handling**: Bypasses optimization for animated GIFs
 - **Placeholder Generation**: Creates Lorem Picsum URLs from seed strings
 
 **Real Usage Example:**
+
 ```twig
 {# CSS background image - templates/headers/_header.twig #}
 <section class="flex relative bg-gray-100 bg-center bg-cover min-h-[30dvh]"
@@ -216,14 +236,17 @@ Generates optimized image URLs without HTML markup, primarily used for CSS backg
 ```
 
 ### `link(linkData, args, wrap)`
+
 Renders Craft LinkData objects as complete HTML anchor elements. Used extensively throughout navigation and content blocks.
 
 **Parameters:**
+
 - `linkData` (LinkData|null): Craft LinkData object
 - `args` (array): Additional HTML attributes and content modifiers
 - `wrap` (string): Optional wrapper element tag
 
 **Real Usage Examples:**
+
 ```twig
 {# Button with wrapper - templates/blocks/_imageText.twig #}
 {{ link(block.button, {
@@ -253,15 +276,18 @@ Renders Craft LinkData objects as complete HTML anchor elements. Used extensivel
 ```
 
 ### `svg(asset, sanitize, namespace, throwException)`
+
 Renders inline SVG content, primarily used for FontAwesome icons
 
 **Parameters:**
+
 - `asset` (Asset|string): SVG asset or file path
 - `sanitize` (bool): Enable SVG sanitization (default: true)
 - `namespace` (bool|null): Add XML namespace
 - `throwException` (bool): Throw exceptions on errors
 
 **Real Usage Examples:**
+
 ```twig
 {# FontAwesome icons - templates/common/_navigation.twig #}
 {{ svg('@fontawesome/solid/chevron-down.svg')|attr({
@@ -280,18 +306,22 @@ Renders inline SVG content, primarily used for FontAwesome icons
 ```
 
 ### `external(path)`
+
 Includes external file contents in templates, used for including pre-built markup.
 
 **Real Usage Example:**
+
 ```twig
 {# Include external markup file - templates/_base.twig #}
 {{ external('@webroot/static/assets/markup.html')|striptags('<link><meta>')|raw }}
 ```
 
 ### `swatch(palette, ...keys)`
+
 Extracts specific color values from palette collections. Used extensively for theming blocks and components.
 
 **Real Usage Examples:**
+
 ```twig
 {# Footer theming - templates/common/_footer.twig #}
 <section class="{{ swatch(palettes.misc.footer, 'background', 'text') }}">
@@ -304,9 +334,11 @@ Extracts specific color values from palette collections. Used extensively for th
 ```
 
 ### `localizations(lang, domain, flatten)`
+
 Accesses translation files for internationalization, used for frontend JavaScript i18n data.
 
 **Real Usage Example:**
+
 ```twig
 {# Frontend i18n data - templates/_base.twig #}
 window.$app.config = {{ {
@@ -320,9 +352,11 @@ window.$app.config = {{ {
 ## Custom Filters
 
 ### `plain`
+
 Strips HTML tags using the Serializer service. Primarily used for conditional content checks and clean text output.
 
 **Real Usage Examples:**
+
 ```twig
 {# Content existence checks - templates/blocks/_text.twig #}
 {% if block.richText|plain or block.heading|plain %}
@@ -347,9 +381,11 @@ Strips HTML tags using the Serializer service. Primarily used for conditional co
 ```
 
 ### `heading`
+
 Sanitizes heading content, allowing only safe HTML tags. Used for all heading content across templates.
 
 **Real Usage Examples:**
+
 ```twig
 {# Page headers - templates/headers/_header.twig #}
 <h1 class="text-4xl font-bold uppercase md:text-5xl">
@@ -373,9 +409,11 @@ Sanitizes heading content, allowing only safe HTML tags. Used for all heading co
 ```
 
 ### `media`
+
 Transforms rich text content with automatic `srcset` generation for responsive images embedded in content.
 
 **Real Usage Example:**
+
 ```twig
 {# Rich text with responsive images - templates/blocks/_text.twig #}
 <div class="prose {{ branded ? 'prose-brand' }}" data-animate>
@@ -388,12 +426,15 @@ Transforms rich text content with automatic `srcset` generation for responsive i
 The following functions are available in the extension but are not currently used in the templates:
 
 ### `stringy(string)`
+
 Provides access to the Stringy library for advanced string manipulation.
 
 ### `createLink(value, type)`
+
 Programmatically creates LinkData objects from values.
 
 ### Filters: `tel`, `mailto`
+
 Convert phone numbers and email addresses to proper link formats.
 
 ## Implementation Details

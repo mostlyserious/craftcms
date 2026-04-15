@@ -1,14 +1,15 @@
 /// <reference types="svelte" />
-/// <reference types="vite/client" />
+/// <reference types="vite-plus/client" />
 
 import * as z from 'zod/mini'
+import type { infer as Infered } from 'zod/mini'
 
 declare global {
     interface Window {
         $app: unknown
     }
 
-    type ZodInfer<T> = z.infer<T>
+    type ZodInfer<T> = Prettify<Infered<T>>
 
     type Prettify<T> = { [K in keyof T]: T[K] } & {}
 
@@ -20,11 +21,15 @@ declare global {
         source: T
     }
 
-    type JsonValue<T> = T extends string|number|null|boolean ? T
-        : T extends { toJSON(): infer R } ? R
-        : T extends undefined|((...args: Array<any>) => any) ? never
-        : T extends object ? ParsedJson<T>
-        : never
+    type JsonValue<T> = T extends string | number | null | boolean
+        ? T
+        : T extends { toJSON(): infer R }
+          ? R
+          : T extends undefined | ((...args: Array<unknown>) => unknown)
+            ? never
+            : T extends object
+              ? ParsedJson<T>
+              : never
 
     type ParsedJson<T> = {
         [K in keyof T as [JsonValue<T[K]>] extends [never] ? never : K]: JsonValue<T[K]>
@@ -35,8 +40,8 @@ declare global {
     }
 
     interface JSON {
-        stringify<const T>(value: T, replacer?: null|undefined, space?: string|number): Json<T>
-        parse<T>(text: Json<T>, reviver?: null|undefined): Mutable<ParsedJson<T>>
+        stringify<const T>(value: T, replacer?: null | void, space?: string | number): Json<T>
+        parse<T>(text: Json<T>, reviver?: null | void): Mutable<ParsedJson<T>>
     }
 
     type StrictlyComparable = string | number | boolean | symbol | bigint | null | undefined

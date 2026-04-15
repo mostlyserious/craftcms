@@ -1,3 +1,4 @@
+import { ModuleSchema } from '$lib/schemas/core'
 import propertyAccess from '$lib/util/property-access'
 
 /**
@@ -5,10 +6,7 @@ import propertyAccess from '$lib/util/property-access'
  * */
 const observers = new WeakMap()
 
-/**
- * @param {NodeListOf<Element>} els - A collection of DOM elements.
- * */
-export default els => {
+export default ModuleSchema.implement(els => {
     const existing = observers.get(els)
 
     if (existing) {
@@ -24,7 +22,7 @@ export default els => {
             resizeObserver.observe(el)
             mutationObserver.observe(el, {
                 attributes: true,
-                attributeFilter: [ 'data-property', 'data-property-scoped' ],
+                attributeFilter: ['data-property', 'data-property-scoped'],
                 childList: false,
                 subtree: false,
             })
@@ -34,7 +32,7 @@ export default els => {
     observers.set(els, { resizeObserver, mutationObserver })
 
     customProperties(els)
-}
+})
 
 /**
  * @param {NodeListOf<Element>} els - A collection of DOM elements.
@@ -44,7 +42,10 @@ function customProperties(els) {
         if (el instanceof HTMLElement) {
             const scoped = 'propertyScoped' in el.dataset
             const properties = el.dataset.property
-                ? el.dataset.property.split(';').map(p => p.trim()).filter(Boolean)
+                ? el.dataset.property
+                      .split(';')
+                      .map(p => p.trim())
+                      .filter(Boolean)
                 : []
 
             for (const property of properties) {
@@ -56,15 +57,13 @@ function customProperties(els) {
                 let unit = ''
                 let key = ''
 
-                ;[ prop, key = '' ] = args.split(':').map(str => str.trim())
-                ;[ key, unit = '' ] = key.split('|').map(str => str.trim())
+                ;[prop, key = ''] = args.split(':').map(str => str.trim())
+                ;[key, unit = ''] = key.split('|').map(str => str.trim())
 
                 value = propertyAccess(el, key)
 
                 if (scoped) {
-                    target = el.dataset.propertyScoped === 'parent'
-                        ? el.parentElement || el
-                        : el
+                    target = el.dataset.propertyScoped === 'parent' ? el.parentElement || el : el
                 }
 
                 if (typeof value === 'string' || typeof value === 'number') {
