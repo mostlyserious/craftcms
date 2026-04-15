@@ -45,6 +45,10 @@ export default defineConfig(({ mode }) => {
                             return 'svelte'
                         }
 
+                        if (id.includes('node_modules/motion')) {
+                            return 'motion'
+                        }
+
                         if (id.includes('node_modules/zod')) {
                             return 'zod'
                         }
