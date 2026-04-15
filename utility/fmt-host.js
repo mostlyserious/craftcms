@@ -5,6 +5,7 @@ const REPO_ROOT = path.resolve(fileURLToPath(new URL('..', import.meta.url)))
 const DDEV_CONFIG = path.join(REPO_ROOT, '.ddev', 'config.yaml')
 const CONTAINER_APP_ROOT = '/var/www/html'
 const CONTAINER_SCRIPT = `${CONTAINER_APP_ROOT}/utility/fmt.js`
+const textDecoder = new TextDecoder()
 
 /**
  * Run the formatter from the host with a direct container fast path.
@@ -51,7 +52,7 @@ async function main({
         cwd,
         env,
         stdin: 'inherit',
-        stdout: 'pipe',
+        stdout: 'inherit',
         stderr: 'pipe',
     })
 
@@ -59,7 +60,7 @@ async function main({
         return runFallback(args, { cwd, env })
     }
 
-    writeCapturedOutput(result)
+    writeBufferedStderr(result.stderr)
     return result
 }
 
@@ -91,8 +92,7 @@ function runCommand(command, args, { cwd, env, stdin = 'inherit', stdout = 'inhe
     return {
         error: result.error,
         status: result.exitCode ?? 1,
-        stdout: toBuffer(result.stdout),
-        stderr: toBuffer(result.stderr),
+        stderr: result.stderr ?? null,
     }
 }
 
@@ -149,14 +149,14 @@ function mapHostPathToContainer(hostPath) {
 
 /**
  * Fall back only when Docker failed before the formatter could run.
- * @param {{ error?: Error; status: number; stderr?: Buffer }} result
+ * @param {{ error?: Error; status: number; stderr?: string | Uint8Array | null }} result
  */
 function shouldFallback(result) {
     if (result.error || result.status === 125) {
         return true
     }
 
-    const stderr = result.stderr?.toString() ?? ''
+    const stderr = decodeOutput(result.stderr)
 
     return (
         stderr.includes('No such container:') ||
@@ -166,32 +166,24 @@ function shouldFallback(result) {
 }
 
 /**
- * @param {{ stdout?: Buffer; stderr?: Buffer }} result
+ * @param {string | Uint8Array | null | undefined} stderr
  */
-function writeCapturedOutput(result) {
-    if (result.stdout?.length) {
-        process.stdout.write(result.stdout)
-    }
-
-    if (result.stderr?.length) {
-        process.stderr.write(result.stderr)
+function writeBufferedStderr(stderr) {
+    if (stderr?.length) {
+        process.stderr.write(stderr)
     }
 }
 
-function toBuffer(output) {
-    if (Buffer.isBuffer(output)) {
-        return output
+function decodeOutput(output) {
+    if (!output) {
+        return ''
     }
 
     if (typeof output === 'string') {
-        return Buffer.from(output)
+        return output
     }
 
-    if (output instanceof Uint8Array) {
-        return Buffer.from(output)
-    }
-
-    return Buffer.alloc(0)
+    return textDecoder.decode(output)
 }
 
 const result = await main()

@@ -9,6 +9,16 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.oxc": "explicit"
     },
+    "stylelint.run": "onSave",
+    "[php]": {
+        "editor.defaultFormatter": "rtchabodi.laravel-formatter",
+        "editor.formatOnSave": true
+    },
+    "[css]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.stylelint": "explicit"
+        }
+    },
     "[svelte]": {
         "editor.defaultFormatter": "svelte.svelte-vscode",
         "editor.codeActionsOnSave": {

@@ -19,10 +19,10 @@
 
 @layer base {
     html {
+        scroll-padding: 2rem 4rem;
         background-color: var(--color-neutral-800);
         font-size: 16px;
         text-rendering: geometricPrecision;
-        scroll-padding: 2rem 4rem;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
@@ -61,8 +61,8 @@
 
     :where(button) {
         text-align: unset;
-        cursor: pointer;
         text-underline-offset: 2px;
+        cursor: pointer;
 
         & :where(svg, span) {
             pointer-events: none;

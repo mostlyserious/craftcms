@@ -41,7 +41,7 @@ async function main() {
     }
 
     for (const file of svelteFiles) {
-        await formatSvelteScripts(file)
+        await formatSvelteFile(file)
     }
 }
 
@@ -98,13 +98,12 @@ function classifyTargets(targets) {
 
     for (const target of targets) {
         const resolved = resolveTarget(target)
+        const stat = fs.statSync(resolved, { throwIfNoEntry: false })
 
-        if (!fs.existsSync(resolved)) {
+        if (!stat) {
             vpTargets.push(target)
             continue
         }
-
-        const stat = fs.statSync(resolved)
 
         if (stat.isDirectory()) {
             vpTargets.push(normalizeTarget(resolved))
@@ -179,7 +178,7 @@ function findSvelteFiles(directory) {
 /**
  * @param {string} file
  */
-async function formatSvelteScripts(file) {
+async function formatSvelteFile(file) {
     const source = fs.readFileSync(file, 'utf8')
     const formatted = await formatSvelteSource(source)
 
@@ -192,62 +191,64 @@ async function formatSvelteScripts(file) {
  * @param {string} source
  */
 async function formatSvelteSource(source) {
-    const scriptFormatted = await formatSvelteScriptsInSource(source)
-    return sortSvelteClasses(scriptFormatted)
-}
-
-/**
- * @param {string} source
- */
-async function formatSvelteScriptsInSource(source) {
     const { parseSvelte } = await loadFormatterRuntime()
     const ast = parseSvelte(source)
-    const blocks = [ast.module, ast.instance].filter(Boolean).sort((a, b) => b.content.start - a.content.start)
-    let formatted = source
+    const scriptReplacements = await collectScriptReplacements(source, ast)
+    const classReplacements = await collectSortedClassReplacements(ast.html)
 
-    for (const block of blocks) {
-        const original = formatted.slice(block.content.start, block.content.end)
-        const openingTag = formatted.slice(block.start, block.content.start)
-        const extension = getScriptExtension(openingTag)
-        const script = stripScriptPadding(original)
-        const next = await formatScript(script, extension)
-
-        if (next === script) {
-            continue
-        }
-
-        formatted = `${formatted.slice(0, block.content.start)}${padScript(next, original)}${formatted.slice(block.content.end)}`
-    }
-
-    return formatted
-}
-
-/**
- * @param {string} source
- */
-async function sortSvelteClasses(source) {
-    const { parseSvelte } = await loadFormatterRuntime()
-    const replacements = collectSvelteClassReplacements(parseSvelte(source).html)
-
-    if (!replacements.length) {
+    if (!scriptReplacements.length && !classReplacements.length) {
         return source
     }
 
-    const sortedValues = await sortClassAttributeValues(replacements.map(replacement => replacement.value))
-    let formatted = source
+    return applyReplacements(source, [...scriptReplacements, ...classReplacements])
+}
 
-    for (const replacement of replacements
+/**
+ * @param {string} source
+ * @param {{ module?: { content: { start: number; end: number }; start: number }; instance?: { content: { start: number; end: number }; start: number } }} ast
+ */
+async function collectScriptReplacements(source, ast) {
+    const replacements = await Promise.all(
+        [ast.module, ast.instance].filter(Boolean).map(async block => {
+            const original = source.slice(block.content.start, block.content.end)
+            const openingTag = source.slice(block.start, block.content.start)
+            const extension = getScriptExtension(openingTag)
+            const script = stripScriptPadding(original)
+            const formatted = await formatScript(script, extension)
+
+            if (formatted === script) {
+                return null
+            }
+
+            return {
+                start: block.content.start,
+                end: block.content.end,
+                value: padScript(formatted, original),
+            }
+        }),
+    )
+
+    return replacements.filter(Boolean)
+}
+
+/**
+ * @param {unknown} root
+ */
+async function collectSortedClassReplacements(root) {
+    const replacements = collectSvelteClassReplacements(root)
+
+    if (!replacements.length) {
+        return []
+    }
+
+    const sortedValues = await sortClassAttributeValues(replacements.map(replacement => replacement.value))
+    return replacements
         .map((entry, index) => {
             const value = sortedValues[index]
 
             return value && value !== entry.value ? { ...entry, value } : null
         })
         .filter(Boolean)
-        .sort((a, b) => b.start - a.start)) {
-        formatted = `${formatted.slice(0, replacement.start)}${replacement.value}${formatted.slice(replacement.end)}`
-    }
-
-    return formatted
 }
 
 /**
@@ -255,35 +256,56 @@ async function sortSvelteClasses(source) {
  * @param {{ start: number; end: number; value: string }[]} replacements
  */
 function collectSvelteClassReplacements(node, replacements = []) {
-    if (!node || typeof node !== 'object') {
-        return replacements
-    }
+    const stack = [node]
 
-    if (Array.isArray(node)) {
-        for (const child of node) {
-            collectSvelteClassReplacements(child, replacements)
+    while (stack.length) {
+        const current = stack.pop()
+
+        if (!current || typeof current !== 'object') {
+            continue
         }
 
-        return replacements
-    }
+        if (Array.isArray(current.attributes)) {
+            for (const attribute of current.attributes) {
+                const classValue = getStaticClassAttributeValue(attribute)
 
-    if (Array.isArray(node.attributes)) {
-        for (const attribute of node.attributes) {
-            const classValue = getStaticClassAttributeValue(attribute)
+                if (!classValue) {
+                    continue
+                }
 
-            if (!classValue) {
-                continue
+                replacements.push(classValue)
             }
-
-            replacements.push(classValue)
         }
-    }
 
-    for (const value of Object.values(node)) {
-        collectSvelteClassReplacements(value, replacements)
+        pushMarkupChildren(stack, current.catch)
+        pushMarkupChildren(stack, current.then)
+        pushMarkupChildren(stack, current.pending)
+        pushMarkupChildren(stack, current.else)
+        pushMarkupChildren(stack, current.fragment)
+        pushMarkupChildren(stack, current.html)
+        pushMarkupChildren(stack, current.children)
     }
 
     return replacements
+}
+
+/**
+ * @param {unknown[]} stack
+ * @param {unknown} children
+ */
+function pushMarkupChildren(stack, children) {
+    if (!children) {
+        return
+    }
+
+    if (!Array.isArray(children)) {
+        stack.push(children)
+        return
+    }
+
+    for (let index = children.length - 1; index >= 0; index -= 1) {
+        stack.push(children[index])
+    }
 }
 
 /**
@@ -431,6 +453,20 @@ async function formatHtmlSnippet(source) {
     } catch {
         return source
     }
+}
+
+/**
+ * @param {string} source
+ * @param {{ start: number; end: number; value: string }[]} replacements
+ */
+function applyReplacements(source, replacements) {
+    let formatted = source
+
+    for (const replacement of replacements.sort((a, b) => b.start - a.start)) {
+        formatted = `${formatted.slice(0, replacement.start)}${replacement.value}${formatted.slice(replacement.end)}`
+    }
+
+    return formatted
 }
 
 /**

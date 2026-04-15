@@ -35,8 +35,8 @@
             }
 
             & .ck.ck-content {
-                border-top-right-radius: var(--ck-border-radius) !important;
                 border-top-left-radius: var(--ck-border-radius) !important;
+                border-top-right-radius: var(--ck-border-radius) !important;
             }
         }
 

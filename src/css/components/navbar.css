@@ -1,7 +1,4 @@
 @layer components {
-    .navbar {
-    }
-
     .navbar-inner {
         display: flex;
         justify-content: space-between;
