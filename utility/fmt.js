@@ -1,10 +1,8 @@
-import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
-import { format as formatWithOxfmt } from 'oxfmt'
-import { parse } from 'svelte/compiler'
-import oxfmtConfig from '../oxfmt.config.ts'
+import { fileURLToPath } from 'node:url'
 
+const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const SCRIPT_CWD = process.cwd()
 const BASE_CWD = process.env.INIT_CWD ? path.resolve(process.env.INIT_CWD) : SCRIPT_CWD
 const SORTED_CLASS_CACHE = new Map()
@@ -20,6 +18,7 @@ const SKIP_DIRECTORIES = new Set([
     'vendor',
     'web',
 ])
+let formatterRuntimePromise
 
 /**
  * Format project files, using Oxfmt for regular files and conservative script/class formatting for Svelte files.
@@ -36,7 +35,7 @@ async function main() {
     const { svelteFiles, vpTargets } = classifyTargets(resolvedTargets)
 
     if (vpTargets.length) {
-        runBunTool('vp', ['fmt', ...vpTargets], {
+        runLocalTool('vp', ['fmt', ...vpTargets], {
             stdio: 'inherit',
         })
     }
@@ -201,7 +200,8 @@ async function formatSvelteSource(source) {
  * @param {string} source
  */
 async function formatSvelteScriptsInSource(source) {
-    const ast = parse(source)
+    const { parseSvelte } = await loadFormatterRuntime()
+    const ast = parseSvelte(source)
     const blocks = [ast.module, ast.instance].filter(Boolean).sort((a, b) => b.content.start - a.content.start)
     let formatted = source
 
@@ -226,18 +226,24 @@ async function formatSvelteScriptsInSource(source) {
  * @param {string} source
  */
 async function sortSvelteClasses(source) {
-    const replacements = collectSvelteClassReplacements(parse(source).html)
+    const { parseSvelte } = await loadFormatterRuntime()
+    const replacements = collectSvelteClassReplacements(parseSvelte(source).html)
+
+    if (!replacements.length) {
+        return source
+    }
+
+    const sortedValues = await sortClassAttributeValues(replacements.map(replacement => replacement.value))
     let formatted = source
 
-    const resolvedReplacements = await Promise.all(
-        replacements.map(async replacement => {
-            const value = await sortClassAttributeValue(replacement.value)
+    for (const replacement of replacements
+        .map((entry, index) => {
+            const value = sortedValues[index]
 
-            return value && value !== replacement.value ? { ...replacement, value } : null
-        }),
-    )
-
-    for (const replacement of resolvedReplacements.filter(Boolean).sort((a, b) => b.start - a.start)) {
+            return value && value !== entry.value ? { ...entry, value } : null
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.start - a.start)) {
         formatted = `${formatted.slice(0, replacement.start)}${replacement.value}${formatted.slice(replacement.end)}`
     }
 
@@ -284,7 +290,27 @@ function collectSvelteClassReplacements(node, replacements = []) {
  * @param {unknown} attribute
  */
 function getStaticClassAttributeValue(attribute) {
-    if (!attribute || typeof attribute !== 'object' || attribute.type !== 'Attribute' || attribute.name !== 'class') {
+    const classValue = getStaticAttributeText(attribute, 'class')
+
+    if (!classValue || /[{}]/.test(classValue)) {
+        return null
+    }
+
+    const [value] = attribute.value
+
+    return {
+        start: value.start,
+        end: value.end,
+        value: classValue,
+    }
+}
+
+/**
+ * @param {unknown} attribute
+ * @param {string} name
+ */
+function getStaticAttributeText(attribute, name) {
+    if (!attribute || typeof attribute !== 'object' || attribute.type !== 'Attribute' || attribute.name !== name) {
         return null
     }
 
@@ -298,45 +324,108 @@ function getStaticClassAttributeValue(attribute) {
         return null
     }
 
-    const classValue = value.data ?? value.raw ?? ''
-
-    if (!classValue || /[{}]/.test(classValue)) {
-        return null
-    }
-
-    return {
-        start: value.start,
-        end: value.end,
-        value: classValue,
-    }
+    return value.data ?? value.raw ?? ''
 }
 
 /**
- * @param {string} classValue
+ * @param {string[]} classValues
  */
-async function sortClassAttributeValue(classValue) {
-    if (!classValue.trim()) {
-        return classValue
+async function sortClassAttributeValues(classValues) {
+    const resolvedValues = new Map()
+    const uncachedValues = []
+
+    for (const classValue of classValues) {
+        if (!classValue.trim()) {
+            resolvedValues.set(classValue, classValue)
+            continue
+        }
+
+        if (SORTED_CLASS_CACHE.has(classValue)) {
+            resolvedValues.set(classValue, SORTED_CLASS_CACHE.get(classValue))
+            continue
+        }
+
+        if (!resolvedValues.has(classValue)) {
+            uncachedValues.push(classValue)
+        }
     }
 
-    const cached = SORTED_CLASS_CACHE.get(classValue)
+    if (uncachedValues.length) {
+        const sortedValues = await batchSortClassAttributeValues(uncachedValues)
 
-    if (cached) {
-        return cached
+        for (const [index, classValue] of uncachedValues.entries()) {
+            const sortedValue = sortedValues[index] ?? classValue
+
+            SORTED_CLASS_CACHE.set(classValue, sortedValue)
+            resolvedValues.set(classValue, sortedValue)
+        }
     }
 
-    const formatted = await formatHtmlSnippet(`<div class="${classValue}"></div>`)
-    const match = formatted.match(/\bclass=(['"])(.*?)\1/s)
-    const sortedValue = match?.[2] ?? classValue
+    return classValues.map(classValue => resolvedValues.get(classValue) ?? classValue)
+}
 
-    SORTED_CLASS_CACHE.set(classValue, sortedValue)
-    return sortedValue
+/**
+ * @param {string[]} classValues
+ */
+async function batchSortClassAttributeValues(classValues) {
+    const { parseSvelte } = await loadFormatterRuntime()
+    const source = classValues
+        .map((classValue, index) => `<div data-fmt-index="${index}" class="${escapeHtmlAttribute(classValue)}"></div>`)
+        .join('\n')
+    const formatted = await formatHtmlSnippet(source)
+
+    if (formatted === source) {
+        return classValues
+    }
+
+    const sortedValues = [...classValues]
+
+    for (const child of parseSvelte(formatted).html.children) {
+        if (!child || typeof child !== 'object' || child.type !== 'Element' || !Array.isArray(child.attributes)) {
+            continue
+        }
+
+        let index = Number.NaN
+        let classValue = null
+
+        for (const attribute of child.attributes) {
+            const indexValue = getStaticAttributeText(attribute, 'data-fmt-index')
+
+            if (indexValue !== null) {
+                index = Number.parseInt(indexValue, 10)
+                continue
+            }
+
+            const nextClassValue = getStaticAttributeText(attribute, 'class')
+
+            if (nextClassValue !== null) {
+                classValue = nextClassValue
+            }
+        }
+
+        if (Number.isNaN(index) || classValue === null) {
+            continue
+        }
+
+        sortedValues[index] = classValue
+    }
+
+    return sortedValues
+}
+
+/**
+ * @param {string} value
+ */
+function escapeHtmlAttribute(value) {
+    return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll("'", '&#39;').replaceAll('<', '&lt;')
 }
 
 /**
  * @param {string} source
  */
 async function formatHtmlSnippet(source) {
+    const { formatWithOxfmt, oxfmtConfig } = await loadFormatterRuntime()
+
     try {
         return (await formatWithOxfmt('component-markup.html', source, oxfmtConfig)).code.trim()
     } catch {
@@ -347,13 +436,19 @@ async function formatHtmlSnippet(source) {
 /**
  * @param {string} tool
  * @param {string[]} args
- * @param {import('node:child_process').ExecFileSyncOptions=} options
+ * @param {{ stdio?: 'inherit' }=} options
  */
-function runBunTool(tool, args, options = {}) {
-    return execFileSync('bun', ['x', '--bun', tool, ...args], {
+function runLocalTool(tool, args, options = {}) {
+    const result = Bun.spawnSync([path.join(PROJECT_ROOT, 'node_modules', '.bin', tool), ...args], {
         cwd: SCRIPT_CWD,
-        ...options,
+        stdin: options.stdio === 'inherit' ? 'inherit' : 'pipe',
+        stdout: options.stdio === 'inherit' ? 'inherit' : 'pipe',
+        stderr: options.stdio === 'inherit' ? 'inherit' : 'pipe',
     })
+
+    if (!result.success) {
+        process.exit(result.exitCode ?? 1)
+    }
 }
 
 /**
@@ -372,6 +467,7 @@ async function formatScript(source, extension) {
         return source
     }
 
+    const { formatWithOxfmt, oxfmtConfig } = await loadFormatterRuntime()
     return (await formatWithOxfmt(`component-script.${extension}`, source, oxfmtConfig)).code.replace(/\n$/, '')
 }
 
@@ -410,6 +506,22 @@ function getScriptExtension(openingTag) {
     const value = lang?.[1] ?? lang?.[2] ?? ''
 
     return value.toLowerCase().startsWith('ts') ? 'ts' : 'js'
+}
+
+function loadFormatterRuntime() {
+    if (!formatterRuntimePromise) {
+        formatterRuntimePromise = Promise.all([
+            import('oxfmt'),
+            import('svelte/compiler'),
+            import('../oxfmt.config.ts'),
+        ]).then(([oxfmt, svelteCompiler, config]) => ({
+            formatWithOxfmt: oxfmt.format,
+            parseSvelte: svelteCompiler.parse,
+            oxfmtConfig: config.default,
+        }))
+    }
+
+    return formatterRuntimePromise
 }
 
 await main()

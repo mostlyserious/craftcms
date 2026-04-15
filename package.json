@@ -4,8 +4,8 @@
     "scripts": {
         "dev": "ddev vp dev",
         "build": "ddev vp build",
-        "fmt": "ddev bun utility/fmt.js",
-        "check": "ddev vp check && ddev vp exec eslint 'src/**/*.{js,svelte}' && ddev vp exec tsc --noEmit && ddev vp exec svelte-check --tsconfig tsconfig.json",
+        "fmt": "bun utility/fmt-host.js",
+        "check": "vp check && vp exec eslint 'src/**/*.{js,svelte}' && vp exec tsc --noEmit && vp exec svelte-check --tsconfig tsconfig.json",
         "postinstall": "bun utility/sync-ddev-bun-install.js"
     },
     "dependencies": {
