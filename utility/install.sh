@@ -32,8 +32,3 @@ else
     echo "1Password CLI not found."
     echo "Install it for a better experience. https://developer.1password.com/docs/cli/get-started/"
 fi
-
-echo ""
-echo "Container JavaScript dependencies are installed."
-echo "Run 'ddev mutagen reset' if this project's Mutagen configuration changes after pulling updates."
-echo "Run 'bun install' on the host as well if you want IDE tooling to resolve local formatter, linter, and language-server binaries."
