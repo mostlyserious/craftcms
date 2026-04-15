@@ -27,3 +27,17 @@ export const AppSchema = z.strictObject({
     }),
     palettes: z.record(z.string(), z.record(z.string(), PaletteSchema)),
 })
+
+export const EasingSchema = z.enum([
+    'linear',
+    'easeIn',
+    'easeOut',
+    'easeInOut',
+    'circIn',
+    'circOut',
+    'circInOut',
+    'backIn',
+    'backOut',
+    'backInOut',
+    'anticipate',
+])

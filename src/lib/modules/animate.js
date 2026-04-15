@@ -1,23 +1,9 @@
 import { inView } from 'motion'
 import { animate } from 'motion/mini'
-import * as z from 'zod/mini'
+import { EasingSchema } from '$lib/schemas/app'
 import { ModuleSchema } from '$lib/schemas/core'
 import { screen } from '$lib/stores/global'
 import resolveValue from '$lib/util/resolve-value'
-
-const EasingSchema = z.enum([
-    'linear',
-    'easeIn',
-    'easeOut',
-    'easeInOut',
-    'circIn',
-    'circOut',
-    'circInOut',
-    'backIn',
-    'backOut',
-    'backInOut',
-    'anticipate',
-])
 
 /**
  * IMPORTANT: if you want to use `x` or `y` translate values on animations, you will
