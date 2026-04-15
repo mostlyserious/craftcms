@@ -10,6 +10,9 @@ import resolveValue from '$lib/util/resolve-value'
  * need to import the `animate()` function from 'motion' instead of 'motion/mini'
  * */
 export default ModuleSchema.implement(els => {
+    /** @type {Array<never>} */
+    const empty = []
+
     for (const el of els) {
         if (typeof el.dataset.animate === 'string') {
             /** @type {Record<string,Array<string|number>>} */
@@ -24,7 +27,15 @@ export default ModuleSchema.implement(els => {
                 const valueArray = valueString.split(',')
 
                 valueArray[1] = valueArray[1] || '0'
-                args[prop] = /** @type {Array<string | number>} */ (valueArray.map(resolveValue))
+                args[prop] = valueArray.flatMap(value => {
+                    const resolved = resolveValue(value)
+
+                    if (typeof resolved === 'string' || typeof resolved === 'number') {
+                        return [resolved]
+                    }
+
+                    return empty
+                })
             }
 
             if (!args.opacity) {

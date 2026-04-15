@@ -32,7 +32,6 @@ function isFloat(arg) {
 
 /**
  * @param {string} value
- * @returns {Array<unknown>|Record<string, unknown>|boolean|null|number|string|undefined}
  * */
 export default function resolveValue(value) {
     switch (value) {
@@ -52,7 +51,7 @@ export default function resolveValue(value) {
         case isFloat(value):
             return parseFloat(value)
         case isJson(value):
-            return /** @type {Array<unknown>|Record<string, unknown>} */ (JSON.parse(value))
+            return JSON.parse(value)
         default:
             return value
     }
