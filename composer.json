@@ -9,6 +9,7 @@
         "craftcms/aws-s3": "2.3.0",
         "craftcms/ckeditor": "^5.4.0",
         "craftcms/cms": "^5.9.19",
+        "craftcms/element-api": "^4.2.0",
         "craftpulse/craft-colour-swatches": "5.1.0",
         "diginov/craft-sentry-logger": "^5.0.3",
         "mostlyserious/craft-markerio": "2.2.0",

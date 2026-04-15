@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Craft;
+use craft\elements\Entry;
 
 return [
     'defaults' => [
@@ -11,6 +12,16 @@ return [
             : false,
     ],
     'endpoints' => [
-
+        'api/ping' => function (): array {
+            return [
+                'one' => true,
+                'elementType' => Entry::class,
+                'transformer' => function (): array {
+                    return [
+                        'success' => true,
+                    ];
+                },
+            ];
+        },
     ],
 ];
