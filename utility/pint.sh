@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEMP_FILE=$(mktemp)
+TEMP_FILE=$(mktemp --suffix=.php)
 
 trap 'rm -f "$TEMP_FILE"' EXIT
 
