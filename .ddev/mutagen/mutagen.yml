@@ -1,5 +1,7 @@
-# This project overrides DDEV's default Mutagen configuration.
-# Keep this file checked in so host and container node_modules stay separate.
+#ddev-generated
+# To override this file remove the line above
+# and add your own configuration. If you override it you will
+# probably want to check it in.
 # Please do `ddev mutagen reset` after changing the file.
 # See DDEV Mutagen docs at
 # https://docs.ddev.com/en/stable/users/install/performance/#mutagen
@@ -19,9 +21,10 @@ sync:
         - "/.ddev/.importdb*"
         - ".DS_Store"
         - ".idea"
-        - "/node_modules"
         - "/web/cpresources"
+        - "/vendor"
         - "/storage"
+        - "/node_modules"
 
         # You can also exclude other directories from mutagen-syncing
         # For example /var/www/html/var does not need to sync in TYPO3

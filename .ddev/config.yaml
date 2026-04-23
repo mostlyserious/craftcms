@@ -11,7 +11,9 @@ database:
   version: '8.0'
 upload_dirs:
   - cpresources
+  - ../vendor
   - ../storage
+  - ../node_modules
 use_dns_when_possible: true
 composer_version: '2'
 web_environment: []
