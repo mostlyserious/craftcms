@@ -28,10 +28,9 @@ The host and container each keep their own `node_modules` tree. That is expected
 
 This template keeps those installs separate by:
 
-- checking in a DDEV Mutagen override that excludes `/node_modules` from sync
 - mounting container-side `node_modules` on a dedicated Docker volume for the DDEV web container
 
-If you pull changes that affect `.ddev/mutagen/mutagen.yml`, run `ddev mutagen reset` before continuing.
+If you pull changes that affect `.ddev/config.yaml` or `.ddev/mutagen/mutagen.yml`, run `ddev mutagen reset` before continuing.
 
 Use DDEV as the source of truth for app/runtime behavior:
 
