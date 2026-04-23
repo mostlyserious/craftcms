@@ -1,6 +1,3 @@
-/// <reference types="svelte" />
-/// <reference types="vite-plus/client" />
-
 import * as z from 'zod/mini'
 import type { infer as Infered } from 'zod/mini'
 

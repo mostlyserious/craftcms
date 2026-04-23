@@ -1,12 +1,14 @@
 {
     "include": [
-        "./src/env.d.ts",
-        "./node_modules/@types/**/*.d.ts",
-        "./src/**/*.js",
-        "./src/**/*.ts",
-        "./src/**/*.svelte"
+        "*.js",
+        "src/env.d.ts",
+        "src/**/*.js",
+        "src/**/*.ts",
+        "src/**/*.svelte",
+        "src/@types/**/*.d.ts",
+        "node_modules/@types/**/*.d.ts"
     ],
-    "exclude": ["./node_modules/**/*", "./vendor/**/*", "./web/**/*"],
+    "exclude": ["node_modules/**/*", "vendor/**/*", "web/**/*"],
     "compilerOptions": {
         "checkJs": true,
         "jsx": "preserve",
@@ -22,9 +24,8 @@
         "isolatedModules": true,
         "verbatimModuleSyntax": true,
         "noErrorTruncation": true,
-        "types": [],
-        "outDir": "./web/static",
-        "rootDir": "./src",
+        "types": ["svelte", "vite-plus/client"],
+        "outDir": "web",
         "paths": {
             "$lib": ["./src/lib"],
             "$lib/*": ["./src/lib/*"],
@@ -35,10 +36,10 @@
             "$fontawesome": ["./vendor/npm-asset/fortawesome--fontawesome-pro/svgs"],
             "$fontawesome/*": ["./vendor/npm-asset/fortawesome--fontawesome-pro/svgs/*"]
         },
+        "rootDirs": [".", "src/@types"],
         "lib": ["esnext", "DOM", "DOM.Iterable"],
         "moduleResolution": "bundler",
         "module": "esnext",
-        "target": "esnext",
-        "ignoreDeprecations": "5.0"
+        "target": "esnext"
     }
 }
