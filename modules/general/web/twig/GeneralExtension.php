@@ -5,22 +5,25 @@ declare(strict_types=1);
 namespace modules\general\web\twig;
 
 use Craft;
+use Stringable;
 use Twig\Markup;
-use Stringy\Stringy;
 use Twig\TwigFilter;
 use craft\helpers\App;
 use Twig\TwigFunction;
 use craft\helpers\Html;
 use craft\elements\Asset;
+use craft\web\Application;
 use craft\helpers\Template;
+use InvalidArgumentException;
 use craft\fields\data\LinkData;
-use craft\helpers\StringHelper;
 use Illuminate\Support\Collection;
 use Twig\Extension\GlobalsInterface;
 use Twig\Extension\AbstractExtension;
+use craft\fields\linktypes\BaseLinkType;
 use modules\general\services\Serializer;
 use craft\fields\linktypes\Sms as SmsLink;
 use craft\fields\linktypes\Url as UrlLink;
+use Symfony\Component\String\UnicodeString;
 use craft\fields\linktypes\Asset as AssetLink;
 use craft\fields\linktypes\Email as EmailLink;
 use craft\fields\linktypes\Entry as EntryLink;
@@ -58,15 +61,19 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         'url' => UrlLink::class,
     ];
 
-    private static $instance;
+    private static ?self $instance = null;
 
     public function getGlobals(): array
     {
+        /** @var Application|\craft\console\Application $app */
+        $app = Craft::$app;
+        $custom = get_object_vars($app->getConfig()->custom);
+
         return [
             'DATE_FORMAT' => Serializer::DATE_FORMAT,
             'TIME_FORMAT' => Serializer::TIME_FORMAT,
             'HEADING_TAGS' => Serializer::HEADING_TAGS,
-            'palettes' => Craft::$app->config->custom->colors,
+            'palettes' => $custom['colors'] ?? null,
             'screen' => [
                 '2xs' => '24rem', // custom
                 'xs' => '32rem',  // custom
@@ -103,9 +110,9 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('swatch', function (Collection $palette, ...$keys): string {
                 return mb_trim($palette->only($keys)->implode(' '));
             }),
-            new TwigFunction('localizations', function ($lang = '*', $domain = '*', $flatten = false): ?array {
+            new TwigFunction('localizations', static function (string $lang = '*', string $domain = '*', bool $flatten = false): ?array {
                 $translations = [];
-                $files = glob(sprintf('%s/translations/%s/%s.php', CRAFT_BASE_PATH, $lang, $domain)) ?? [];
+                $files = glob(sprintf('%s/translations/%s/%s.php', CRAFT_BASE_PATH, $lang, $domain)) ?: [];
 
                 if (!$files) {
                     return null;
@@ -113,6 +120,10 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
 
                 foreach ($files as $file) {
                     $list = require $file;
+
+                    if (!is_array($list)) {
+                        continue;
+                    }
 
                     if (!$flatten && ($domain === '*' || $lang === '*')) {
                         $key = $domain === '*'
@@ -130,28 +141,35 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         ];
     }
 
-    public static function stringy(string $string): Stringy
+    public static function stringy(string $string): UnicodeString
     {
-        return Stringy::create($string);
+        return new UnicodeString($string);
     }
 
     public static function media(string $string, int $width): string
     {
+        $assets_url = App::env('IMGIX_URL');
+        $base_url = App::env('OBJECT_STORAGE_URL');
+
+        if (!is_string($assets_url) || !is_string($base_url)) {
+            return $string;
+        }
+
         $srcset = sprintf('srcset="{}?auto=compress,format&width=%d, {}?auto=compress,format&width=%d 2x"', $width, $width * 2);
 
-        return preg_replace_callback('/src="([^"]+)"/m', function (array $matches) use ($srcset): string {
+        return preg_replace_callback('/src="([^"]+)"/m', function (array $matches) use ($assets_url, $base_url, $srcset): string {
             return str_replace(
-                App::env('OBJECT_STORAGE_URL'),
-                App::env('IMGIX_URL'),
+                $base_url,
+                $assets_url,
                 str_replace('{}', $matches[1], $srcset),
             );
-        }, $string);
+        }, $string) ?? $string;
     }
 
     /**
-     * @param array<string,mixed>            $args
-     * @param array<string,array<int,mixed>> $sources
-     * @param 'lazy'|'eager'                 $loading
+     * @param array<string,mixed>               $args
+     * @param array<string,array<string,mixed>> $sources
+     * @param 'lazy'|'eager'                    $loading
      * */
     public static function image(?Asset $asset = null, array $args = [], array $sources = [], string $loading = 'lazy', string $tag = 'img'): string
     {
@@ -161,16 +179,17 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
 
         $assets_url = App::env('IMGIX_URL');
         $base_url = App::env('OBJECT_STORAGE_URL');
+        $asset_url = $asset->url ?? '';
 
         $width = $args['width'] ?? '';
         $height = $args['height'] ?? '';
 
-        $width = intval(str_replace(',', '', strval($width)));
-        $height = intval(str_replace(',', '', strval($height)));
+        $width = intval(str_replace(',', '', self::stringValue($width)));
+        $height = intval(str_replace(',', '', self::stringValue($height)));
 
         $args = array_filter($args);
 
-        if (isset($asset->focalPoint)) {
+        if (is_array($asset->focalPoint) && isset($asset->focalPoint['x'], $asset->focalPoint['y'])) {
             $args = array_merge($args, [
                 'fp-x' => $asset->focalPoint['x'],
                 'fp-y' => $asset->focalPoint['y'],
@@ -181,43 +200,42 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             'crop' => $asset->hasFocalPoint ? 'focalpoint' : ($args['crop'] ?? 'faces,center'),
         ]);
 
-        if ($assets_url) {
-            $image = [
-                'url' => str_replace($base_url ?: '', $assets_url, $asset->url) . '?' . http_build_query($args),
-            ];
-
-            $image2x = [
-                'url' => str_replace($base_url ?: '', $assets_url, $asset->url) . '?' . http_build_query(array_merge($args, [
-                    'width' => isset($args['width']) ? $args['width'] * 2 : null,
-                    'height' => isset($args['height']) ? $args['height'] * 2 : null,
-                ])),
-            ];
+        if (is_string($assets_url) && $assets_url !== '') {
+            $base_url = is_string($base_url) ? $base_url : '';
+            $url = str_replace($base_url, $assets_url, $asset_url) . '?' . http_build_query($args);
+            $url2x = str_replace($base_url, $assets_url, $asset_url) . '?' . http_build_query(array_merge($args, [
+                'width' => isset($args['width']) && is_numeric($args['width']) ? $args['width'] * 2 : null,
+                'height' => isset($args['height']) && is_numeric($args['height']) ? $args['height'] * 2 : null,
+            ]));
         } else {
-            $image = ['url' => $asset->url];
-            $image2x = ['url' => $asset->url];
+            $url = $asset_url;
+            $url2x = $asset_url;
         }
 
-        if (!$width && $height && isset($asset->height)) {
-            $width = number_format(min($asset->height, $height) * ($asset->width / $asset->height));
+        $asset_width = (int) $asset->width;
+        $asset_height = (int) $asset->height;
+
+        if (!$width && $height && $asset_height) {
+            $width = (int) round(min($asset_height, $height) * ($asset_width / $asset_height));
         }
 
-        if (!$height && $width && isset($asset->width)) {
-            $height = number_format(min($asset->width, $width) * ($asset->height / $asset->width));
+        if (!$height && $width && $asset_width) {
+            $height = (int) round(min($asset_width, $width) * ($asset_height / $asset_width));
         }
 
-        $width = $width ? $width : $asset->width;
-        $height = $height ? $height : $asset->height;
+        $width = $width ?: $asset_width;
+        $height = $height ?: $asset_height;
 
-        $url = ($asset->extension === 'gif' ? explode('?', $image['url'])[0] : $image['url']);
-        $url2x = ($asset->extension === 'gif' ? explode('?', $image2x['url'])[0] : $image2x['url']);
+        $url = ($asset->extension === 'gif' ? explode('?', $url)[0] : $url);
+        $url2x = ($asset->extension === 'gif' ? explode('?', $url2x)[0] : $url2x);
 
         if (!in_array($loading, ['lazy', 'eager'])) {
             $loading = 'lazy';
         }
 
         $attrs = [
-            'width' => str_replace(',', '', strval($width)),
-            'height' => str_replace(',', '', strval($height)),
+            'width' => str_replace(',', '', self::stringValue($width)),
+            'height' => str_replace(',', '', self::stringValue($height)),
             'src' => 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
             'srcset' => implode(', ', [$url, "{$url2x} 2x"]),
             'alt' => $asset->alt ?? '',
@@ -232,10 +250,12 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             ksort($sources, SORT_NUMERIC);
             $sources = array_reverse($sources, true);
 
-            return Html::tag('picture', implode(PHP_EOL, array_merge(array_map(function (array $source, string $breakpoint) use ($asset): string {
-                static $prev_breakpoint = null;
+            $picture = [];
+            $prev_breakpoint = null;
 
-                $markup = static::image($asset, $source, [], 'lazy', 'source');
+            foreach ($sources as $breakpoint => $source) {
+                $breakpoint = (string) $breakpoint;
+                $markup = self::image($asset, $source, [], 'lazy', 'source');
                 $markup = Html::modifyTagAttributes($markup, [
                     'media' => $prev_breakpoint
                         ? sprintf('(min-width: %s) and (max-width: %s)', $breakpoint, sprintf('calc(%s - 1px)', $prev_breakpoint))
@@ -244,10 +264,12 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
 
                 $prev_breakpoint = $breakpoint;
 
-                return $markup;
-            }, $sources, array_keys($sources)), [
-                Html::tag($tag, '', $attrs),
-            ])));
+                $picture[] = $markup;
+            }
+
+            $picture[] = Html::tag($tag, '', $attrs);
+
+            return Html::tag('picture', implode(PHP_EOL, $picture));
         }
 
         if ($tag === 'source') {
@@ -271,16 +293,17 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
 
         $assets_url = App::env('IMGIX_URL');
         $base_url = App::env('OBJECT_STORAGE_URL');
+        $asset_url = $asset->url ?? '';
 
         $width = $args['width'] ?? '';
         $height = $args['height'] ?? '';
 
-        $width = str_replace(',', '', strval($width));
-        $height = str_replace(',', '', strval($height));
+        $width = str_replace(',', '', self::stringValue($width));
+        $height = str_replace(',', '', self::stringValue($height));
 
         $args = array_filter($args);
 
-        if (isset($asset->focalPoint)) {
+        if (is_array($asset->focalPoint) && isset($asset->focalPoint['x'], $asset->focalPoint['y'])) {
             $args = array_merge($args, [
                 'fp-x' => $asset->focalPoint['x'],
                 'fp-y' => $asset->focalPoint['y'],
@@ -291,9 +314,9 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             'crop' => $asset->hasFocalPoint ? 'focalpoint' : ($args['crop'] ?? 'faces,center'),
         ]);
 
-        $url = $assets_url
-            ? str_replace($base_url ?: '', $assets_url, $asset->url) . '?' . http_build_query($args)
-            : $asset->url;
+        $url = is_string($assets_url) && $assets_url !== ''
+            ? str_replace(is_string($base_url) ? $base_url : '', $assets_url, $asset_url) . '?' . http_build_query($args)
+            : $asset_url;
 
         return $asset->extension === 'gif' ? explode('?', $url)[0] : $url;
     }
@@ -305,13 +328,15 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
 
     public static function createLink(string|int $value, string $type = 'url'): LinkData
     {
-        if (isset(self::LINK_TYPES[$type])) {
-            $type = self::LINK_TYPES[$type];
+        $link_type_class = self::LINK_TYPES[$type] ?? $type;
+
+        if (!is_subclass_of($link_type_class, BaseLinkType::class)) {
+            throw new InvalidArgumentException(sprintf('Invalid link type: %s', $type));
         }
 
-        $link_type = new $type();
+        $link_type = new $link_type_class();
 
-        return new LinkData((string) $link_type->normalizeValue($value), $link_type, []);
+        return new LinkData($link_type->normalizeValue((string) $value), $link_type, []);
     }
 
     /** @param array<string,mixed> $args */
@@ -326,22 +351,16 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         $args = array_diff_key($args, array_flip(array_merge(self::LINK_ATTRS, array_keys($ends))));
 
         foreach ($attributes as $attribute => $value) {
-            $method = sprintf('set%s', StringHelper::toPascalCase($attribute));
-
-            if (method_exists($button, $method)) {
-                $button->$method($value);
-            } else {
-                $button->$attribute = $value;
-            }
+            self::setLinkAttribute($button, (string) $attribute, $value);
         }
 
         foreach ($ends as $kind => $value) {
             $text = $button->getLabel();
 
             if ($kind === 'prepend') {
-                $button->setLabel(implode(' ', [$value, $text]));
+                $button->setLabel(implode(' ', array_filter([self::stringValue($value), $text], self::filledString(...))));
             } elseif ($kind === 'append') {
-                $button->setLabel(implode(' ', [$text, $value]));
+                $button->setLabel(implode(' ', array_filter([$text, self::stringValue($value)], self::filledString(...))));
             }
         }
 
@@ -380,7 +399,10 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             $environments = [$environments];
         }
 
-        if (in_array(Craft::$app->config->env, $environments)) {
+        /** @var Application|\craft\console\Application $app */
+        $app = Craft::$app;
+
+        if (in_array($app->getConfig()->env, $environments)) {
             return $markup;
         }
 
@@ -393,7 +415,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             return '';
         }
 
-        return Serializer::plain(strval($string));
+        return Serializer::plain(self::stringValue($string));
     }
 
     public static function heading(mixed $string): string
@@ -402,23 +424,25 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             return '';
         }
 
-        return Serializer::heading(strval($string));
+        return Serializer::heading(self::stringValue($string));
     }
 
     public static function tel(string $string): string
     {
-        return preg_replace_callback('/((?:1[^\d]?)?\(?\d{3}\)?[^\d]?\d{3}[^\d]?\d{4})/', function ($matches) {
+        return preg_replace_callback('/((?:1[^\d]?)?\(?\d{3}\)?[^\d]?\d{3}[^\d]?\d{4})/', function (array $matches): string {
             $tel = $matches[1];
-            $tel = preg_replace('/\D/', '', $tel);
-            $tel = preg_replace('/^1/', '+1', $tel);
+            $tel = preg_replace('/\D/', '', $tel) ?? '';
+            $tel = preg_replace('/^1/', '+1', $tel) ?? '';
 
             return sprintf('tel:%s', $tel);
-        }, $string);
+        }, $string) ?? $string;
     }
 
     public static function mailto(string $string): string
     {
-        return sprintf('mailto:%s', mb_strtolower(filter_var($string, FILTER_SANITIZE_EMAIL)));
+        $email = filter_var($string, FILTER_SANITIZE_EMAIL);
+
+        return sprintf('mailto:%s', mb_strtolower(is_string($email) ? $email : ''));
     }
 
     public static function instance(): self
@@ -428,5 +452,36 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         }
 
         return self::$instance;
+    }
+
+    private static function stringValue(mixed $value): string
+    {
+        return is_scalar($value) || $value instanceof Stringable ? (string) $value : '';
+    }
+
+    private static function filledString(?string $value): bool
+    {
+        return $value !== null && $value !== '';
+    }
+
+    private static function linkStringValue(mixed $value): ?string
+    {
+        return $value === null ? null : self::stringValue($value);
+    }
+
+    private static function setLinkAttribute(LinkData $button, string $attribute, mixed $value): void
+    {
+        match ($attribute) {
+            'label' => $button->setLabel(self::linkStringValue($value)),
+            'urlSuffix' => $button->urlSuffix = self::linkStringValue($value),
+            'target' => $button->target = self::linkStringValue($value),
+            'title' => $button->title = self::linkStringValue($value),
+            'class' => $button->class = self::linkStringValue($value),
+            'id' => $button->id = self::linkStringValue($value),
+            'rel' => $button->rel = self::linkStringValue($value),
+            'ariaLabel' => $button->ariaLabel = self::linkStringValue($value),
+            'download' => $button->download = (bool) $value,
+            default => null,
+        };
     }
 }

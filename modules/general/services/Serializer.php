@@ -9,6 +9,7 @@ use yii\base\Component;
 use craft\elements\Asset;
 use craft\fields\data\LinkData;
 use verbb\iconpicker\models\Icon;
+use craft\elements\db\ElementQueryInterface;
 use modules\general\web\twig\GeneralExtension;
 use spicyweb\embeddedassets\models\EmbeddedAsset;
 use spicyweb\embeddedassets\Plugin as EmbeddedAssets;
@@ -39,23 +40,30 @@ class Serializer extends Component
     }
 
     /**
-     * @return array[]
+     * @return array<int,array{uid:string|null,title:string|null,uri:string}>
      */
     public static function relatedTo(Element $element, string $handle = ''): array
     {
-        if (isset($element->{$handle})) {
-            return array_map(function (Element $element): array {
+        if (isset($element->{$handle}) && $element->{$handle} instanceof ElementQueryInterface) {
+            return array_values(array_filter(array_map(function (mixed $element): ?array {
+                if (!$element instanceof Element) {
+                    return null;
+                }
+
                 return [
                     'uid' => $element->uid,
                     'title' => $element->title,
                     'uri' => $element->uri ? "/{$element->uri}" : '',
                 ];
-            }, $element->{$handle}->all());
+            }, $element->{$handle}->all())));
         }
 
         return [];
     }
 
+    /**
+     * @return array{slug:string|null,path:string,inline:string}|null
+     */
     public static function icon(Icon $icon): ?array
     {
         return $icon->value ? [
@@ -65,20 +73,32 @@ class Serializer extends Component
         ] : null;
     }
 
+    /**
+     * @return array{uid:string|null,src:string|null,alt:string,width:int,height:int,extension:string|null,focalPoint:array{x:float,y:float},hasFocalPoint:bool}|null
+     */
     public static function image(?Asset $asset): ?array
     {
         return $asset ? [
             'uid' => $asset->uid,
             'src' => $asset->url,
-            'alt' => $asset->label,
+            'alt' => $asset->alt ?? '',
             'width' => (int) $asset->width,
             'height' => (int) $asset->height,
             'extension' => $asset->extension,
-            'focalPoint' => $asset->focalPoint,
             'hasFocalPoint' => (bool) $asset->hasFocalPoint,
+            'focalPoint' => is_array($asset->focalPoint) && isset($asset->focalPoint['x'], $asset->focalPoint['y']) ? [
+                'x' => (float) $asset->focalPoint['x'],
+                'y' => (float) $asset->focalPoint['y'],
+            ] : [
+                'x' => 0.5,
+                'y' => 0.5,
+            ],
         ] : null;
     }
 
+    /**
+     * @return array<string,mixed>|null
+     */
     public static function video(?Asset $asset): ?array
     {
         if (!$asset) {
@@ -86,8 +106,7 @@ class Serializer extends Component
         }
 
         if ($asset->mimeType === 'application/json') {
-            /** @var ?EmbeddedAsset */
-            $embed = EmbeddedAssets::$plugin->methods->getEmbeddedAsset($asset);
+            $embed = EmbeddedAssets::$plugin?->methods->getEmbeddedAsset($asset);
 
             if (!$embed) {
                 return null;
@@ -109,7 +128,7 @@ class Serializer extends Component
     }
 
     /**
-     * @return array<string,mixed>
+     * @return array{type:string,title:string|null,description:string|null,src:string,width:int,height:int,aspectRatio:float,image:string|null,source:string}
      */
     public static function embed(EmbeddedAsset $embed): array
     {
@@ -126,11 +145,16 @@ class Serializer extends Component
         ];
     }
 
+    /**
+     * @return array<string,mixed>|null
+     */
     public static function link(?LinkData $button): ?array
     {
         if (!$button) {
             return null;
         }
+
+        $serialized = $button->serialize();
 
         return array_merge([
             'type' => '',
@@ -147,6 +171,6 @@ class Serializer extends Component
             'ariaLabel' => null,
             'filename' => null,
             'download' => false,
-        ], $button->serialize());
+        ], is_array($serialized) ? $serialized : []);
     }
 }

@@ -1,0 +1,6 @@
+{
+    "language_server_phpstan.enabled": true,
+    "language_server_phpstan.bin": "%project_root%/vendor/bin/phpstan",
+    "language_server_phpstan.level": "9",
+    "language_server_phpstan.config": "%project_root%/phpstan.neon"
+}

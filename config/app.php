@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Craft;
 use craft\helpers\App;
 use modules\general\General;
 use yii\web\NotFoundHttpException;
@@ -19,7 +18,7 @@ return [
     'components' => [
         'log' => [
             'targets' => array_filter([
-                'sentry' => App::env('SENTRY_DSN') && class_exists(SentryTarget::class) ? function (): ?object {
+                'sentry' => App::env('SENTRY_DSN') && class_exists(SentryTarget::class) ? function (): object {
                     // This configuration method adds the Sentry log target to the existing
                     // log component before loading any Craft plugins or modules.
                     // Then we are assured that all logs are sent to Sentry.

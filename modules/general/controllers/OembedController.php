@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace modules\general\controllers;
 
 use Craft;
-use craft\web\Response;
+use RuntimeException;
+use yii\web\Response;
+use craft\web\Request;
 use craft\web\Controller;
+use InvalidArgumentException;
 use modules\general\services\Serializer;
 use spicyweb\embeddedassets\models\EmbeddedAsset;
 use spicyweb\embeddedassets\Plugin as EmbeddedAssets;
@@ -19,7 +22,17 @@ class OembedController extends Controller
     {
         $this->requirePostRequest();
 
-        $url = Craft::$app->request->getBodyParam('url');
+        /** @var Request $request */
+        $request = Craft::$app->getRequest();
+        $url = $request->getRequiredBodyParam('url');
+
+        if (!is_string($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new InvalidArgumentException('Invalid URL');
+        }
+
+        if (!EmbeddedAssets::$plugin) {
+            throw new RuntimeException('Embedded Assets plugin is not installed');
+        }
 
         /** @var EmbeddedAsset */
         $embed = EmbeddedAssets::$plugin->methods->requestUrl($url, false);

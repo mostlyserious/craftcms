@@ -16,10 +16,14 @@ use nystudio107\vite\Vite;
 use craft\helpers\StringHelper;
 use craft\base\Event as CraftEvent;
 use craft\events\ReplaceAssetEvent;
+use craft\web\Request as WebRequest;
 use modules\general\services\Serializer;
 use craft\web\twig\variables\CraftVariable;
+use craft\console\Request as ConsoleRequest;
 use craft\events\RegisterTemplateRootsEvent;
+use craft\web\Application as WebApplication;
 use modules\general\web\twig\GeneralExtension;
+use craft\console\Application as ConsoleApplication;
 
 /**
  * @property-read Serializer $serializer
@@ -30,7 +34,14 @@ class General extends Module
     {
         Craft::setAlias('@modules/general', __DIR__);
 
-        if (Craft::$app->request->isConsoleRequest) {
+        /** @var WebApplication|ConsoleApplication $app */
+        $app = Craft::$app;
+        /** @var WebRequest|ConsoleRequest $request */
+        $request = $app->getRequest();
+        /** @var View $view */
+        $view = $app->getView();
+
+        if ($request->getIsConsoleRequest()) {
             $this->controllerNamespace = 'modules\\general\\console\\controllers';
         } else {
             $this->controllerNamespace = 'modules\\general\\controllers';
@@ -38,9 +49,9 @@ class General extends Module
 
         parent::init();
 
-        Craft::$app->view->registerTwigExtension(GeneralExtension::instance());
+        $view->registerTwigExtension(GeneralExtension::instance());
 
-        Craft::$app->onInit(function (): void {
+        $app->onInit(function (): void {
             $this->setComponents([
                 'serializer' => Serializer::class,
             ]);
@@ -50,7 +61,9 @@ class General extends Module
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
             function (Event $event): void {
-                $event->sender->set('serializer', Serializer::class);
+                if ($event->sender instanceof CraftVariable) {
+                    $event->sender->set('serializer', Serializer::class);
+                }
             },
         );
 
@@ -62,18 +75,21 @@ class General extends Module
             },
         );
 
-        if (Craft::$app->request->getIsCpRequest()) {
-            Craft::$app->view->hook('cp.layouts.base', static function (array &$context): void {
-                $context['bodyAttributes']['class'][] = sprintf('env-%s', App::env('CRAFT_ENVIRONMENT'));
+        if ($request->getIsCpRequest()) {
+            $view->hook('cp.layouts.base', static function (array &$context): void {
+                $environment = App::env('CRAFT_ENVIRONMENT');
+                $context['bodyAttributes']['class'][] = sprintf('env-%s', is_scalar($environment) ? $environment : '');
             });
 
             CraftEvent::once(
                 View::class,
                 View::EVENT_BEFORE_RENDER_TEMPLATE,
-                function (): void {
-                    if (Craft::$app->plugins->getPlugin('vite')) {
-                        Craft::$app->view->registerHtml(
-                            Vite::$plugin->get('vite')->script('src/dashboard.js'),
+                function () use ($app, $view): void {
+                    $plugin = $app->getPlugins()->getPlugin('vite');
+
+                    if ($plugin instanceof Vite) {
+                        $view->registerHtml(
+                            $plugin->getVite()->script('src/dashboard.js'),
                             View::POS_HEAD,
                         );
                     }
@@ -84,7 +100,9 @@ class General extends Module
                 Asset::class,
                 Asset::EVENT_AFTER_DELETE,
                 function (Event $event): void {
-                    $this->purgeImgixAsset($event->sender);
+                    if ($event->sender instanceof Asset) {
+                        $this->purgeImgixAsset($event->sender);
+                    }
                 },
             );
 
@@ -106,15 +124,19 @@ class General extends Module
 
     protected function purgeImgixAsset(Asset $asset): void
     {
-        if (!App::env('IMGIX_API_KEY') || !$asset->supportsImageEditor) {
+        $imgixUrl = App::env('IMGIX_URL');
+        $apiKey = App::env('IMGIX_API_KEY');
+        $storageUrl = App::env('OBJECT_STORAGE_URL');
+
+        if (!is_string($apiKey) || $apiKey === '' || !$asset->supportsImageEditor || !$asset->url || !is_string($imgixUrl) || !is_string($storageUrl)) {
             return;
         }
 
-        $target = str_replace(App::env('OBJECT_STORAGE_URL'), App::env('IMGIX_URL'), $asset->url);
+        $target = str_replace($storageUrl, $imgixUrl, $asset->url);
 
-        (new Client())->post('https://api.imgix.com/api/v1/purge', [
+        new Client()->post('https://api.imgix.com/api/v1/purge', [
             'headers' => [
-                'Authorization' => sprintf('Bearer %s', App::env('IMGIX_API_KEY')),
+                'Authorization' => sprintf('Bearer %s', $apiKey),
                 'Content-Type' => 'application/vnd.api+json',
             ],
             'json' => [

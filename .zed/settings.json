@@ -45,7 +45,7 @@
         },
         "PHP": {
             "format_on_save": "on",
-            "prettier": { "allowed": false },
+            "language_servers": ["phpactor", "!phptools", "!intelephense"],
             "formatter": [{ "external": { "command": "utility/pint.sh" } }]
         },
         "CSS": {

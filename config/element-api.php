@@ -2,26 +2,24 @@
 
 declare(strict_types=1);
 
-use Craft;
 use craft\elements\Entry;
+use craft\web\Application as WebApplication;
+use craft\console\Application as ConsoleApplication;
+
+/** @var WebApplication|ConsoleApplication $app */
+$app = Craft::$app;
 
 return [
     'defaults' => [
-        'cache' => Craft::$app->config->env !== 'dev'
-            ? Craft::$app->config->general->cacheDuration
+        'cache' => $app->getConfig()->env !== 'dev'
+            ? $app->getConfig()->general->cacheDuration
             : false,
     ],
     'endpoints' => [
-        'api/ping' => function (): array {
-            return [
-                'one' => true,
-                'elementType' => Entry::class,
-                'transformer' => function (): array {
-                    return [
-                        'success' => true,
-                    ];
-                },
-            ];
-        },
+        'api/ping' => fn (): array => [
+            'one' => true,
+            'elementType' => Entry::class,
+            'transformer' => fn (): array => ['success' => true],
+        ],
     ],
 ];
