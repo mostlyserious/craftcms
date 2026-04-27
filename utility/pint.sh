@@ -1,8 +1,8 @@
 #!/bin/bash
 
-TEMP_FILE=$(mktemp)
-mv "$TEMP_FILE" "${TEMP_FILE}.php"
-TEMP_FILE="${TEMP_FILE}.php"
+TEMP_BASE=$(mktemp)
+TEMP_FILE="${TEMP_BASE}.php"
+touch "$TEMP_FILE" && rm -f "$TEMP_BASE" || { rm -f "$TEMP_BASE"; exit 1; }
 
 trap 'rm -f "$TEMP_FILE"' EXIT
 
