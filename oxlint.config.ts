@@ -1,6 +1,6 @@
-import { defineConfig } from 'oxlint'
+import type { OxlintConfig } from 'oxlint'
 
-export default defineConfig({
+const config: OxlintConfig = {
     plugins: ['oxc', 'typescript', 'unicorn'],
     categories: {
         correctness: 'warn',
@@ -43,4 +43,6 @@ export default defineConfig({
             },
         ],
     },
-})
+}
+
+export default config
