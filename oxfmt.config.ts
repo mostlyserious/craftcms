@@ -1,8 +1,6 @@
-import { defineConfig } from 'oxfmt'
+import type { OxfmtConfig } from 'oxfmt'
 
-export default defineConfig({
-    printWidth: 120,
-    tabWidth: 4,
+const config: OxfmtConfig = {
     semi: false,
     singleQuote: true,
     arrowParens: 'avoid',
@@ -14,4 +12,6 @@ export default defineConfig({
         newlinesBetween: false,
         internalPattern: ['$'],
     },
-})
+}
+
+export default config

@@ -24,7 +24,7 @@ export function useThrottle(wait) {
  * @returns {<F extends () => unknown>(func: F) => void} A debounce function that executes after the wait period
  */
 export function useDebounce(wait) {
-    /** @type {?number} */
+    /** @type {?ReturnType<typeof setTimeout>} */
     let timeout = null
 
     return func => {

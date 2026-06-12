@@ -1,43 +1,39 @@
 /**
- * @template {Function} T
+ * @template {(...args: unknown[]) => unknown} T
  * @param {T} handler
- * @param {Array<unknown>} args
+ * @param {Parameters<T>} args [description]
+ * @return {() => Promise<ReturnType<T>>}
+ * */
+export function viewTransitionClosure(handler, ...args) {
+    return () => closure(handler, ...args)
+}
+
+/**
+ * @template {(...args: unknown[]) => unknown} T
+ * @param {T} handler
+ * @param {Parameters<T>} args [description]
+ * @return {Promise<ReturnType<T>>}
+ * */
+export function viewTransition(handler, ...args) {
+    return closure(handler, ...args)
+}
+
+/**
+ * @template {(...args: unknown[]) => unknown} T
+ * @param {T} handler
+ * @param {Parameters<T>} args
  * @return {Promise<ReturnType<T>>}
  * */
 function closure(handler, ...args) {
     return new Promise(resolve => {
         if (!document.startViewTransition) {
-            resolve(handler(...args))
+            resolve(/** @type {ReturnType<T>} */ (handler(...args)))
 
             return
         }
 
-        document.startViewTransition(() => {
-            resolve(handler(...args))
+        document.startViewTransition(async () => {
+            resolve(/** @type {ReturnType<T>} */ (await handler(...args)))
         })
     })
 }
-
-/**
- * @template {Function} T
- * @param {T} handler
- * @param {Array<unknown>} args [description]
- * @return {() => Promise<ReturnType<T>>}
- * */
-function viewTransitionClosure(handler, ...args) {
-    return () => closure(handler, ...args)
-}
-
-/**
- * @template {Function} T
- * @param {T} handler
- * @param {Array<unknown>} args [description]
- * @return {Promise<ReturnType<T>>}
- * */
-function viewTransition(handler, ...args) {
-    return closure(handler, ...args)
-}
-
-export { viewTransitionClosure }
-
-export default viewTransition
