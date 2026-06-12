@@ -1,10 +1,12 @@
 #!/bin/bash
 
-TEMP_BASE=$(mktemp)
+TEMP_BASE=$(mktemp) || exit $?
 TEMP_FILE="${TEMP_BASE}.php"
-touch "$TEMP_FILE" && rm -f "$TEMP_BASE" || { rm -f "$TEMP_BASE"; exit 1; }
 
-trap 'rm -f "$TEMP_FILE"' EXIT
+trap 'rm -f "$TEMP_BASE" "$TEMP_FILE"' EXIT
+
+touch "$TEMP_FILE" || exit $?
+rm -f "$TEMP_BASE" || exit $?
 
 cat > "$TEMP_FILE"
 
