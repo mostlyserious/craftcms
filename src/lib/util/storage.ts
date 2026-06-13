@@ -5,6 +5,8 @@ type StorageGetter<T> = () => T | null
 type StorageSetter<T> = (value: T) => T
 type CookieSetter<T> = (value: T, expires?: number) => T
 
+const DEFAULT_COOKIE_EXPIRES = 3.154e10
+
 export function useLocal<T extends ZodMiniType>(
     key: string,
     schema: T,
@@ -52,7 +54,7 @@ export function useSession<T extends ZodMiniType>(
 export function useCookie<T extends ZodMiniType>(
     key: string,
     schema: T,
-    defaultExpires = 3.154e7,
+    defaultExpires = DEFAULT_COOKIE_EXPIRES,
 ): [StorageGetter<Infer<T>>, CookieSetter<Infer<T>>] {
     return [
         () => {
