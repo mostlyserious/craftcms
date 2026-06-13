@@ -223,5 +223,5 @@ All module code follows the project's strict quality standards:
 
 ```bash
 # PHP formatting
-pint modules/
+ddev php vendor/bin/pint modules/
 ```

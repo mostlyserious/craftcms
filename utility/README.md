@@ -17,14 +17,10 @@ A robust environment variable parser and validator built with Zod schema validat
 
 #### Usage
 
-```javascript
+```typescript
 import { parse } from './utility/env.ts'
 
-// Parse and validate current environment
-const { VITE_BASE, VITE_PORT, PRIMARY_SITE_URL } = env.parse()
-
-// Parse and validate custom environment object
-const { VITE_BASE, VITE_PORT, PRIMARY_SITE_URL } = env.parse(customEnvObject)
+const { VITE_BASE, VITE_PORT, PRIMARY_SITE_URL } = parse('development')
 ```
 
 #### Environment Variables
@@ -129,11 +125,10 @@ The install script includes automatic API key retrieval using the 1Password CLI 
 This template uses one pnpm dependency model from the same `package.json` and `pnpm-lock.yaml`:
 
 - `ddev pnpm install --frozen-lockfile` as the app/runtime dependency-management path
-- `corepack pnpm install` on the host only when editor tooling needs a host-side dependency refresh
 
 `pnpm-workspace.yaml` includes `supportedArchitectures` for the current platform plus Darwin/Linux ARM64 so native tooling packages can install binaries for both the DDEV container and common host IDE environments from one lockfile.
 
-DDEV keeps `node_modules` out of Mutagen and bind-mounts it into the container. The project does not require dependency sync scripts or a custom `node_modules` Docker volume.
+DDEV treats `node_modules` as an upload directory so Mutagen does not sync it. The project does not require Bun, dependency sync scripts, or a custom `node_modules` Docker volume.
 
 **Benefits:**
 

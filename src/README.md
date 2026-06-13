@@ -6,8 +6,8 @@ The source directory contains all frontend assets, components, and application l
 
 The project uses a dual entry point system to support different application contexts:
 
-- **`app.js`** - Main application entry point for public-facing features
-- **`dashboard.js`** - Administrative interface entry point for Craft CMS dashboard integration
+- **`app.ts`** - Main application entry point for public-facing features
+- **`dashboard.ts`** - Administrative interface entry point for Craft CMS dashboard integration
 
 This separation allows for context-specific optimizations and feature sets while maintaining shared underlying architecture.
 
@@ -49,8 +49,8 @@ lib/
 ├── schemas/       # Shared runtime schemas and helpers
 ├── stores/        # Global state management
 ├── util/          # Pure utility functions
-├── init.js        # Module initialization system
-└── sveltify.js    # DOM-to-Svelte integration
+├── init.ts        # Module initialization system
+└── sveltify.ts    # DOM-to-Svelte integration
 ```
 
 **Established Patterns:**
@@ -62,7 +62,7 @@ lib/
 
 #### Key Architectural Files
 
-**`init.js` - Module Initialization System**
+**`init.ts` - Module Initialization System**
 Implements a selector-based module loading system that scans the DOM for data attributes and dynamically imports corresponding functionality. This pattern enables:
 
 - Lazy loading of features
@@ -74,10 +74,10 @@ Implements a selector-based module loading system that scans the DOM for data at
 Centralize shared runtime contracts and generic schema helpers under one namespace:
 
 - `schemas/` contains domain-level schemas plus generic combinators such as DOM and promise validators
-- `components/props.js` holds schemas shared by sibling components in that directory
-- `components/common/props.js` holds schemas shared by the common component set
+- `components/props.ts` holds schemas shared by sibling components in that directory
+- `components/common/props.ts` holds schemas shared by the common component set
 
-**`sveltify.js` - Component Integration**
+**`sveltify.ts` - Component Integration**
 
 Transforms server-rendered HTML elements into dynamic Svelte components. This system enables client-side enhancement by replacing static markup with interactive components while preserving SEO benefits during server-side rendering.
 
@@ -169,12 +169,14 @@ Svelte components used with sveltify must follow these patterns:
 
 **Component Props Validation:**
 
-```javascript
-import { ExampleSchema } from '$lib/components/props'
+```svelte
+<script lang="ts">
+    import { ExampleSchema } from '$lib/components/props'
+    import type { infer as Infer } from 'zod/mini'
 
-/** @type {ZodInfer<typeof ExampleSchema>} */
-const props = $props()
-const { message } = ExampleSchema.parse(props)
+    let props: Infer<typeof ExampleSchema> = $props()
+    const { message } = ExampleSchema.parse(props)
+</script>
 ```
 
 **Snippet Usage in Components:**
@@ -288,7 +290,7 @@ The codebase extensively uses Zod schemas for:
 - API contract enforcement
 - Component prop validation
 
-### Module Federation
+### Progressive Module Loading
 
 The selector-based module system enables:
 
@@ -325,6 +327,6 @@ The source architecture supports modern development practices:
 
 1. **Component Development**: Use `reference.css` imports for full PostCSS feature access
 2. **Feature Addition**: Add modules with corresponding DOM selectors for automatic loading
-3. **Schema Definition**: Define shared runtime schemas in `schemas/`, and use directory-level `props.js` files for component prop schemas
+3. **Schema Definition**: Define shared runtime schemas in `schemas/`, and use directory-level `props.ts` files for component prop schemas
 4. **Progressive Enhancement**: Build components that enhance existing markup
 5. **Context Separation**: Choose appropriate entry points for different application areas
