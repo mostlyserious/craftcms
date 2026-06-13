@@ -14,16 +14,26 @@ export function viewTransition<T extends ViewTransitionHandler>(
     return closure(handler, ...args)
 }
 
-function closure<T extends ViewTransitionHandler>(handler: T, ...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> {
-    return new Promise<Awaited<ReturnType<T>>>(resolve => {
-        if (!document.startViewTransition) {
-            resolve(handler(...args) as Awaited<ReturnType<T>>)
+async function closure<T extends ViewTransitionHandler>(
+    handler: T,
+    ...args: Parameters<T>
+): Promise<Awaited<ReturnType<T>>> {
+    if (!document.startViewTransition) {
+        return (await handler(...args)) as Awaited<ReturnType<T>>
+    }
 
-            return
-        }
+    let handlerResult: Promise<Awaited<ReturnType<T>>> | null = null
+    const transition = document.startViewTransition(() => {
+        handlerResult = Promise.resolve(handler(...args)).then(result => result as Awaited<ReturnType<T>>)
 
-        document.startViewTransition(async () => {
-            resolve((await handler(...args)) as Awaited<ReturnType<T>>)
-        })
+        return handlerResult.then(() => undefined)
     })
+
+    await transition.updateCallbackDone
+
+    if (!handlerResult) {
+        throw new Error('View transition update callback was not invoked.')
+    }
+
+    return await handlerResult
 }
