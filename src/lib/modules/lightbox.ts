@@ -3,8 +3,8 @@ import rightArrowIcon from '$fontawesome/solid/chevron-right.svg?raw'
 import { ModuleSchema } from '$lib/schemas/core'
 import { next, prev } from '$lib/util/cycle'
 import markup from '$lib/util/markup'
+import { lockScroll } from '$lib/util/scroll-lock'
 
-const groups: Record<string, HTMLElement[]> = {}
 const DEFAULT_GROUP = 'default'
 
 const preloaded = new Set<string>()
@@ -14,8 +14,11 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
     const backward = document.createElement('button')
     const backdrop = document.createElement('div')
     const dialog = document.createElement('dialog')
+    const groups: Record<string, HTMLElement[]> = {}
+    const cleanups: Array<() => void> = []
 
     let current: HTMLElement | null = null
+    let scrollRelease: (() => void) | null = null
 
     document.body.append(backdrop)
     backdrop.append(dialog)
@@ -47,7 +50,25 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         class: 'm-auto fill-current size-8',
     })
 
-    addEventListener('keydown', ({ code, shiftKey }) => {
+    const listen = (
+        target: EventTarget,
+        type: string,
+        listener: (event: Event) => void,
+        options?: AddEventListenerOptions | boolean,
+    ): void => {
+        target.addEventListener(type, listener, options)
+        cleanups.push(() => target.removeEventListener(type, listener, options))
+    }
+
+    const getGroup = (el: HTMLElement): HTMLElement[] => groups[el.dataset.lightboxGroup || DEFAULT_GROUP] || []
+
+    listen(window, 'keydown', event => {
+        if (!(event instanceof KeyboardEvent)) {
+            return
+        }
+
+        const { code, shiftKey } = event
+
         if (code === 'Escape') {
             close()
         }
@@ -81,7 +102,7 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         }
     })
 
-    forward.addEventListener('click', event => {
+    listen(forward, 'click', event => {
         event.stopPropagation()
 
         if (!current) {
@@ -95,7 +116,7 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         open(collection[i])
     })
 
-    backward.addEventListener('click', event => {
+    listen(backward, 'click', event => {
         event.stopPropagation()
 
         if (!current) {
@@ -163,7 +184,10 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         backdrop.classList.remove('pointer-events-none')
 
         dialog.setAttribute('open', '')
-        document.body.style.overflow = 'hidden'
+
+        if (!scrollRelease) {
+            scrollRelease = lockScroll()
+        }
 
         const collection = getGroup(current)
         const n = next(collection.indexOf(current), collection.length)
@@ -174,11 +198,17 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
     }
 
     const close = (): void => {
-        document.body.style.overflow = 'auto'
+        if (scrollRelease) {
+            scrollRelease()
+            scrollRelease = null
+        }
+
         backdrop.classList.add('opacity-0')
         backdrop.classList.add('pointer-events-none')
         dialog.removeAttribute('open')
     }
+
+    listen(backdrop, 'click', () => close())
 
     for (const el of els) {
         const group = el.dataset.lightboxGroup || DEFAULT_GROUP
@@ -190,12 +220,17 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         groups[group].push(el)
 
         el.setAttribute('type', 'submit')
-        el.addEventListener('click', () => open(el))
-        el.addEventListener('mouseover', () => preload(el))
-        backdrop.addEventListener('click', () => close())
+        listen(el, 'click', () => open(el))
+        listen(el, 'mouseover', () => preload(el))
+    }
+
+    return () => {
+        for (const cleanup of cleanups.reverse()) {
+            cleanup()
+        }
+
+        close()
+        backdrop.remove()
+        current = null
     }
 })
-
-function getGroup(el: HTMLElement): HTMLElement[] {
-    return groups[el.dataset.lightboxGroup || DEFAULT_GROUP] || []
-}
