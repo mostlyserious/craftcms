@@ -1,37 +1,45 @@
-<script module>
+<script module lang="ts">
     const FOCUSABLE = 'a,button,input,select,textarea,[tabindex="0"]'
 
-    /** @type {?string} */
-    let active = $state(null)
+    let active = $state<string | null>(null)
 
-    /** @param {string} id */
-    export function open(id) {
+    export function open(id: string): void {
         active = id
     }
 
-    export function close() {
+    export function close(): void {
         active = null
     }
 </script>
 
-<script>
+<script lang="ts">
+    import type { Snippet } from 'svelte'
     import { blur } from 'svelte/transition'
     import Icon from '$lib/components/common/Icon.svelte'
     import { FocusableSchema } from '$lib/schemas/app'
     import { lockScroll } from '$lib/util/scroll-lock'
 
-    /**
-     * @typedef {'top-left'|'top'|'top-right'|'right'|'bottom-right'|'bottom'|'bottom-left'|'left'} ModalPosition
-     * */
+    type ModalPosition = 'top-left' | 'top' | 'top-right' | 'right' | 'bottom-right' | 'bottom' | 'bottom-left' | 'left'
 
-    /**
-     * @import { Snippet } from 'svelte'
-     * @type {{ id: string; position?: ?ModalPosition; overlay?: 'polite'|'assertive'; container?: `max-w-${string}`; onclose?: () => void; children?: Snippet<[]> }}
-     * */
-    const { id, position = null, overlay = 'assertive', container = 'max-w-7xl', onclose, children } = $props()
+    interface ModalProps {
+        id: string
+        position?: ModalPosition | null
+        overlay?: 'polite' | 'assertive'
+        container?: `max-w-${string}`
+        onclose?: () => void
+        children?: Snippet<[]>
+    }
 
-    /** @type {HTMLElement[]?} */
-    let focusable = $state(null)
+    const {
+        id,
+        position = null,
+        overlay = 'assertive',
+        container = 'max-w-7xl',
+        onclose,
+        children,
+    }: ModalProps = $props()
+
+    let focusable = $state<HTMLElement[] | null>(null)
     let wasActive = $state(false)
 
     $effect(() => {
@@ -44,8 +52,7 @@
         wasActive = isActive
     })
 
-    /** @param {?ModalPosition} position */
-    function alignment(position) {
+    function alignment(position: ModalPosition | null) {
         switch (position) {
             case 'top-left':
                 return 'justify-start items-start'
@@ -68,8 +75,7 @@
         }
     }
 
-    /** @param {KeyboardEvent} event */
-    function onKeydown(event) {
+    function onKeydown(event: KeyboardEvent) {
         if (event.code === 'Escape' && active) {
             close()
         } else if (event.code === 'Tab' && active && focusable) {
@@ -79,24 +85,22 @@
             if (event.shiftKey) {
                 if (document.activeElement === first) {
                     event.preventDefault()
-                    last.focus()
+                    last?.focus()
                 }
             } else if (document.activeElement === last) {
                 event.preventDefault()
-                first.focus()
+                first?.focus()
             }
         }
     }
 
-    /** @param {MouseEvent} event */
-    function onBackdropClick(event) {
+    function onBackdropClick(event: MouseEvent) {
         if (event.target === event.currentTarget) {
             close()
         }
     }
 
-    /** @param {KeyboardEvent} event */
-    function onBackdropKeydown(event) {
+    function onBackdropKeydown(event: KeyboardEvent) {
         if (event.target !== event.currentTarget) {
             return
         }
@@ -107,14 +111,12 @@
         }
     }
 
-    /** @param {HTMLElement} el */
-    function modal(el) {
-        let focusTimeout = null
-        /** @type {?() => void} */
-        let releaseScroll = null
+    function modal(el: HTMLElement) {
+        let focusTimeout: ReturnType<typeof setTimeout> | null = null
+        let releaseScroll: (() => void) | null = null
 
         if (overlay === 'assertive') {
-            focusable = el ? FocusableSchema.parse(el.querySelectorAll(FOCUSABLE)) : null
+            focusable = FocusableSchema.parse(Array.from(el.querySelectorAll<HTMLElement>(FOCUSABLE)))
 
             focusTimeout = setTimeout(() => {
                 releaseScroll = lockScroll()
@@ -135,10 +137,13 @@
     }
 </script>
 
-<svelte:window on:keydown={onKeydown} />
+<svelte:window onkeydown={onKeydown} />
 
 {#if active === id && children}
-    <div class="flex py-6 fixed inset-0 z-50 shadow-lg h-dvh-100 {overlay === 'assertive' ? 'bg-black/20' : ''} {alignment(position)}"
+    <div
+        class="fixed inset-0 z-50 flex h-dvh py-6 shadow-lg {overlay === 'assertive' ? 'bg-black/20' : ''} {alignment(
+            position,
+        )}"
         class:pointer-events-none={overlay === 'polite'}
         tabindex="-1"
         role="dialog"
@@ -146,17 +151,21 @@
         onclick={onBackdropClick}
         onkeydown={onBackdropKeydown}
         transition:blur={{ duration: 150 }}
-        {@attach modal}>
+        {@attach modal}
+    >
         <div class="container {container}">
             <div class="max-h-vh-90 overflow-auto">
-                <div class="pointer-events-auto relative overflow-hidden"
+                <div
+                    class="pointer-events-auto relative overflow-hidden"
                     class:border={overlay === 'polite'}
-                    class:border-brand-blue-light={overlay === 'polite'}>
-                    <button class="absolute top-4 right-4 z-10 flex items-center border bg-white p-0.5 transition hover:bg-black hover:text-white disabled:pointer-events-none disabled:opacity-30"
+                    class:border-brand-blue-light={overlay === 'polite'}
+                >
+                    <button
+                        class="absolute top-4 right-4 z-10 flex items-center border bg-white p-0.5 transition hover:bg-black hover:text-white disabled:pointer-events-none disabled:opacity-30"
                         aria-label="close modal"
-                        onclick={close}>
-                        <Icon request={import('$fontawesome/solid/x.svg?raw')}
-                            class="size-4 fill-current" />
+                        onclick={close}
+                    >
+                        <Icon request={import('$fontawesome/solid/x.svg?raw')} class="size-4 fill-current" />
                     </button>
                     {@render children()}
                 </div>

@@ -1,6 +1,5 @@
 {
     "lsp": {
-        "eslint": { "settings": { "onIgnoredFiles": "off" } },
         "oxlint": {
             "initialization_options": {
                 "settings": {
@@ -31,22 +30,17 @@
         "Svelte": {
             "linked_edits": false,
             "format_on_save": "on",
-            "language_servers": ["eslint", "..."],
+            "language_servers": ["oxlint", "oxfmt", "..."],
             "formatter": [
-                {
-                    "external": {
-                        "command": "bun",
-                        "arguments": ["utility/fmt.js", "--stdin-filepath", "{buffer_path}"]
-                    }
-                },
+                { "language_server": { "name": "oxfmt" } },
                 { "external": { "command": "utility/stylelint.sh", "arguments": ["html"] } }
             ],
-            "code_actions_on_format": { "source.fixAll.eslint": true }
+            "code_actions_on_format": { "source.fixAll.oxc": true }
         },
         "PHP": {
             "format_on_save": "on",
             "language_servers": ["phpactor", "!phptools", "!intelephense"],
-            "formatter": [{ "external": { "command": "utility/pint.sh" } }]
+            "formatter": [{ "external": { "command": "utility/pint.sh", "arguments": ["{buffer_path}"] } }]
         },
         "CSS": {
             "language_servers": ["tailwindcss-language-server", "emmet-language-server"],

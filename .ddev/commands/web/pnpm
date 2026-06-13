@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+## Description: Run pnpm in the web container
+## Usage: pnpm [args]
+## Example: "ddev pnpm install --frozen-lockfile"
+## ExecRaw: true
+## HostWorkingDir: true
+## MutagenSync: true
+
+if [ -t 0 ] && [ -t 1 ]; then
+    exec env -u NO_COLOR corepack pnpm "$@"
+fi
+
+exec corepack pnpm "$@"

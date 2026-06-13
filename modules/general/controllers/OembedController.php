@@ -7,8 +7,8 @@ namespace modules\general\controllers;
 use Craft;
 use RuntimeException;
 use yii\web\Response;
-use craft\web\Request;
 use craft\web\Controller;
+use craft\web\Application;
 use InvalidArgumentException;
 use modules\general\services\Serializer;
 use spicyweb\embeddedassets\models\EmbeddedAsset;
@@ -22,8 +22,13 @@ class OembedController extends Controller
     {
         $this->requirePostRequest();
 
-        /** @var Request $request */
-        $request = Craft::$app->getRequest();
+        $app = Craft::$app;
+
+        if (!$app instanceof Application) {
+            throw new RuntimeException('Craft web application is not available');
+        }
+
+        $request = $app->getRequest();
         $url = $request->getRequiredBodyParam('url');
 
         if (!is_string($url) || !filter_var($url, FILTER_VALIDATE_URL)) {

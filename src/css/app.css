@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@source '../../config/custom.php';
+
 @import '$css/setup/base.css';
 @import '$css/setup/theme.css';
 

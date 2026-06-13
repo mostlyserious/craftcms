@@ -1,7 +1,6 @@
 {
     "recommendations": [
-        "VoidZero.vite-plus-extension-pack",
-        "dbaeumer.vscode-eslint",
+        "oxc.oxc-vscode",
         "phpactor.vscode-phpactor",
         "svelte.svelte-vscode",
         "rtchabodi.laravel-formatter",

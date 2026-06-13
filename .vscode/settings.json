@@ -1,11 +1,10 @@
 {
+    "css.customData": ["./.vscode/tailwind.css-data.json"],
     "editor.defaultFormatter": "oxc.oxc-vscode",
     "oxc.fmt.configPath": "./oxfmt.config.ts",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "oxc.typeAware": true,
-    "eslint.onIgnoredFiles": "off",
-    "eslint.validate": ["javascript", "javascriptreact", "svelte"],
     "editor.codeActionsOnSave": {
         "source.fixAll.oxc": "explicit"
     },
@@ -20,9 +19,9 @@
         }
     },
     "[svelte]": {
-        "editor.defaultFormatter": "svelte.svelte-vscode",
+        "editor.defaultFormatter": "oxc.oxc-vscode",
         "editor.codeActionsOnSave": {
-            "source.fixAll.eslint": "explicit"
+            "source.fixAll.oxc": "explicit"
         },
         "editor.linkedEditing": false
     }

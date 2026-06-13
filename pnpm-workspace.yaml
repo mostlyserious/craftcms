@@ -1,0 +1,12 @@
+packages:
+  - '.'
+supportedArchitectures:
+  os:
+    - 'current'
+    - 'darwin'
+    - 'linux'
+  cpu:
+    - 'current'
+    - 'arm64'
+allowBuilds:
+  esbuild: true

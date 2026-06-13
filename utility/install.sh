@@ -18,12 +18,12 @@ ddev start
 ddev composer update
 ddev craft setup/keys
 ddev craft install/craft
-bun install
+ddev pnpm install --frozen-lockfile
 
 if command -v op &> /dev/null
 then
     ddev dotenv set .env --tinypng-key=$(get_op TINYPNG_KEY)
-    bun run build
+    ddev pnpm run build
 else
     echo "1Password CLI not found."
     echo "Install it for a better experience. https://developer.1password.com/docs/cli/get-started/"
