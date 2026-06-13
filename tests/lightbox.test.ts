@@ -119,4 +119,24 @@ describe('lightbox', () => {
 
         cleanup()
     })
+
+    test('removes empty source elements from navigation groups', () => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+        const cleanup = mountLightbox(`
+            <button data-lightbox="" data-lightbox-group="gallery">Broken</button>
+            <button data-lightbox="/photo-a.jpg" data-lightbox-group="gallery">One</button>
+            <button data-lightbox="/photo-b.jpg" data-lightbox-group="gallery">Two</button>
+        `)
+        const buttons = Array.from(document.querySelectorAll<HTMLElement>('[data-lightbox]'))
+
+        expect(error).toHaveBeenCalledOnce()
+        expect(buttons).toHaveLength(2)
+
+        buttons[0]?.click()
+        window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ArrowLeft' }))
+
+        expect(document.querySelector<HTMLImageElement>('dialog img')?.src).toContain('/photo-b.jpg')
+
+        cleanup()
+    })
 })

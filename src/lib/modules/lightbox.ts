@@ -62,6 +62,29 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
 
     const getGroup = (el: HTMLElement): HTMLElement[] => groups[el.dataset.lightboxGroup || DEFAULT_GROUP] || []
 
+    const reportMissingSource = (el: HTMLElement): void => {
+        console.error(
+            new Error('Missing lightbox src', {
+                cause: el,
+            }),
+        )
+    }
+
+    const removeFromGroup = (el: HTMLElement): void => {
+        const group = getGroup(el)
+        const index = group.indexOf(el)
+
+        if (index !== -1) {
+            group.splice(index, 1)
+        }
+    }
+
+    const removeInvalidElement = (el: HTMLElement): void => {
+        reportMissingSource(el)
+        removeFromGroup(el)
+        el.remove()
+    }
+
     const setNavigationVisible = (visible: boolean): void => {
         forward.hidden = !visible
         backward.hidden = !visible
@@ -160,10 +183,8 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         const src = el.dataset.lightbox ?? ''
 
         if (!src) {
-            el.remove()
-            throw new Error('Missing lightbox src', {
-                cause: el,
-            })
+            removeInvalidElement(el)
+            return
         }
 
         let img = dialog.querySelector('img')
@@ -214,6 +235,12 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
 
     for (const el of els) {
         const group = el.dataset.lightboxGroup || DEFAULT_GROUP
+        const src = el.dataset.lightbox ?? ''
+
+        if (!src) {
+            removeInvalidElement(el)
+            continue
+        }
 
         if (!groups[group]) {
             groups[group] = []
