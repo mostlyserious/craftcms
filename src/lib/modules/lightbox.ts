@@ -62,6 +62,11 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
 
     const getGroup = (el: HTMLElement): HTMLElement[] => groups[el.dataset.lightboxGroup || DEFAULT_GROUP] || []
 
+    const setNavigationVisible = (visible: boolean): void => {
+        forward.hidden = !visible
+        backward.hidden = !visible
+    }
+
     listen(window, 'keydown', event => {
         if (!(event instanceof KeyboardEvent)) {
             return
@@ -164,11 +169,9 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         let img = dialog.querySelector('img')
 
         current = el
+        const collection = getGroup(current)
 
-        if (getGroup(current).length === 1) {
-            forward.remove()
-            backward.remove()
-        }
+        setNavigationVisible(collection.length > 1)
 
         if (!img) {
             img = document.createElement('img')
@@ -189,7 +192,6 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
             scrollRelease = lockScroll()
         }
 
-        const collection = getGroup(current)
         const n = next(collection.indexOf(current), collection.length)
         const p = prev(collection.indexOf(current), collection.length)
 

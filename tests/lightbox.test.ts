@@ -88,4 +88,35 @@ describe('lightbox', () => {
 
         cleanup()
     })
+
+    test('restores nav controls after opening a single-item group', () => {
+        const cleanup = mountLightbox(`
+            <button data-lightbox="/single.jpg" data-lightbox-group="single">Single</button>
+            <button data-lightbox="/photo-a.jpg" data-lightbox-group="gallery">One</button>
+            <button data-lightbox="/photo-b.jpg" data-lightbox-group="gallery">Two</button>
+        `)
+        const buttons = Array.from(document.querySelectorAll<HTMLElement>('[data-lightbox]'))
+        const backdrop = document.querySelector<HTMLDivElement>('div')
+
+        if (!backdrop) {
+            throw new Error('Lightbox backdrop was not created.')
+        }
+
+        const navButtons = Array.from(backdrop.children).filter(
+            (child): child is HTMLButtonElement => child instanceof HTMLButtonElement,
+        )
+
+        buttons[0]?.click()
+
+        expect(navButtons).toHaveLength(2)
+        expect(navButtons.every(button => button.hidden)).toBe(true)
+
+        backdrop.click()
+        buttons[1]?.click()
+
+        expect(navButtons.every(button => button.parentElement === backdrop)).toBe(true)
+        expect(navButtons.every(button => !button.hidden)).toBe(true)
+
+        cleanup()
+    })
 })
