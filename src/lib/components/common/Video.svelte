@@ -47,7 +47,7 @@
         }
     }
 
-    function preconnect(url: string): void {
+    function preconnect(url: string) {
         const link = document.createElement('link')
 
         link.href = url

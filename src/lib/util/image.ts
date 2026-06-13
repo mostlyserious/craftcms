@@ -16,11 +16,11 @@ interface PictureAttributes {
     sources: ImageAttributes[]
 }
 
-function normalizeLoading(loading: string): Loading {
+function normalizeLoading(loading: string) {
     return loading === 'eager' ? 'eager' : 'lazy'
 }
 
-function setAttributes(el: Element, attributes: ImageAttributes): void {
+function setAttributes(el: Element, attributes: ImageAttributes) {
     for (const [attr, value] of object.entries(attributes)) {
         if (value !== null && value !== undefined) {
             el.setAttribute(attr, String(value))
@@ -30,7 +30,7 @@ function setAttributes(el: Element, attributes: ImageAttributes): void {
     }
 }
 
-function attributes(source: ImageSource, loading = 'lazy'): { asset: ImageSource[0]; attrs: ImageAttributes } {
+function attributes(source: ImageSource, loading = 'lazy') {
     const [asset, parsedArgs] = ImageSourceSchema.parse(source)
 
     const args: ImageTransformArgs | null = parsedArgs ? { ...parsedArgs } : null

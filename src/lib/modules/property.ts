@@ -6,7 +6,7 @@ const observers = new WeakMap<
     { resizeObserver: ResizeObserver; mutationObserver: MutationObserver }
 >()
 
-export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
+export default ModuleSchema.implement(els => {
     const existing = observers.get(els)
 
     if (existing) {
@@ -34,7 +34,7 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
     customProperties(els)
 })
 
-function customProperties(els: NodeListOf<HTMLElement>): void {
+function customProperties(els: NodeListOf<HTMLElement>) {
     for (const el of els) {
         if (el instanceof HTMLElement) {
             const scoped = 'propertyScoped' in el.dataset

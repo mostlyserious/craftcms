@@ -6,7 +6,7 @@ import { EmbedSchema } from '$lib/schemas/media'
 import { craft } from '$lib/stores/global'
 import wrap from '$lib/util/wrap'
 
-export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
+export default ModuleSchema.implement(els => {
     craft
         .csrf()
         .then(data => CsrfSchema.parse(data))

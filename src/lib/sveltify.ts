@@ -12,7 +12,7 @@ const components = {
 
 type RawSnippet = Snippet<[]>
 
-export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
+export default ModuleSchema.implement(els => {
     const ComponentHandlesSchema = z.enum(object.keys(components))
 
     for (const target of els) {

@@ -16,7 +16,7 @@ const FOCUSABLE = 'a,button,input,select,textarea,[tabindex="0"]'
 
 const collection = new Set<HTMLElement>()
 
-export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
+export default ModuleSchema.implement(els => {
     const controllers = new Map<HTMLElement, AbortController>()
     const bindings: ToggleBinding[] = []
     const cleanups: Array<() => void> = []
@@ -26,7 +26,7 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         type: string,
         listener: (event: Event) => void,
         options?: AddEventListenerOptions | boolean,
-    ): void => {
+    ) => {
         target.addEventListener(type, listener, options)
         cleanups.push(() => target.removeEventListener(type, listener, options))
     }
@@ -115,11 +115,11 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
     }
 })
 
-function getFocusableFor(target: HTMLElement): HTMLElement[] {
+function getFocusableFor(target: HTMLElement) {
     return FocusableSchema.parse(Array.from(target.querySelectorAll<HTMLElement>(FOCUSABLE)))
 }
 
-function getTargetFor(el: HTMLElement): HTMLElement {
+function getTargetFor(el: HTMLElement) {
     const fallback = el.parentElement
     const prefered = el.dataset.toggleTarget ? document.querySelector<HTMLElement>(el.dataset.toggleTarget) : null
 
@@ -134,7 +134,7 @@ function getTargetFor(el: HTMLElement): HTMLElement {
     throw new Error('No target found.', { cause: el })
 }
 
-function closeAll(bindings: ToggleBinding[], controllers: Map<HTMLElement, AbortController>, force = false): void {
+function closeAll(bindings: ToggleBinding[], controllers: Map<HTMLElement, AbortController>, force = false) {
     for (const binding of bindings) {
         if (force || !binding.el.dataset.toggleScope) {
             closeToggle(binding, controllers, force)
@@ -142,7 +142,7 @@ function closeAll(bindings: ToggleBinding[], controllers: Map<HTMLElement, Abort
     }
 }
 
-function closeToggle(binding: ToggleBinding, controllers: Map<HTMLElement, AbortController>, force: boolean): void {
+function closeToggle(binding: ToggleBinding, controllers: Map<HTMLElement, AbortController>, force: boolean) {
     if (!force && binding.required) {
         return
     }
@@ -154,11 +154,7 @@ function closeToggle(binding: ToggleBinding, controllers: Map<HTMLElement, Abort
     binding.target.classList.remove(binding.className)
 }
 
-function openToggle(
-    binding: ToggleBinding,
-    controllers: Map<HTMLElement, AbortController>,
-    focusable: HTMLElement[],
-): void {
+function openToggle(binding: ToggleBinding, controllers: Map<HTMLElement, AbortController>, focusable: HTMLElement[]) {
     handleTrapFocus(controllers, trapFocusHandler, binding.trapFocus, focusable, binding.el)
     handleInertables(binding.target, false, binding.className)
     handleScroll(binding, true)
@@ -166,7 +162,7 @@ function openToggle(
     binding.target.classList.add(binding.className)
 }
 
-function handleInertables(target: HTMLElement, hide: boolean, className: string): void {
+function handleInertables(target: HTMLElement, hide: boolean, className: string) {
     const inertables = target.querySelectorAll<HTMLElement>(`[data-toggle-inert="${className}"]`)
 
     for (const inertable of inertables) {
@@ -184,7 +180,7 @@ function handleTrapFocus(
     enabled: boolean,
     focusable: HTMLElement[],
     el: HTMLElement,
-): void {
+) {
     const controller = controllers.get(el)
 
     if (controller) {
@@ -210,7 +206,7 @@ function handleTrapFocus(
     }
 }
 
-function trapFocusHandler(event: KeyboardEvent, focusable: HTMLElement[]): void {
+function trapFocusHandler(event: KeyboardEvent, focusable: HTMLElement[]) {
     if (event.code === 'Tab') {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
@@ -231,7 +227,7 @@ function trapFocusHandler(event: KeyboardEvent, focusable: HTMLElement[]): void 
     }
 }
 
-function handleArias(el: HTMLElement, expanded: boolean): void {
+function handleArias(el: HTMLElement, expanded: boolean) {
     if (expanded) {
         el.setAttribute('aria-expanded', 'true')
     } else {
@@ -239,7 +235,7 @@ function handleArias(el: HTMLElement, expanded: boolean): void {
     }
 }
 
-function handleScroll(binding: ToggleBinding, enabled: boolean): void {
+function handleScroll(binding: ToggleBinding, enabled: boolean) {
     if (!binding.lockScroll) {
         return
     }

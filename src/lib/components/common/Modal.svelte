@@ -52,7 +52,7 @@
         wasActive = isActive
     })
 
-    function alignment(position: ModalPosition | null): string {
+    function alignment(position: ModalPosition | null) {
         switch (position) {
             case 'top-left':
                 return 'justify-start items-start'
@@ -75,7 +75,7 @@
         }
     }
 
-    function onKeydown(event: KeyboardEvent): void {
+    function onKeydown(event: KeyboardEvent) {
         if (event.code === 'Escape' && active) {
             close()
         } else if (event.code === 'Tab' && active && focusable) {
@@ -94,13 +94,13 @@
         }
     }
 
-    function onBackdropClick(event: MouseEvent): void {
+    function onBackdropClick(event: MouseEvent) {
         if (event.target === event.currentTarget) {
             close()
         }
     }
 
-    function onBackdropKeydown(event: KeyboardEvent): void {
+    function onBackdropKeydown(event: KeyboardEvent) {
         if (event.target !== event.currentTarget) {
             return
         }
@@ -111,7 +111,7 @@
         }
     }
 
-    function modal(el: HTMLElement): () => void {
+    function modal(el: HTMLElement) {
         let focusTimeout: ReturnType<typeof setTimeout> | null = null
         let releaseScroll: (() => void) | null = null
 

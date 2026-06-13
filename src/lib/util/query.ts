@@ -1,8 +1,8 @@
 import qs from 'qs'
 
-const sort = (a: string, b: string): number => b.localeCompare(a)
+const sort = (a: string, b: string) => b.localeCompare(a)
 
-const filter = (_: string, value: unknown): unknown => value || undefined
+const filter = (_: string, value: unknown) => value || undefined
 
 export function commit<T extends Record<PropertyKey, unknown>>(
     args: Partial<T>,

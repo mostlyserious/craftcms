@@ -29,7 +29,7 @@ const TRANSFORM_REST_VALUES = new Map<string, number>([
     ['skewY', 0],
 ])
 
-export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
+export default ModuleSchema.implement(els => {
     const cleanups: Array<() => void> = []
 
     for (const el of els) {

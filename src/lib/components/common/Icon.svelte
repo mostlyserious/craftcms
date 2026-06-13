@@ -7,7 +7,7 @@
 
     const { default: svg } = $derived(ImportedSchema.parse(await request))
 
-    function filterMarkupAttrs(attrs: Record<string, unknown>): Record<string, string | number> {
+    function filterMarkupAttrs(attrs: Record<string, unknown>) {
         const filtered: Record<string, string | number> = {}
 
         for (const [key, value] of Object.entries(attrs)) {

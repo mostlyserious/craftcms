@@ -6,7 +6,7 @@ export default function focusTrap(el: HTMLElement): () => void {
     addEventListener('keydown', onKeydown)
     addEventListener('keyup', onKeyup)
 
-    function onKeydown(event: KeyboardEvent): void {
+    function onKeydown(event: KeyboardEvent) {
         if (event.code === 'Tab') {
             if (focusable.length === 1) {
                 event.preventDefault()
@@ -24,7 +24,7 @@ export default function focusTrap(el: HTMLElement): () => void {
         }
     }
 
-    function onKeyup(event: KeyboardEvent): void {
+    function onKeyup(event: KeyboardEvent) {
         if (event.code === 'Tab' && !el.contains(document.activeElement)) {
             event.preventDefault()
             focusable[0]?.focus()

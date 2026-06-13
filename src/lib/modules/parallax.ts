@@ -2,7 +2,7 @@ import { ModuleSchema } from '$lib/schemas/core'
 
 type MeasuredRect = Pick<DOMRect, 'top' | 'height'>
 
-export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
+export default ModuleSchema.implement(els => {
     const cleanups: Array<() => void> = []
     const resizeObserver = new ResizeObserver(() => {
         for (const el of els) {
@@ -41,13 +41,13 @@ function listen<K extends keyof WindowEventMap>(
     type: K,
     listener: (event: WindowEventMap[K]) => void,
     options?: AddEventListenerOptions,
-): () => void {
+) {
     target.addEventListener(type, listener, options)
 
     return () => target.removeEventListener(type, listener, options)
 }
 
-function syncElement(el: HTMLElement): void {
+function syncElement(el: HTMLElement) {
     const rect = el.getBoundingClientRect()
     const distance = resolveParallaxDistance(el, rect.height)
 
@@ -61,7 +61,7 @@ function syncElement(el: HTMLElement): void {
     )
 }
 
-function resolveParallaxDistance(el: HTMLElement, fallbackDistance: number): number {
+function resolveParallaxDistance(el: HTMLElement, fallbackDistance: number) {
     const rawDistance = el.dataset.parallaxDistance
     const distance = rawDistance ? Number.parseFloat(rawDistance) : Number.NaN
 
@@ -85,7 +85,7 @@ export function measureBaselineControlFromRect(
     return measureControlFromTop(rect.top + scrollY, distance, viewportHeight)
 }
 
-function measureControlFromTop(top: number, height: number, viewportHeight: number): number {
+function measureControlFromTop(top: number, height: number, viewportHeight: number) {
     const progress = Math.min(Math.max((viewportHeight - top) / (viewportHeight + height), 0), 1)
 
     return progress * 2 - 1

@@ -84,7 +84,7 @@ export function useCookie<T extends ZodMiniType>(
     ]
 }
 
-function expiration(expires: number): Date {
+function expiration(expires: number) {
     const now = new Date()
 
     now.setTime(now.getTime() + expires)

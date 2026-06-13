@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test, vi } from 'vitest'
 import { viewTransition } from '$lib/util/view-transition'
 
-function stubStartViewTransition(): void {
+function stubStartViewTransition() {
     Object.defineProperty(document, 'startViewTransition', {
         configurable: true,
         value: vi.fn((callback: () => void | Promise<void>) => {

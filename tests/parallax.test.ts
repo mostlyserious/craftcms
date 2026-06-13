@@ -12,22 +12,22 @@ class TestResizeObserver {
         TestResizeObserver.instances.push(this)
     }
 
-    observe(el: Element): void {
+    observe(el: Element) {
         this.#elements.add(el)
     }
 
-    disconnect(): void {
+    disconnect() {
         this.#elements.clear()
     }
 
-    trigger(): void {
+    trigger() {
         const entries = [...this.#elements].map(target => ({ target }) as ResizeObserverEntry)
 
         this.#callback(entries, this as unknown as ResizeObserver)
     }
 }
 
-function cleanup(value: unknown): void {
+function cleanup(value: unknown) {
     if (typeof value === 'function') {
         value()
     }

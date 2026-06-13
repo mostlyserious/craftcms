@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import lightbox from '$lib/modules/lightbox'
 
-function mountLightbox(markup: string): () => void {
+function mountLightbox(markup: string) {
     document.body.innerHTML = markup
 
     const cleanup = lightbox(document.querySelectorAll<HTMLElement>('[data-lightbox]'))

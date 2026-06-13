@@ -9,7 +9,7 @@ const DEFAULT_GROUP = 'default'
 
 const preloaded = new Set<string>()
 
-export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
+export default ModuleSchema.implement(els => {
     const forward = document.createElement('button')
     const backward = document.createElement('button')
     const backdrop = document.createElement('div')
@@ -55,14 +55,14 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         type: string,
         listener: (event: Event) => void,
         options?: AddEventListenerOptions | boolean,
-    ): void => {
+    ) => {
         target.addEventListener(type, listener, options)
         cleanups.push(() => target.removeEventListener(type, listener, options))
     }
 
-    const getGroup = (el: HTMLElement): HTMLElement[] => groups[el.dataset.lightboxGroup || DEFAULT_GROUP] || []
+    const getGroup = (el: HTMLElement) => groups[el.dataset.lightboxGroup || DEFAULT_GROUP] || []
 
-    const reportMissingSource = (el: HTMLElement): void => {
+    const reportMissingSource = (el: HTMLElement) => {
         console.error(
             new Error('Missing lightbox src', {
                 cause: el,
@@ -70,7 +70,7 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         )
     }
 
-    const removeFromGroup = (el: HTMLElement): void => {
+    const removeFromGroup = (el: HTMLElement) => {
         const group = getGroup(el)
         const index = group.indexOf(el)
 
@@ -79,13 +79,13 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         }
     }
 
-    const removeInvalidElement = (el: HTMLElement): void => {
+    const removeInvalidElement = (el: HTMLElement) => {
         reportMissingSource(el)
         removeFromGroup(el)
         el.remove()
     }
 
-    const setNavigationVisible = (visible: boolean): void => {
+    const setNavigationVisible = (visible: boolean) => {
         forward.hidden = !visible
         backward.hidden = !visible
     }
@@ -158,7 +158,7 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         open(collection[i])
     })
 
-    const preload = (el: HTMLElement | undefined): void => {
+    const preload = (el: HTMLElement | undefined) => {
         if (!el) {
             return
         }
@@ -175,7 +175,7 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         img.setAttribute('src', src)
     }
 
-    const open = (el: HTMLElement | undefined): void => {
+    const open = (el: HTMLElement | undefined) => {
         if (!el) {
             return
         }
@@ -220,7 +220,7 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
         preload(collection[p])
     }
 
-    const close = (): void => {
+    const close = () => {
         if (scrollRelease) {
             scrollRelease()
             scrollRelease = null

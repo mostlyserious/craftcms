@@ -1,4 +1,4 @@
-function isJson(arg: string): boolean {
+function isJson(arg: string) {
     if (typeof arg !== 'string') {
         return false
     }
@@ -13,11 +13,11 @@ function isJson(arg: string): boolean {
     }
 }
 
-function isInt(arg: string): boolean {
+function isInt(arg: string) {
     return arg !== '' && !isNaN(Number(arg)) && !arg.includes('.')
 }
 
-function isFloat(arg: string): boolean {
+function isFloat(arg: string) {
     return arg !== '' && !isNaN(Number(arg)) && arg.includes('.')
 }
 

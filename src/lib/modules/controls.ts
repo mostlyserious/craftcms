@@ -1,6 +1,6 @@
 import { ModuleSchema } from '$lib/schemas/core'
 
-export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
+export default ModuleSchema.implement(els => {
     for (const el of els) {
         const target = el.dataset.controls
             ? document.querySelector(el.dataset.controls)
@@ -26,7 +26,7 @@ export default ModuleSchema.implement((els: NodeListOf<HTMLElement>) => {
     }
 })
 
-function classes(el: HTMLElement, target: HTMLMediaElement): void {
+function classes(el: HTMLElement, target: HTMLMediaElement) {
     if (target.paused) {
         el.classList.add('is-paused')
         el.classList.remove('is-playing')

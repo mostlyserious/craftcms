@@ -11,7 +11,7 @@ const BODY_STYLE_KEYS = ['overflow', 'position', 'top', 'left', 'right', 'width'
 let lockCount = 0
 let snapshot: ScrollLockSnapshot | null = null
 
-function captureStyles(el: HTMLElement, keys: string[]): Record<string, string> {
+function captureStyles(el: HTMLElement, keys: string[]) {
     const styles: Record<string, string> = {}
 
     for (const key of keys) {
@@ -21,7 +21,7 @@ function captureStyles(el: HTMLElement, keys: string[]): Record<string, string> 
     return styles
 }
 
-function restoreStyles(el: HTMLElement, styles: Record<string, string>): void {
+function restoreStyles(el: HTMLElement, styles: Record<string, string>) {
     for (const [key, value] of Object.entries(styles)) {
         if (value) {
             el.style.setProperty(key, value)
