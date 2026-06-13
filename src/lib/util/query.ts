@@ -14,9 +14,9 @@ export function commit<T extends Record<PropertyKey, unknown>>(
 
     const query = generate(nextArgs)
 
-    if (query) {
+    if (query && window.location.search !== `?${query}`) {
         history.pushState(undefined, '', `${window.location.pathname}?${query}`)
-    } else if (window.location.search !== `?${query}`) {
+    } else if (!query && window.location.search !== '') {
         history.pushState(undefined, '', window.location.pathname)
     }
 }
