@@ -15,46 +15,39 @@ composer create-project --no-install mostlyserious/craftcms $PROJECT_NAME
 
 ## JavaScript Tooling
 
-This template uses a host-first dual-install model for JavaScript tooling:
+This template uses DDEV as the source of truth for JavaScript tooling:
 
-- `package.json` and `bun.lock` are the shared dependency definition
-- run Bun package-manager commands from the host
-- run `package.json` scripts from the host with `bun run ...`
-- use `ddev bun install` only as a manual recovery command when you need to prune and refresh container dependencies explicitly
+- `.ddev/config.yaml` installs Node 24 and enables Corepack
+- `package.json` pins `pnpm@11.1.2` through the `packageManager` field
+- `pnpm-lock.yaml` is the shared dependency lockfile
+- `pnpm-workspace.yaml` installs native development-tool binaries for the current platform plus Darwin/Linux ARM64, so DDEV scripts and host IDE tooling can use the same dependency tree
+- run pnpm package-manager commands through DDEV with `ddev pnpm ...`
+- run `package.json` scripts through DDEV with `ddev pnpm run ...`
 
-Host Bun package-manager commands also schedule a best-effort container refresh. When DDEV is running, host `bun install`, `bun update`, `bun add`, and `bun remove` start a background worker that waits for `package.json` and `bun.lock` to settle, runs `ddev mutagen sync`, then prunes container `node_modules` and finishes with `ddev bun install --frozen-lockfile`. If DDEV is not running, the host Bun command still succeeds and prints a warning instead of failing.
-
-The host and container each keep their own `node_modules` tree. That is expected. They are two platform-specific installs of the same dependency manifest, not a single shared artifact.
-
-This template keeps those installs separate by:
-
-- mounting container-side `node_modules` on a dedicated Docker volume for the DDEV web container
+DDEV keeps `node_modules` out of Mutagen and bind-mounts it into the container. Run dependency installs through `ddev pnpm ...`; host editor tooling can reuse that install because `supportedArchitectures` keeps the required host and Linux native binaries available.
 
 If you pull changes that affect `.ddev/config.yaml` or `.ddev/mutagen/mutagen.yml`, run `ddev mutagen reset` before continuing.
 
 Use DDEV as the source of truth for app/runtime behavior:
 
 - `ddev craft ...`
-- `bun run build` to build assets inside DDEV
-- `bun run dev` to start Vite+ inside DDEV
-- `bun run fmt` for repo formatting, including Svelte script tags, inside DDEV
-- `bun run check` for full frontend validation, including TypeScript and Svelte diagnostics, inside DDEV
-- `ddev bun x --bun vp fmt` for Oxfmt-only formatting
-- `ddev bun x --bun oxfmt --version`
-- avoid `ddev bun run ...`, which nests DDEV inside the container
+- `ddev pnpm install --frozen-lockfile` to install JavaScript dependencies
+- `ddev pnpm add ...` and `ddev pnpm remove ...` for dependency changes
+- `ddev pnpm run build` to build assets inside DDEV
+- `ddev pnpm run dev` to start Vite inside DDEV
+- `ddev pnpm run fmt` for repo formatting, including Svelte files, inside DDEV
+- `ddev pnpm run check` for full frontend validation, including TypeScript and Svelte diagnostics, inside DDEV
+- `ddev pnpm exec oxfmt --version`
 
-`ddev bun install` is the manual container-side dependency recovery command, but it does not replace host installs for IDE tooling. Host and container installs remain separate by design. The Bun post-install DDEV sync is asynchronous and best-effort; use `ddev bun install` if the background worker warns or is skipped. `vp install` on the host remains a host-only package-manager workflow and does not trigger the Bun post-install DDEV sync.
+Use host tooling only for editor integrations and optional local JavaScript commands:
 
-Use host tooling for editor integrations and optional local JavaScript commands:
-
-- `bun install` as the standard host dependency install path
-- `vp install` for host-only Vite+ package-manager workflows that should not sync DDEV automatically
+- `corepack pnpm install` only if your editor needs a host-side dependency refresh
 - host-resolved formatter, linter, and language-server binaries from `node_modules`
-- optional local checks such as `bunx oxfmt --version`, `bunx oxlint --version`, and `bunx vp --version`
+- optional local checks such as `corepack pnpm exec oxfmt --version` and `corepack pnpm exec oxlint --version`
 
-This template also commits shared workspace settings for Zed and VS Code. VS Code users should install the recommended extensions when prompted. Host `bun install` is still required for local editor tooling resolution.
+This template also commits shared workspace settings for Zed and VS Code. VS Code users should install the recommended extensions when prompted. Host `corepack pnpm install` is only required when local editor tooling needs host dependency resolution.
 
-This template does not require devcontainers, remote development features, or shared host/container `node_modules` to be productive in Zed, VS Code, or other IDEs.
+This template does not require devcontainers, remote development features, dependency sync scripts, or a custom `node_modules` Docker volume to be productive in Zed, VS Code, or other IDEs.
 
 ## Configuration Files
 
@@ -64,17 +57,17 @@ This project includes several configuration files that define code quality stand
 
 - **`.editorconfig`** - Editor configuration for consistent code formatting across different editors and IDEs. Defines indentation, line endings, and character encoding standards.
 
-- **`oxlint.config.ts`** - Oxlint configuration for JavaScript, TypeScript, and Svelte files. Defines lint rules, plugins, and file-specific overrides for the frontend codebase.
+- **`oxlint.config.ts`** - Oxlint configuration for JavaScript, TypeScript, and Svelte script-block linting. Defines lint rules, plugins, and file-specific overrides for the frontend codebase.
 
-- **`oxfmt.config.ts`** - Oxfmt configuration for repository-wide formatting. Acts as the shared formatter source for CLI usage and editor integration.
+- **`oxfmt.config.ts`** - Oxfmt configuration for repository-wide formatting, including Svelte file formatting. Acts as the shared formatter source for CLI usage and editor integration.
 
 - **`pint.json`** - Laravel Pint configuration for PHP code formatting. Uses Laravel preset with additional rules for strict typing, ordered imports, and consistent code structure.
 
-- **`stylelint.config.js`** - Stylelint configuration extending Hudochenkov's property order rules for CSS consistency.
+- **`stylelint.config.ts`** - Stylelint configuration extending Hudochenkov's property order rules for CSS consistency.
 
 ### Build & Development
 
-- **`vite.config.js`** - Vite build configuration that handles:
+- **`vite.config.ts`** - Vite build configuration that handles:
     - Asset bundling and optimization
     - Development server setup with hot module replacement
     - Integration with Tailwind CSS, Svelte, and custom plugins

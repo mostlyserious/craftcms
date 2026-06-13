@@ -11,3 +11,6 @@
 
 @custom-variant is-active (&.is-active, .is-active &);
 @custom-variant focus-tabbing (body.is-tabbing &:focus);
+@custom-variant inert (&:is([inert], [inert] *));
+@custom-variant mouse (@media (pointer: fine));
+@custom-variant touch (@media (pointer: coarse));

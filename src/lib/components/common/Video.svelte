@@ -1,12 +1,11 @@
-<script>
+<script lang="ts">
     import Icon from '$lib/components/common/Icon.svelte'
     import Modal, { open } from '$lib/components/common/Modal.svelte'
+    import type { VideoBlockProps } from '$lib/components/common/props'
 
-    /**
-     * @import { VideoBlockSchema } from '$lib/components/common/props'
-     * @type {ZodInfer<typeof VideoBlockSchema>}
-     * */
-    const { asset, playInline = true } = $props()
+    type PostMessageMethod = 'play' | 'pause'
+
+    const { asset, playInline = true }: VideoBlockProps = $props()
 
     const id = $props.id()
     const embed = $derived(asset.type === 'embed' ? asset : null)
@@ -48,8 +47,7 @@
         }
     }
 
-    /** @param {string} url */
-    function preconnect(url) {
+    function preconnect(url: string): void {
         const link = document.createElement('link')
 
         link.href = url
@@ -59,16 +57,11 @@
         document.head.appendChild(link)
     }
 
-    /**
-     * @param {'play'|'pause'} method
-     * */
-    function postMessage(method) {
-        /** @param {HTMLIFrameElement} iframe */
-        return iframe => {
+    function postMessage(method: PostMessageMethod) {
+        return (iframe: HTMLIFrameElement) => {
             const contentWindow = iframe.contentWindow
 
-            /** @type {((this: GlobalEventHandlers, event: Event) => void) | null} */
-            let onLoad = null
+            let onLoad: GlobalEventHandlers['onload'] = null
 
             if (!contentWindow) {
                 return
@@ -104,24 +97,16 @@
         }
     }
 
-    /** @param {HTMLVideoElement} el */
-    function playVideo(el) {
-        el.play()
+    function playVideo(el: HTMLVideoElement) {
+        void el.play()
 
         return () => {
             el.pause()
         }
     }
 
-    /**
-     * @template {Array<unknown>} T
-     * @template R
-     * @param {((...args: T) => R) | null} handler
-     * @returns {(...args: T) => R | undefined}
-     * */
-    function once(handler) {
-        /** @type {R | undefined} */
-        let returned
+    function once<T extends unknown[], R>(handler: ((..._args: T) => R) | null): (..._args: T) => R | undefined {
+        let returned: R | undefined
 
         return (...args) => {
             if (handler) {
@@ -136,37 +121,47 @@
 
 {#snippet preview()}
     {#snippet icon()}
-        <div class="inset-center group-hover:bg-brand-yellow absolute flex rounded-full bg-white p-4 text-black transition">
-            <Icon request={import('$fontawesome/solid/play.svg?raw')}
-                class="size-8 shrink-0 fill-current" />
+        <div
+            class="inset-center group-hover:bg-brand-yellow absolute flex rounded-full bg-white p-4 text-black transition"
+        >
+            <Icon request={import('$fontawesome/solid/play.svg?raw')} class="size-8 shrink-0 fill-current" />
         </div>
     {/snippet}
 
     {#if embed}
-        <button type="button"
+        <button
+            type="button"
             onmouseenter={once(warmup)}
             onclick={playInline ? activateInline : openModal}
             class="group relative w-full"
             aria-label="play video"
-            style:--focusable-color="currentcolor">
+            style:--focusable-color="currentcolor"
+        >
             {@render icon()}
-            <img width={embed.width} height={embed.height}
+            <img
+                width={embed.width}
+                height={embed.height}
                 src={embed.image}
                 alt={embed.title}
                 class="m-0 aspect-video w-full rounded-lg object-cover"
-                loading="lazy">
+                loading="lazy"
+            />
         </button>
     {:else if upload}
-        <button type="button"
+        <button
+            type="button"
             onclick={playInline ? activateInline : openModal}
             class="group relative w-full"
             aria-label="play video"
-            style:--focusable-color="currentcolor">
+            style:--focusable-color="currentcolor"
+        >
             {@render icon()}
-            <video class="pointer-events-none block aspect-video w-full rounded-lg bg-black"
+            <video
+                class="pointer-events-none block aspect-video w-full rounded-lg bg-black"
                 muted
                 playsinline
-                preload="metadata">
+                preload="metadata"
+            >
                 <source src={upload.src} type={upload.mime} />
             </video>
         </button>
@@ -175,25 +170,32 @@
 
 {#snippet frame()}
     {#if embed}
-        <div class="wrapper"
+        <div
+            class="wrapper"
             style:background-image="url({embed.image})"
-            style:--aspect-ratio="{embed.width}/{embed.height}">
-            <iframe width={embed.width} height={embed.height}
+            style:--aspect-ratio="{embed.width}/{embed.height}"
+        >
+            <iframe
+                width={embed.width}
+                height={embed.height}
                 src={embed.src}
                 title={embed.title}
                 frameborder="0"
                 allowfullscreen
                 allow="autoplay; fullscreen; picture-in-picture; accelerometer; encrypted-media; gyroscope;"
-                {@attach postMessage('play')}>
+                {@attach postMessage('play')}
+            >
             </iframe>
         </div>
     {:else if upload}
-        <video class="block aspect-video w-full rounded-lg bg-black"
+        <video
+            class="block aspect-video w-full rounded-lg bg-black"
             controls
             autoplay
             playsinline
             preload="metadata"
-            {@attach playVideo}>
+            {@attach playVideo}
+        >
             <source src={upload.src} type={upload.mime} />
         </video>
     {/if}

@@ -89,7 +89,7 @@ class General extends Module
 
                     if ($plugin instanceof Vite) {
                         $view->registerHtml(
-                            $plugin->getVite()->script('src/dashboard.js'),
+                            $plugin->getVite()->script('src/dashboard.ts'),
                             View::POS_HEAD,
                         );
                     }

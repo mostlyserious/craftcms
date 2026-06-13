@@ -1,7 +1,15 @@
 #!/bin/bash
 
-if [ "$1" = "html" ]; then
-    ./node_modules/.bin/stylelint --fix --stdin --custom-syntax=postcss-html
+set -euo pipefail
+
+ARGS=(--fix --stdin)
+
+if [ "${1:-}" = "html" ]; then
+    ARGS+=(--custom-syntax=postcss-html)
+fi
+
+if [[ "${IS_DDEV_PROJECT:-}" == "true" ]]; then
+    ./node_modules/.bin/stylelint "${ARGS[@]}"
 else
-    ./node_modules/.bin/stylelint --fix --stdin
+    ddev exec ./node_modules/.bin/stylelint "${ARGS[@]}"
 fi

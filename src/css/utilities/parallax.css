@@ -1,6 +1,7 @@
 :root {
     --parallax-perspective: 100vh;
     --parallax-control: 0;
+    --parallax-offset: 0;
     --parallax-x: 0px;
     --parallax-y: 0px;
     --parallax-z: 0px;
@@ -15,15 +16,21 @@
 }
 
 @utility parallax-* {
-    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y))
-        calc(var(--parallax-control) * var(--parallax-z));
+    translate: calc((var(--parallax-control) - var(--parallax-offset)) * var(--parallax-x))
+        calc((var(--parallax-control) - var(--parallax-offset)) * var(--parallax-y))
+        calc((var(--parallax-control) - var(--parallax-offset)) * var(--parallax-z));
     perspective: var(--parallax-perspective);
 }
 
 @utility -parallax-* {
-    translate: calc(var(--parallax-control) * var(--parallax-x)) calc(var(--parallax-control) * var(--parallax-y))
-        calc(var(--parallax-control) * var(--parallax-z));
+    translate: calc((var(--parallax-control) - var(--parallax-offset)) * var(--parallax-x))
+        calc((var(--parallax-control) - var(--parallax-offset)) * var(--parallax-y))
+        calc((var(--parallax-control) - var(--parallax-offset)) * var(--parallax-z));
     perspective: var(--parallax-perspective);
+}
+
+@utility parallax-offset-* {
+    --parallax-offset: --value(number);
 }
 
 @utility parallax-x-* {

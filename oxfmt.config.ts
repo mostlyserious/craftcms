@@ -7,6 +7,10 @@ const config: OxfmtConfig = {
     sortTailwindcss: true,
     sortPackageJson: true,
     quoteProps: 'consistent',
+    svelte: {
+        indentScriptAndStyle: true,
+        sortOrder: 'options-scripts-markup-styles',
+    },
     ignorePatterns: ['.ddev/**', 'config/project/**'],
     sortImports: {
         newlinesBetween: false,

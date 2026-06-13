@@ -1,17 +1,27 @@
 #!/bin/bash
 
-TEMP_BASE=$(mktemp) || exit $?
-TEMP_FILE="${TEMP_BASE}.php"
+set -euo pipefail
 
-trap 'rm -f "$TEMP_BASE" "$TEMP_FILE"' EXIT
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+HOST_FILE="${1:-}"
+STDIN_FILENAME="utility/pint-stdin.php"
 
-touch "$TEMP_FILE" || exit $?
-rm -f "$TEMP_BASE" || exit $?
+if [[ -n "$HOST_FILE" ]]; then
+    case "$HOST_FILE" in
+        "$PROJECT_DIR"/*)
+            STDIN_FILENAME="${HOST_FILE#"$PROJECT_DIR"/}"
+            ;;
+        *)
+            STDIN_FILENAME="$HOST_FILE"
+            ;;
+    esac
+fi
 
-cat > "$TEMP_FILE"
+cd "$PROJECT_DIR"
 
-if php vendor/bin/pint "$TEMP_FILE" "$@" >/dev/null; then
-    cat "$TEMP_FILE"
+if [[ "${IS_DDEV_PROJECT:-}" == "true" ]]; then
+    php vendor/bin/pint --stdin-filename="$STDIN_FILENAME"
 else
-    exit $?
+    ddev php vendor/bin/pint --stdin-filename="$STDIN_FILENAME"
 fi

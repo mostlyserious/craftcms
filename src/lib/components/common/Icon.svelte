@@ -1,22 +1,14 @@
-<script>
+<script lang="ts">
+    import type { IconProps } from '$lib/components/common/props'
     import { ImportedSchema } from '$lib/schemas/core'
     import markup from '$lib/util/markup'
 
-    /**
-     * @import { IconPropsSchema } from '$lib/components/common/props'
-     * @type {ZodInfer<typeof IconPropsSchema>}
-     * */
-    const { request, ...rest } = $props()
+    const { request, ...rest }: IconProps = $props()
 
     const { default: svg } = $derived(ImportedSchema.parse(await request))
 
-    /**
-     * @param {Record<string, unknown>} attrs
-     * @returns {Record<string, string|number>}
-     * */
-    function filterMarkupAttrs(attrs) {
-        /** @type {Record<string, string|number>} */
-        const filtered = {}
+    function filterMarkupAttrs(attrs: Record<string, unknown>): Record<string, string | number> {
+        const filtered: Record<string, string | number> = {}
 
         for (const [key, value] of Object.entries(attrs)) {
             if (typeof value === 'string' || typeof value === 'number') {

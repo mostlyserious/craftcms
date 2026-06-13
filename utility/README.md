@@ -4,7 +4,7 @@ This directory contains utility scripts and modules that support the Craft CMS d
 
 ## Core Utilities
 
-### `env.js` - Environment Configuration Parser
+### `env.ts` - Environment Configuration Parser
 
 A robust environment variable parser and validator built with Zod schema validation. This module ensures that all required environment variables are present and properly formatted.
 
@@ -18,7 +18,7 @@ A robust environment variable parser and validator built with Zod schema validat
 #### Usage
 
 ```javascript
-import { parse } from './utility/env.js'
+import { parse } from './utility/env.ts'
 
 // Parse and validate current environment
 const { VITE_BASE, VITE_PORT, PRIMARY_SITE_URL } = env.parse()
@@ -81,13 +81,13 @@ An automated setup script that initializes a new Craft CMS project with all nece
     - Configures DDEV project with directory-based naming
     - Starts the DDEV environment
     - Updates Composer dependencies
-    - Runs `bun install` on the host and lets the Bun postinstall hook refresh container dependencies automatically when DDEV is running
-    - Uses DDEV configuration that keeps container `node_modules` separate from the host tree
+    - Runs `ddev pnpm install --frozen-lockfile` inside the DDEV web container
+    - Uses DDEV/Corepack to pin the project pnpm version
 
 3. **Craft CMS Installation**:
     - Generates security keys
     - Runs Craft installation process
-    - Uses the host install as the standard JavaScript dependency step for IDEs and local tooling
+    - Uses the container install as the standard JavaScript dependency step for app/runtime tooling
 
 4. **API Key Integration** (if 1Password CLI is available):
     - Retrieves API keys from 1Password vault
@@ -97,12 +97,12 @@ An automated setup script that initializes a new Craft CMS project with all nece
 5. **Fallback Handling**:
     - Provides helpful instructions if 1Password CLI is not installed
     - Continues setup process without API keys
-    - Keeps manual container refresh available via `ddev bun install` if the background sync is skipped or needs to be rerun later
+    - Keeps dependency recovery available via `ddev pnpm install --frozen-lockfile`
 
 #### Prerequisites
 
 - DDEV installed and configured
-- Bun package manager
+- DDEV with Node 24/Corepack enabled
 - Composer
 - 1Password CLI (optional, for automatic API key setup)
 
@@ -121,21 +121,19 @@ The install script includes automatic API key retrieval using the 1Password CLI 
 **Installation Process:**
 
 1. If 1Password CLI is detected, the script automatically retrieves and sets the API keys
-2. After setting the keys, it runs `bun run build` to perform the initial asset build inside DDEV
+2. After setting the keys, it runs `ddev pnpm run build` to perform the initial asset build inside DDEV
 3. If 1Password CLI is not available, the script provides installation instructions and continues without the API keys
 
 #### JavaScript Dependency Model
 
-This template supports two valid JavaScript install contexts from the same `package.json` and `bun.lock`:
+This template uses one pnpm dependency model from the same `package.json` and `pnpm-lock.yaml`:
 
-- `bun install` on the host as the standard dependency-management path
-- `ddev bun install` as a manual recovery command when you need to prune and refresh container dependencies explicitly
+- `ddev pnpm install --frozen-lockfile` as the app/runtime dependency-management path
+- `corepack pnpm install` on the host only when editor tooling needs a host-side dependency refresh
 
-When DDEV is running, host `bun install`, `bun update`, `bun add`, and `bun remove` schedule an asynchronous background sync that waits for `package.json` and `bun.lock` to settle, runs `ddev mutagen sync`, prunes the container `node_modules` volume, and then runs `ddev bun install --frozen-lockfile`.
+`pnpm-workspace.yaml` includes `supportedArchitectures` for the current platform plus Darwin/Linux ARM64 so native tooling packages can install binaries for both the DDEV container and common host IDE environments from one lockfile.
 
-These installs are expected to be separate platform-specific `node_modules` trees. The project does not require a shared host/container dependency directory.
-
-The DDEV configuration supports this by excluding `/node_modules` from Mutagen sync and by mounting container-side `node_modules` on its own Docker volume.
+DDEV keeps `node_modules` out of Mutagen and bind-mounts it into the container. The project does not require dependency sync scripts or a custom `node_modules` Docker volume.
 
 **Benefits:**
 
@@ -149,10 +147,10 @@ If you don't have the 1Password CLI installed, visit: https://developer.1passwor
 
 ## Asset Optimization Plugins
 
-### `vite-plugin-svgo.js`
+### `vite-plugin-svgo.ts`
 
 A Vite plugin that automatically optimizes SVG files during the build process using SVGO. Reduces file sizes while maintaining visual quality.
 
-### `vite-plugin-tinify.js`
+### `vite-plugin-tinify.ts`
 
 A Vite plugin that compresses PNG and JPEG images using the TinyPNG service. Features intelligent caching to avoid reprocessing unchanged images and requires a `TINYPNG_KEY` environment variable.

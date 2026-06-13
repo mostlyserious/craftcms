@@ -1,10 +1,7 @@
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
-/**
- * @import { Config } from '@sveltejs/kit'
- * @type {Config}
- * */
-export default {
+/** @type {import('@sveltejs/vite-plugin-svelte').SvelteConfig} */
+const config = {
     vitePlugin: { emitCss: false },
     preprocess: vitePreprocess(),
     compilerOptions: {
@@ -13,3 +10,5 @@ export default {
         },
     },
 }
+
+export default config

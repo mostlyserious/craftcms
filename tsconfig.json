@@ -1,20 +1,22 @@
 {
     "include": [
-        "*.js",
+        "*.ts",
+        "tests/**/*.ts",
         "src/env.d.ts",
-        "src/**/*.js",
         "src/**/*.ts",
         "src/**/*.svelte",
         "src/@types/**/*.d.ts",
-        "node_modules/@types/**/*.d.ts"
+        "utility/**/*.ts",
+        "utility/**/*.js",
+        "svelte.config.js"
     ],
     "exclude": ["node_modules/**/*", "vendor/**/*", "web/**/*"],
     "compilerOptions": {
-        "checkJs": true,
         "jsx": "preserve",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
+        "allowImportingTsExtensions": true,
         "allowUnusedLabels": false,
         "noImplicitAny": true,
         "skipLibCheck": true,
@@ -23,8 +25,10 @@
         "alwaysStrict": true,
         "isolatedModules": true,
         "verbatimModuleSyntax": true,
+        "moduleDetection": "force",
+        "noEmit": true,
         "noErrorTruncation": true,
-        "types": ["svelte", "vite-plus/client"],
+        "types": ["svelte", "vite/client", "node"],
         "outDir": "web",
         "paths": {
             "$lib": ["./src/lib"],
@@ -39,7 +43,7 @@
         "rootDirs": [".", "src/@types"],
         "lib": ["esnext", "DOM", "DOM.Iterable"],
         "moduleResolution": "bundler",
-        "module": "esnext",
+        "module": "preserve",
         "target": "esnext"
     }
 }

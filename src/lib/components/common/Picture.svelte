@@ -1,20 +1,37 @@
-<script>
-    import { picture } from '$lib/util/image'
+<script lang="ts">
+    import type { PictureProps } from '$lib/components/common/props'
+    import { pictureAttributes } from '$lib/util/image'
 
-    /**
-     * @import { PicturePropsSchema } from '$lib/components/common/props'
-     * @type {ZodInfer<typeof PicturePropsSchema>}
-     * */
-    let { src, breakpoints = {}, loading = 'lazy', ...rest } = $props()
+    let { src, breakpoints = {}, loading = 'lazy', class: className, ...rest }: PictureProps = $props()
 
     const [asset, args] = $derived(src)
     const width = $derived(args?.width ?? asset.width)
     const height = $derived(args?.height ?? asset.height)
-    const style = $derived(`visibility:hidden;aspect-ratio:${width}/${height};max-width:${width}px;max-height:${height}px;`)
+    const attrs = $derived(pictureAttributes(src, breakpoints, loading))
 
     let isLoading = $state(true)
+
+    function syncLoading(el: HTMLImageElement) {
+        if (el.complete) {
+            isLoading = false
+        }
+    }
 </script>
 
-<picture {@attach el => picture(el, src, breakpoints, loading)}>
-    <img style={isLoading ? style : undefined} {...rest} class:opacity-0={isLoading} onload={() => isLoading = false} />
+<picture>
+    {#each attrs.sources as source (source.media)}
+        <source {...source} />
+    {/each}
+
+    <img
+        {@attach syncLoading}
+        {...rest}
+        {...attrs.image}
+        class={[className, { 'opacity-0': isLoading }]}
+        style={isLoading
+            ? `visibility:hidden;aspect-ratio:${width}/${height};max-width:${width}px;max-height:${height}px;`
+            : undefined}
+        onerror={() => (isLoading = false)}
+        onload={() => (isLoading = false)}
+    />
 </picture>

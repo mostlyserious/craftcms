@@ -1,9 +1,7 @@
-<script>
-    /**
-     * @import { ExampleSchema } from '$lib/components/props'
-     * @type {ZodInfer<typeof ExampleSchema>}
-     * */
-    const { message } = $props()
+<script lang="ts">
+    import type { ExampleProps } from '$lib/components/props'
+
+    const { message }: ExampleProps = $props()
 </script>
 
 <pre>{message}</pre>
