@@ -12,35 +12,45 @@ const modules = {
     'x-svelte': () => import('$lib/sveltify'),
 } satisfies Record<string, () => Promise<{ default: ModuleHandler }>>
 
-const cleanups = new WeakMap<Document | Element, Map<string, () => void>>()
+interface Binding {
+    pass: number
+    cleanup: (() => void) | null
+}
+
+const bindings = new WeakMap<Document | Element, Map<string, Binding>>()
 
 export default function init(scope: Document | Element): void {
-    let scopeCleanups = cleanups.get(scope)
+    let scopeBindings = bindings.get(scope)
 
-    if (!scopeCleanups) {
-        scopeCleanups = new Map()
-        cleanups.set(scope, scopeCleanups)
+    if (!scopeBindings) {
+        scopeBindings = new Map()
+        bindings.set(scope, scopeBindings)
     }
 
     for (const [selector, request] of object.entries(modules)) {
         const els = scope.querySelectorAll(selector)
+        const binding = scopeBindings.get(selector) ?? { pass: 0, cleanup: null }
+        const pass = ++binding.pass
+
+        scopeBindings.set(selector, binding)
 
         if (!els.length) {
-            scopeCleanups.get(selector)?.()
-            scopeCleanups.delete(selector)
+            binding.cleanup?.()
+            binding.cleanup = null
             continue
         }
 
         request()
             .then(({ default: module }) => {
-                scopeCleanups.get(selector)?.()
-                scopeCleanups.delete(selector)
+                if (binding.pass !== pass) {
+                    return
+                }
+
+                binding.cleanup?.()
 
                 const cleanup = module(els)
 
-                if (typeof cleanup === 'function') {
-                    scopeCleanups.set(selector, cleanup)
-                }
+                binding.cleanup = typeof cleanup === 'function' ? cleanup : null
             })
             .catch(error => console.error(error))
     }

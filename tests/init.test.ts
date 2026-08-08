@@ -23,6 +23,18 @@ describe('init', () => {
         expect(document.querySelectorAll('dialog')).toHaveLength(1)
     })
 
+    test('a re-initialization with no matching elements supersedes a pending earlier pass', async () => {
+        document.body.innerHTML = '<button data-lightbox="/photo-a.jpg">Open</button>'
+
+        init(document)
+
+        document.body.innerHTML = ''
+        init(document)
+        await flush()
+
+        expect(document.querySelector('dialog')).toBeNull()
+    })
+
     test('tears down a module when its elements are gone on re-initialization', async () => {
         document.body.innerHTML = '<button data-lightbox="/photo-a.jpg">Open</button>'
 
