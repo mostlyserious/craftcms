@@ -1,5 +1,6 @@
 <script module lang="ts">
-    const FOCUSABLE = 'a,button,input,select,textarea,[tabindex="0"]'
+    const FOCUSABLE =
+        'a[href],button,input,select,textarea,iframe,audio[controls],video[controls],[contenteditable]:not([contenteditable="false"]),[tabindex]:not([tabindex="-1"])'
 
     let active = $state<string | null>(null)
 
@@ -16,13 +17,13 @@
     import type { Snippet } from 'svelte'
     import { blur } from 'svelte/transition'
     import Icon from '$lib/components/common/Icon.svelte'
-    import { FocusableSchema } from '$lib/schemas/app'
     import { lockScroll } from '$lib/util/scroll-lock'
 
     type ModalPosition = 'top-left' | 'top' | 'top-right' | 'right' | 'bottom-right' | 'bottom' | 'bottom-left' | 'left'
 
     interface ModalProps {
         id: string
+        label?: string
         position?: ModalPosition | null
         overlay?: 'polite' | 'assertive'
         container?: `max-w-${string}`
@@ -32,6 +33,7 @@
 
     const {
         id,
+        label,
         position = null,
         overlay = 'assertive',
         container = 'max-w-7xl',
@@ -39,18 +41,28 @@
         children,
     }: ModalProps = $props()
 
-    let focusable = $state<HTMLElement[] | null>(null)
+    let dialogEl: HTMLElement | null = null
     let wasActive = $state(false)
 
     $effect(() => {
         const isActive = active === id
 
-        if (wasActive && active === null && onclose) {
+        if (wasActive && !isActive && onclose) {
             onclose()
         }
 
         wasActive = isActive
     })
+
+    function focusables(): HTMLElement[] {
+        if (!dialogEl) {
+            return []
+        }
+
+        return Array.from(dialogEl.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+            el => !el.hasAttribute('disabled') && (el.checkVisibility?.() ?? true),
+        )
+    }
 
     function alignment(position: ModalPosition | null) {
         switch (position) {
@@ -76,20 +88,33 @@
     }
 
     function onKeydown(event: KeyboardEvent) {
-        if (event.code === 'Escape' && active) {
+        if (active !== id) {
+            return
+        }
+
+        if (event.code === 'Escape') {
             close()
-        } else if (event.code === 'Tab' && active && focusable) {
-            const first = focusable[0]
-            const last = focusable[focusable.length - 1]
+        } else if (event.code === 'Tab' && overlay === 'assertive') {
+            const items = focusables()
+            const first = items[0]
+            const last = items[items.length - 1]
+
+            if (!first || !last) {
+                event.preventDefault()
+                return
+            }
+
+            const focused = document.activeElement
+            const outside = !(focused instanceof HTMLElement) || !dialogEl?.contains(focused)
 
             if (event.shiftKey) {
-                if (document.activeElement === first) {
+                if (outside || focused === first) {
                     event.preventDefault()
-                    last?.focus()
+                    last.focus()
                 }
-            } else if (document.activeElement === last) {
+            } else if (outside || focused === last) {
                 event.preventDefault()
-                first?.focus()
+                first.focus()
             }
         }
     }
@@ -112,12 +137,14 @@
     }
 
     function modal(el: HTMLElement) {
+        const previous = document.activeElement
+
         let focusTimeout: ReturnType<typeof setTimeout> | null = null
         let releaseScroll: (() => void) | null = null
 
-        if (overlay === 'assertive') {
-            focusable = FocusableSchema.parse(Array.from(el.querySelectorAll<HTMLElement>(FOCUSABLE)))
+        dialogEl = el
 
+        if (overlay === 'assertive') {
             focusTimeout = setTimeout(() => {
                 releaseScroll = lockScroll()
                 el.focus()
@@ -125,6 +152,8 @@
         }
 
         return () => {
+            dialogEl = null
+
             if (focusTimeout) {
                 clearTimeout(focusTimeout)
             }
@@ -132,6 +161,10 @@
             if (releaseScroll) {
                 releaseScroll()
                 releaseScroll = null
+            }
+
+            if (previous instanceof HTMLElement) {
+                previous.focus()
             }
         }
     }
@@ -148,23 +181,21 @@
         tabindex="-1"
         role="dialog"
         aria-modal="true"
+        aria-label={label}
         onclick={onBackdropClick}
         onkeydown={onBackdropKeydown}
         transition:blur={{ duration: 150 }}
-        {@attach modal}
-    >
+        {@attach modal}>
         <div class="container {container}">
             <div class="max-h-vh-90 overflow-auto">
                 <div
                     class="pointer-events-auto relative overflow-hidden"
                     class:border={overlay === 'polite'}
-                    class:border-brand-blue-light={overlay === 'polite'}
-                >
+                    class:border-neutral-300={overlay === 'polite'}>
                     <button
                         class="absolute top-4 right-4 z-10 flex items-center border bg-white p-0.5 transition hover:bg-black hover:text-white disabled:pointer-events-none disabled:opacity-30"
                         aria-label="close modal"
-                        onclick={close}
-                    >
+                        onclick={close}>
                         <Icon request={import('$fontawesome/solid/x.svg?raw')} class="size-4 fill-current" />
                     </button>
                     {@render children()}
