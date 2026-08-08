@@ -248,7 +248,10 @@ export default ModuleSchema.implement(els => {
 
         groups[group].push(el)
 
-        el.setAttribute('type', 'submit')
+        if (el instanceof HTMLButtonElement) {
+            el.type = 'button'
+        }
+
         listen(el, 'click', () => open(el))
         listen(el, 'mouseover', () => preload(el))
     }
