@@ -2,7 +2,7 @@
     <div class="drawer-inner">
         <nav class="flex grow" aria-label="mobile menu">
             <ul class="drawer-nav" data-toggle-inert="is-open">
-                {% for item in navigation.main|default([]) %}
+                {% for item in menu|default([]) %}
                     {% if item.type == 'dropdown' %}
                         <li class="drawer-item">
                             <button type="button"
@@ -19,7 +19,7 @@
                                 <ul id="drawer-item-{{ item.uid }}"
                                     class="drawer-collapsible-content"
                                     data-toggle-inert="is-active">
-                                    {% for child in item.links %}
+                                    {% for child in item.links.eagerly() %}
                                         {{ link(child.button, {
                                             class: 'drawer-link',
                                         }, 'li')|attr({
