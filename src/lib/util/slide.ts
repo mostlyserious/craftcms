@@ -4,6 +4,7 @@ export function slideUp(target: HTMLElement, duration = 500): void {
     target.style.boxSizing = 'border-box'
     target.style.height = `${target.offsetHeight}px`
     target.style.overflow = 'hidden'
+    void target.offsetHeight // flush the start height so the transition has an interpolable origin
     target.style.height = '0'
     target.style.paddingTop = '0'
     target.style.paddingBottom = '0'
@@ -48,6 +49,7 @@ export function slideDown(target: HTMLElement, duration = 500): void {
     target.style.boxSizing = 'border-box'
     target.style.transitionProperty = 'height, margin, padding'
     target.style.transitionDuration = `${duration}ms`
+    void target.offsetHeight // flush the zeroed start state so the transition has an interpolable origin
     target.style.height = `${data.height}px`
     target.style.removeProperty('padding-top')
     target.style.removeProperty('padding-bottom')
