@@ -4,6 +4,7 @@ const config: OxfmtConfig = {
     semi: false,
     singleQuote: true,
     arrowParens: 'avoid',
+    bracketSameLine: true,
     sortTailwindcss: true,
     sortPackageJson: true,
     quoteProps: 'consistent',

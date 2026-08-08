@@ -39,8 +39,7 @@
                 {height}
                 {...rest}
                 {style}
-                src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-            />
+                src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" />
         {/snippet}
     </svelte:boundary>
 {/if}

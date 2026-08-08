@@ -114,8 +114,7 @@ All `data-*` attributes on the target element are automatically converted to com
     data-uid="123e4567-e89b-12d3-a456-426614174000"
     data-play-inline="true"
     data-config='{"autoplay": false, "controls": true}'
-    data-delay="1500"
->
+    data-delay="1500">
 </x-svelte>
 ```
 
