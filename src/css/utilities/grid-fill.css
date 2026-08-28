@@ -1,3 +1,46 @@
+/* Auto-fill grid. Also publishes what the scroll-trigger stagger
+   utilities need: the live column count and each child's row
+   position (--stagger-context). Both are computed on the direct
+   children, not the grid, because container units resolve against
+   ancestor containers only; substituting there also locks in the
+   grid's own gap (from the gap-* shim in scroll-trigger.css)
+   before a descendant's gap-* could shadow it.
+
+   The count uses the browser's own track math:
+   floor((width + gap) / (min + gap)). The division runs through
+   tan(atan2()) because calc() cannot divide lengths in Firefox,
+   and BOTH operands are pre-resolved through registered <length>
+   properties because Chromium's atan2() silently strips relative
+   units (rem, cqw) from raw operands. */
+
+@property --grid-fill-avail {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+
+@property --grid-fill-track {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 1px;
+}
+
+@property --grid-fill-count {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 1;
+}
+
 @utility grid-fill-* {
+    --grid-fill-min: --spacing(--value(integer));
+
+    container-type: inline-size;
     grid-template-columns: repeat(auto-fill, minmax(min(--spacing(--value(integer)), 100%), 1fr));
+
+    & > * {
+        --grid-fill-avail: calc(100cqw + var(--tw-gap, 0rem));
+        --grid-fill-track: calc(var(--grid-fill-min) + var(--tw-gap, 0rem));
+        --grid-fill-count: max(1, round(down, tan(atan2(var(--grid-fill-avail), var(--grid-fill-track))), 1));
+        --stagger-context: calc(sibling-index() - 1);
+    }
 }

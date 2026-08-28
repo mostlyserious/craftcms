@@ -163,9 +163,9 @@ Each block type follows consistent patterns:
 ```twig
 {# Conditional rendering based on content #}
 {% if block.content|plain %}
-    <section class="{{ swatch(palette, 'background', 'text') }}" data-animate>
+    <section class="{{ swatch(palette, 'background', 'text') }}">
         <div class="{{ padding }}">
-            <!-- Block content -->
+            <!-- Block content with enter:* classes -->
         </div>
     </section>
 {% endif %}
@@ -175,7 +175,7 @@ Each block type follows consistent patterns:
 
 - Content existence checks using `|plain` filter
 - Color theming via `swatch()` function
-- Animation attributes with `data-animate`
+- Scroll reveals via `enter:*` classes (sensing is automatic; `scroll-latch` opts into one-shot)
 - Responsive padding classes
 - Semantic HTML structure
 
@@ -248,26 +248,24 @@ Consistent theming across all components:
 
 ### Animation Integration
 
-Consistent animation attributes for frontend JavaScript using Motion One library:
+CSS-only scroll reveals via the utilities in `src/css/utilities/scroll-trigger.css` (no JavaScript):
 
 ```twig
-<div data-animate>                           <!-- Basic fade-in animation -->
-<div data-animate="y: 20px, 0">            <!-- Slide up from 20px -->
-<div data-animate="scale: 0.8, 1">         <!-- Scale from 80% to 100% -->
-<div data-animate="x: -30px, 0; rotate: -5deg, 0deg"> <!-- Multi-property animation -->
+<section>
+    <div class="scroll-latch">               <!-- optional: makes the reveals one-shot -->
+        <h2 class="enter:slide-up">          <!-- preset hidden state, fade built in -->
+        <div class="enter:fade delay-150">   <!-- fade with delay -->
+        <p class="enter:opacity-0 enter:translate-y-6 duration-700"> <!-- any utilities -->
 ```
 
 **Animation System Features:**
 
-- **Property Syntax**: `property: startValue, endValue` (endValue defaults to 0 if omitted)
-- **Multiple Properties**: Separated by semicolons (`;`)
-- **Default Opacity**: Automatically adds `opacity: 0, 1` if not specified
-- **Timing Controls**:
-    - `data-animate-duration="0.5"` - Animation duration in seconds
-    - `data-animate-delay="0.2"` - Delay before animation starts
-    - `data-animate-ease="easeOut"` - Easing function
-    - `data-animate-repeat` - Repeats animation when re-entering viewport
-- **Smart Image Loading**: Waits for image load before animating
+- **Trigger**: none needed; sensing is always on. Every `enter:*` element fires when its parent enters the viewport (grids fire row by row automatically). `scroll-trigger-60` tunes the entry threshold and may sit on any ancestor, including the body for a site-wide default.
+- **Hidden States**: any utility behind the `enter:` variant, or presets `enter:fade`, `enter:slide-up/down/left/right`, `enter:zoom` (all include the fade)
+- **Timing**: core `duration-*`, `ease-*`, `delay-*` classes on the revealing element
+- **Stagger**: `stagger` (DOM order), `stagger-N` (explicit), `stagger-n-N` (cycle every N), `stagger-fill` (cycle by a `grid-fill-*` grid's live column count), `stagger-step-N` (ms per step), always on the revealing element
+- **One-Shot**: reveals replay on re-entry by default in every browser; opt in to one-shot with `scroll-latch` on the wrapper above the content (its parent takes over sensing) or an inserted latch element
+- **Degradation**: Firefox plays a generic fade-in after load; reduced-motion and print get static visible content
 
 ### Responsive Design Patterns
 

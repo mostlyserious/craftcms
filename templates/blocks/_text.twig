@@ -1,16 +1,16 @@
 {% if block.richText|plain or block.heading|plain %}
-    <section class="{{ swatch(palette, 'background', 'text') }}" data-animate>
+    <section class="{{ swatch(palette, 'background', 'text') }}">
         <div class="{{ padding }}">
             <div class="container max-w-5xl">
                 {% if block.heading|plain %}
-                    <header class="mb-4" data-animate>
+                    <header class="enter:fade mb-4">
                         <h2 class="text-3xl md:text-4xl">
                             {{ block.heading|heading }}
                         </h2>
                     </header>
                 {% endif %}
                 {% if block.richText|plain %}
-                    <div class="prose {{ branded ? 'prose-brand' }}" data-animate>
+                    <div class="enter:fade delay-150 prose {{ branded ? 'prose-brand' }}">
                         {{ block.richText|media(976) }}
                     </div>
                 {% endif %}

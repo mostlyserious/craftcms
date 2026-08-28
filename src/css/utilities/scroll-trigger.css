@@ -1,0 +1,377 @@
+/* ============================================================
+   Scroll-triggered one-shot reveals. Zero JS.
+
+   Any element hides itself with `enter:*` utilities (any
+   property) and transitions to its real styles the first time its
+   PARENT enters the viewport. No trigger class exists: sensing is
+   ambient and always on; the parent of animated content becomes
+   the sensor automatically. A grid therefore fires row by row:
+
+       <ul class="grid grid-fill-72 gap-8">
+           <li>                          <!-- senses its own entry -->
+               <article class="enter:opacity-0 enter:translate-y-6 stagger-fill duration-700">
+
+   Or use a preset behind the variant (fade built in): enter:fade,
+   enter:slide-up, enter:slide-down, enter:slide-left,
+   enter:slide-right, enter:zoom:
+
+       <article class="enter:slide-up duration-700">
+
+   Reveals replay on re-entry by default, in every browser.
+   One-shot is opt-in via `scroll-latch`: on an existing wrapper it
+   absorbs that wrapper's trigger duty and moves sensing up one
+   level; or insert a latch element where no spare wrapper exists.
+   See the Latch section. (Native animation-trigger play-once could
+   one-shot Chrome 146+ without a latch, but that would make
+   one-shot behavior inconsistent across browsers; deliberately not
+   used.)
+
+   Custom display:contents elements cannot sense (no box, dead
+   timeline); picture and x-svelte are handled by promoting their
+   parent, others need a real box or an explicit wrapper.
+
+   Tiers, auto-selected via @supports:
+   1. Reduced motion or print: static, visible content.
+   2. No scroll-driven animations (Firefox): a generic fade-in
+      plays once shortly after page load instead of on scroll.
+      Firefox style queries ignore animation-driven custom
+      properties, so the per-element hidden states cannot be used
+      there.
+   3. Scroll-driven animations + style queries (Chrome, Safari 26):
+      scroll-triggered; replays on re-entry unless the content sits
+      inside an explicit scroll-latch.
+
+   Safety invariant: `enter:*` output only matches inside
+   `@container scroll-trigger style(--in-view: false)`, and only a
+   gated, working sensor ever sets that flag or names that
+   container. Unsupported browsers, reduced motion, and print all
+   resolve to plain visible content.
+   ============================================================ */
+
+@property --stagger {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 0;
+}
+
+/* Published by grid-fill-* on its direct children, so stagger
+   utilities on only-child content deeper in the item still know
+   where the item sits. Never publish it from more than one element
+   per chain (a latch as an only child would clobber it to 0). The
+   <integer> registration doubles as the fallback for browsers
+   without sibling-index(): the calc() is rejected and the value
+   stays 0. */
+@property --stagger-context {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 0;
+}
+
+/* Core `delay-*` emits only transition-delay; re-emit it with a
+   composable var, mirroring core's own --tw-duration / --tw-ease. */
+@property --tw-delay {
+    syntax: '*';
+    inherits: false;
+}
+
+@utility delay-* {
+    --tw-delay: calc(--value(integer) * 1ms);
+    --tw-delay: --value(--transition-delay, [*]);
+
+    transition-delay: calc(--value(integer) * 1ms);
+    transition-delay: --value(--transition-delay, [*]);
+}
+
+/* Same idea for the gap: core emits no var, and the grid-fill
+   column math (see grid-fill.css) needs to read it. Core gap-* /
+   gap-x-* still emit alongside these. */
+@utility gap-* {
+    --tw-gap: --spacing(--value(integer));
+    --tw-gap: --value([*]);
+}
+
+@utility gap-x-* {
+    --tw-gap: --spacing(--value(integer));
+    --tw-gap: --value([*]);
+}
+
+/* ============================================================
+   Detector
+   ============================================================ */
+
+@keyframes scroll-trigger {
+    to {
+        --in-view: true;
+    }
+}
+
+/* Sensing is ambient and ALWAYS ON: everywhere in the document,
+   whatever directly parents animated content (or a latch, or
+   animated content behind a display:contents wrapper like
+   picture / x-svelte) becomes a sensor, and its content fires when
+   IT enters the viewport. So a grid fires row by row (each li
+   senses), a flat group fires off its wrapper, and a section's
+   content fires off its innermost wrapper, with no trigger class
+   anywhere.
+
+   Never sensors: body itself (a direct enter:* child of body needs
+   a wrapper), latches (they absorb their parent's trigger duty
+   instead, see below), animated elements themselves (an element
+   cannot query its own flag), display:contents elements (no box,
+   dead timeline; their parent is promoted instead), and elements
+   with their own animate-* utilities (the sensor animation would
+   clobber them; their content queries the next sensor up).
+
+   Sensing is also suspended INSIDE latches: a latch is a one-shot
+   boundary, and its entire subtree binds to the latch's flag as
+   one group. Without this, any wrapper between the latch and its
+   content would become a sensor and silently bypass the latch. */
+body :has(> [class*='enter:'], > .scroll-latch, > :is(picture, x-svelte) > [class*='enter:']):not(:is(.scroll-latch, .scroll-latch *, [class*='enter:'], picture, x-svelte, [class*='animate-'])) {
+    @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: view()) and (animation-range: entry) {
+            --in-view: false;
+
+            container-name: scroll-trigger;
+            animation: scroll-trigger steps(1, jump-end) both;
+            animation-timeline: view(block);
+            animation-range: entry 0% entry var(--scroll-trigger-at, 40%);
+        }
+    }
+
+    /* No container -> query unknown -> nothing hides in print. */
+    @media print {
+        container-name: none;
+    }
+}
+
+/* Threshold knob; the custom property inherits, so place it on any
+   ancestor of the sensors it should tune, or on the body for a
+   site-wide default. */
+@utility scroll-trigger-* {
+    --scroll-trigger-at: calc(--value(integer) * 1%);
+}
+
+/* ============================================================
+   The variant
+   ============================================================ */
+
+@custom-variant enter {
+    @container scroll-trigger style(--in-view: false) {
+        @slot;
+    }
+}
+
+/* ============================================================
+   Presets
+   Convenience hidden states for common entrances, meant to be
+   used behind the enter: variant (enter:slide-up, enter:zoom).
+   All include a fade. They compose (enter:zoom enter:blur-sm
+   with core blur), except that slide directions share `translate`,
+   so use one direction per element. For custom distances or
+   scales, use the primitives (enter:translate-y-16,
+   enter:scale-75) instead.
+
+   These are plain hidden-state declarations: used bare, without a
+   variant, they hide the element unconditionally.
+   ============================================================ */
+
+@utility fade {
+    opacity: 0;
+}
+
+@utility slide-up {
+    opacity: 0;
+    translate: 0 --spacing(8);
+}
+
+@utility slide-down {
+    opacity: 0;
+    translate: 0 --spacing(-8);
+}
+
+@utility slide-left {
+    opacity: 0;
+    translate: --spacing(8) 0;
+}
+
+@utility slide-right {
+    opacity: 0;
+    translate: --spacing(-8) 0;
+}
+
+@utility zoom {
+    opacity: 0;
+    scale: 90%;
+}
+
+/* ============================================================
+   Reveal mechanics, auto-attached to any element using enter:*
+   (matches the class attribute text; do not use @apply with
+   enter:* utilities).
+
+   Gated like the detector: browsers without scroll-driven
+   animations (and reduced-motion users) must not get all-property
+   transitions on these elements, or unrelated restyles (dev-mode
+   CSS injection, breakpoint changes) animate on them.
+
+   Unlayered on purpose: it must beat the base-layer transition
+   defaults, while core duration-* / ease-* / delay-* still win
+   through their vars.
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) and (animation-range: entry) {
+        :where([class*='enter:']) {
+            transition-property: all;
+            transition-duration: var(--tw-duration, 500ms);
+            transition-timing-function: var(--tw-ease, var(--ease-out));
+            transition-delay: var(--tw-delay, calc(var(--stagger, 0) * var(--stagger-step, 100ms)));
+        }
+
+        /* Anything that ends in the hidden state applies instantly:
+           the initial dev-mode CSS injection, breakpoint changes,
+           and mid-reveal interrupts all have pending as their
+           destination and must not animate into it. The reveal
+           itself is unaffected; its transition spec is read from
+           the visible base state above. */
+        @container scroll-trigger style(--in-view: false) {
+            :where([class*='enter:']) {
+                transition-property: none;
+            }
+        }
+    }
+
+    /* No scroll timelines (Firefox): play a generic entrance once,
+       shortly after load, instead of the scroll-triggered reveal.
+       Per-element hidden states cannot drive this tier: Firefox
+       style queries ignore animation-driven custom property
+       values, so the pending query would match forever and leave
+       content hidden. A plain keyframe animation needs no query;
+       duration, easing, delay, and stagger still apply via their
+       vars, and `both` fill keeps elements hidden through their
+       delay. */
+    @supports not (animation-timeline: view()) {
+        :where([class*='enter:']) {
+            animation: enter-fade var(--tw-duration, 500ms) var(--tw-ease, var(--ease-out)) both;
+            animation-delay: calc(150ms + var(--tw-delay, calc(var(--stagger, 0) * var(--stagger-step, 100ms))));
+        }
+    }
+}
+
+@keyframes enter-fade {
+    from {
+        opacity: 0;
+    }
+}
+
+/* ============================================================
+   Latch (opt-in one-shot)
+   Makes reveals one-shot, consistently in every browser. A latch
+   is never a sensor; instead its PARENT is promoted to sensor,
+   and sensing is suspended inside it: `enter:*` content at ANY
+   depth within the latch binds to the latch's flag and fires as
+   one group. So:
+
+   - on an existing wrapper, it absorbs that wrapper's trigger duty
+     and moves sensing up one level (zero new elements):
+
+       <div>                            <!-- becomes the sensor -->
+           <div class="scroll-latch">
+               <article class="enter:opacity-0 ...">
+
+   - in a grid, latching the li moves sensing to the ul (whole grid
+     fires as one group); to keep row-by-row AND one-shot, insert
+     the latch inside each li instead:
+
+       <li>                             <!-- stays the sensor -->
+           <div class="scroll-latch">
+               <article class="enter:opacity-0 ...">
+
+   Placement rules: a latch fires when its PARENT enters, so put it
+   on a wrapper INSIDE the group whose entry should time it (making
+   that group the sensor), never on the group itself, and never on
+   sections or page landmarks: sibling sections share one tall
+   parent, so latching them makes everything fire together off that
+   parent, and a latch directly under body has no sensor at all and
+   simply disables its subtree's reveals.
+
+   A 1ms paused animation runs once when the wrapper's flag flips
+   and re-publishes `--in-view: true` permanently (a finished
+   animation stays finished), shadowing the wrapper's reversible
+   flag for everything inside.
+
+   Do NOT latch by putting an infinite transition-delay on the
+   pending state instead: every style change that lands while
+   pending (dev-mode CSS injection, breakpoint changes, htmx/Sprig
+   swaps) reads that delay from its destination state and freezes
+   forever.
+   ============================================================ */
+
+@keyframes scroll-latch {
+    to {
+        --in-view: true;
+    }
+}
+
+@utility scroll-latch {
+    @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: view()) and (animation-range: entry) {
+            container-name: scroll-trigger;
+            animation: scroll-latch 1ms linear forwards paused;
+
+            @container scroll-trigger style(--in-view: true) {
+                animation-play-state: running;
+            }
+        }
+    }
+
+    /* Same print escape as the trigger: without it, latched content
+       resolves its pending state against the latch and prints blank
+       for sections the reader never scrolled to. */
+    @media print {
+        container-name: none;
+    }
+}
+
+/* ============================================================
+   Stagger
+   Always applied to the animating element. `stagger` counts the
+   element's own position among its siblings, plus the inherited
+   `--stagger-context` that grid-fill-* publishes from each grid
+   child, so it works both for flat sibling groups and for grid
+   items whose animating element is an only child of its cell.
+
+   `stagger-n-*` cycles the delays: with stagger-n-3, siblings 1-3
+   get steps 0-2 and siblings 4-6 repeat the same steps. (The
+   hyphen is required; Tailwind functional utilities must end in
+   `-*`, so `stagger-n3` is not expressible.)
+
+   In grids, same-row cells sense on the same frame (equal top
+   edge and, via align-items: stretch, equal height), so a cycled
+   stagger (stagger-fill / stagger-n-*) reads as a left-to-right
+   sweep per row.
+   ============================================================ */
+
+@utility stagger {
+    --stagger: calc(var(--stagger-context, 0) + sibling-index() - 1);
+}
+
+@utility stagger-* {
+    --stagger: --value(integer);
+}
+
+@utility stagger-n-* {
+    --stagger: mod(var(--stagger-context, 0) + sibling-index() - 1, --value(integer));
+}
+
+/* Cycle by the grid's CURRENT column count: inside a grid-fill-*
+   grid, each row sweeps with the same delays at every width, with
+   no per-breakpoint classes. Reads --grid-fill-count, computed by
+   grid-fill.css from the real column math. */
+@utility stagger-fill {
+    --stagger: mod(var(--stagger-context, 0) + sibling-index() - 1, var(--grid-fill-count, 1));
+}
+
+@utility stagger-step-* {
+    --stagger-step: calc(--value(integer) * 1ms);
+}
