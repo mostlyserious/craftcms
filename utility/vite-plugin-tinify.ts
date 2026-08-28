@@ -3,12 +3,12 @@ import fs from 'node:fs'
 import tinify from 'tinify'
 import type { Plugin } from 'vite'
 
-export default (): Plugin => ({
+export default (options: { key?: string } = {}): Plugin => ({
     name: 'vite-plugin-tinify',
     async generateBundle(_, bundler) {
         for (const [path, asset] of Object.entries(bundler)) {
             if (/\.(png|jpe?g)$/.test(path) && asset.type === 'asset' && typeof asset.source !== 'undefined') {
-                const checksum = crypto.createHash('sha1').update(asset.source.toString()).digest('hex')
+                const checksum = crypto.createHash('sha1').update(asset.source).digest('hex')
                 const checksumfile = `node_modules/.vite/tinify/${checksum}`
 
                 let content: Buffer | Uint8Array | undefined
@@ -16,7 +16,7 @@ export default (): Plugin => ({
                 if (fs.existsSync(checksumfile)) {
                     content = fs.readFileSync(checksumfile)
                 } else {
-                    if (!process.env.TINYPNG_KEY) {
+                    if (!options.key) {
                         throw new Error('vite-plugin-tinify: TINYPNG_KEY not defined. **Images not optimized**')
                     }
 
@@ -40,7 +40,7 @@ export default (): Plugin => ({
                         }, process.cwd())
                     }
 
-                    tinify.key = process.env.TINYPNG_KEY
+                    tinify.key = options.key
                     content = await tinify.fromBuffer(asset.source).toBuffer()
 
                     fs.writeFile(checksumfile, content, error => error && console.log(error))

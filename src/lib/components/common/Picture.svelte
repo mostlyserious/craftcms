@@ -32,6 +32,5 @@
             ? `visibility:hidden;aspect-ratio:${width}/${height};max-width:${width}px;max-height:${height}px;`
             : undefined}
         onerror={() => (isLoading = false)}
-        onload={() => (isLoading = false)}
-    />
+        onload={() => (isLoading = false)} />
 </picture>

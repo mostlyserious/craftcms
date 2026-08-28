@@ -122,8 +122,7 @@
 {#snippet preview()}
     {#snippet icon()}
         <div
-            class="inset-center group-hover:bg-brand-yellow absolute flex rounded-full bg-white p-4 text-black transition"
-        >
+            class="inset-center absolute flex rounded-full bg-white p-4 text-black transition group-hover:bg-neutral-200">
             <Icon request={import('$fontawesome/solid/play.svg?raw')} class="size-8 shrink-0 fill-current" />
         </div>
     {/snippet}
@@ -135,8 +134,7 @@
             onclick={playInline ? activateInline : openModal}
             class="group relative w-full"
             aria-label="play video"
-            style:--focusable-color="currentcolor"
-        >
+            style:--focusable-color="currentcolor">
             {@render icon()}
             <img
                 width={embed.width}
@@ -144,8 +142,7 @@
                 src={embed.image}
                 alt={embed.title}
                 class="m-0 aspect-video w-full rounded-lg object-cover"
-                loading="lazy"
-            />
+                loading="lazy" />
         </button>
     {:else if upload}
         <button
@@ -153,15 +150,13 @@
             onclick={playInline ? activateInline : openModal}
             class="group relative w-full"
             aria-label="play video"
-            style:--focusable-color="currentcolor"
-        >
+            style:--focusable-color="currentcolor">
             {@render icon()}
             <video
                 class="pointer-events-none block aspect-video w-full rounded-lg bg-black"
                 muted
                 playsinline
-                preload="metadata"
-            >
+                preload="metadata">
                 <source src={upload.src} type={upload.mime} />
             </video>
         </button>
@@ -173,8 +168,7 @@
         <div
             class="wrapper"
             style:background-image="url({embed.image})"
-            style:--aspect-ratio="{embed.width}/{embed.height}"
-        >
+            style:--aspect-ratio="{embed.width}/{embed.height}">
             <iframe
                 width={embed.width}
                 height={embed.height}
@@ -183,8 +177,7 @@
                 frameborder="0"
                 allowfullscreen
                 allow="autoplay; fullscreen; picture-in-picture; accelerometer; encrypted-media; gyroscope;"
-                {@attach postMessage('play')}
-            >
+                {@attach postMessage('play')}>
             </iframe>
         </div>
     {:else if upload}
@@ -194,8 +187,7 @@
             autoplay
             playsinline
             preload="metadata"
-            {@attach playVideo}
-        >
+            {@attach playVideo}>
             <source src={upload.src} type={upload.mime} />
         </video>
     {/if}

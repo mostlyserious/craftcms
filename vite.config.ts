@@ -12,10 +12,16 @@ import tinify from './utility/vite-plugin-tinify'
 const root = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig(({ mode }) => {
-    const { VITE_BASE, VITE_PORT, VITE_TEMP, PRIMARY_SITE_URL } = env.parse(mode)
+    const { VITE_BASE, VITE_PORT, VITE_TEMP, PRIMARY_SITE_URL, TINYPNG_KEY } = env.parse(mode)
 
     const basePath = toBasePath(VITE_BASE)
     const outDir = join('web', VITE_TEMP ? toBasePath(VITE_TEMP) : basePath)
+
+    if (outDir === 'web') {
+        throw new Error(
+            'VITE_BASE (or VITE_TEMP) must resolve to a subdirectory of web/ — refusing to empty the webroot',
+        )
+    }
 
     fs.rmSync(outDir, {
         recursive: true,
@@ -25,7 +31,7 @@ export default defineConfig(({ mode }) => {
     return {
         publicDir: false,
         base: `/${basePath}/`,
-        plugins: [tailwindcss(), svelte(), tinify(), svgo()],
+        plugins: [tailwindcss(), svelte(), tinify({ key: TINYPNG_KEY }), svgo()],
         css: {
             transformer: 'lightningcss',
             lightningcss: {

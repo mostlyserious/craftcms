@@ -12,7 +12,6 @@ const preloaded = new Set<string>()
 export default ModuleSchema.implement(els => {
     const forward = document.createElement('button')
     const backward = document.createElement('button')
-    const backdrop = document.createElement('div')
     const dialog = document.createElement('dialog')
     const groups: Record<string, HTMLElement[]> = {}
     const cleanups: Array<() => void> = []
@@ -20,26 +19,26 @@ export default ModuleSchema.implement(els => {
     let current: HTMLElement | null = null
     let scrollRelease: (() => void) | null = null
 
-    document.body.append(backdrop)
-    backdrop.append(dialog)
-    backdrop.append(forward)
-    backdrop.append(backward)
+    document.body.append(dialog)
+    dialog.append(backward)
+    dialog.append(forward)
 
+    backward.type = 'button'
+    backward.setAttribute('aria-label', 'previous image')
     backward.setAttribute(
         'class',
-        'flex fixed left-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-brand-orange',
+        'flex fixed left-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-white/60',
     )
+    forward.type = 'button'
+    forward.setAttribute('aria-label', 'next image')
     forward.setAttribute(
         'class',
-        'flex fixed right-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-brand-orange',
+        'flex fixed right-4 bottom-6 z-50 transition sm:bottom-auto sm:top-1/2 hover:text-white text-white/60',
     )
-    backdrop.setAttribute(
-        'class',
-        'fixed inset-0 z-20 opacity-0 transition pointer-events-none bg-brand-gray-darker/95',
-    )
+    dialog.setAttribute('aria-label', 'image viewer')
     dialog.setAttribute(
         'class',
-        'overflow-auto fixed top-1/2 left-1/2 z-50 max-w-7xl rounded-md transform -translate-x-1/2 -translate-y-1/2 w-[90dvw] max-h-[90dvh]',
+        'overflow-auto fixed top-1/2 left-1/2 z-50 max-w-7xl rounded-md transform -translate-x-1/2 -translate-y-1/2 w-[90dvw] max-h-[90dvh] backdrop:bg-neutral-950/95',
     )
 
     forward.innerHTML = markup(rightArrowIcon, {
@@ -95,13 +94,13 @@ export default ModuleSchema.implement(els => {
             return
         }
 
-        const { code, shiftKey } = event
+        const { code } = event
 
         if (code === 'Escape') {
             close()
         }
 
-        if (!dialog.hasAttribute('open')) {
+        if (!dialog.open) {
             return
         }
 
@@ -111,51 +110,35 @@ export default ModuleSchema.implement(els => {
 
         const collection = getGroup(current)
 
-        if (code === 'ArrowLeft' || (code === 'Tab' && shiftKey)) {
-            const i = prev(collection.indexOf(current), collection.length)
-
-            close()
-            open(collection[i])
-
-            current.focus()
+        if (code === 'ArrowLeft') {
+            event.preventDefault()
+            open(collection[prev(collection.indexOf(current), collection.length)])
         }
 
-        if (code === 'ArrowRight' || (code === 'Tab' && !shiftKey)) {
-            const i = next(collection.indexOf(current), collection.length)
-
-            close()
-            open(collection[i])
-
-            current.focus()
+        if (code === 'ArrowRight') {
+            event.preventDefault()
+            open(collection[next(collection.indexOf(current), collection.length)])
         }
     })
 
-    listen(forward, 'click', event => {
-        event.stopPropagation()
-
+    listen(forward, 'click', () => {
         if (!current) {
             return
         }
 
         const collection = getGroup(current)
-        const i = next(collection.indexOf(current), collection.length)
 
-        close()
-        open(collection[i])
+        open(collection[next(collection.indexOf(current), collection.length)])
     })
 
-    listen(backward, 'click', event => {
-        event.stopPropagation()
-
+    listen(backward, 'click', () => {
         if (!current) {
             return
         }
 
         const collection = getGroup(current)
-        const i = prev(collection.indexOf(current), collection.length)
 
-        close()
-        open(collection[i])
+        open(collection[prev(collection.indexOf(current), collection.length)])
     })
 
     const preload = (el: HTMLElement | undefined) => {
@@ -204,10 +187,9 @@ export default ModuleSchema.implement(els => {
             img.setAttribute('src', src)
         }
 
-        backdrop.classList.remove('opacity-0')
-        backdrop.classList.remove('pointer-events-none')
-
-        dialog.setAttribute('open', '')
+        if (!dialog.open) {
+            dialog.showModal()
+        }
 
         if (!scrollRelease) {
             scrollRelease = lockScroll()
@@ -226,12 +208,17 @@ export default ModuleSchema.implement(els => {
             scrollRelease = null
         }
 
-        backdrop.classList.add('opacity-0')
-        backdrop.classList.add('pointer-events-none')
-        dialog.removeAttribute('open')
+        dialog.close()
+        current?.focus()
     }
 
-    listen(backdrop, 'click', () => close())
+    listen(dialog, 'click', event => {
+        if (event.target === dialog) {
+            close()
+        }
+    })
+
+    listen(dialog, 'cancel', () => close())
 
     for (const el of els) {
         const group = el.dataset.lightboxGroup || DEFAULT_GROUP
@@ -248,7 +235,10 @@ export default ModuleSchema.implement(els => {
 
         groups[group].push(el)
 
-        el.setAttribute('type', 'submit')
+        if (el instanceof HTMLButtonElement) {
+            el.type = 'button'
+        }
+
         listen(el, 'click', () => open(el))
         listen(el, 'mouseover', () => preload(el))
     }
@@ -259,7 +249,7 @@ export default ModuleSchema.implement(els => {
         }
 
         close()
-        backdrop.remove()
+        dialog.remove()
         current = null
     }
 })

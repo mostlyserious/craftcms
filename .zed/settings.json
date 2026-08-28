@@ -16,14 +16,14 @@
         "JavaScript": {
             "format_on_save": "on",
             "prettier": { "allowed": false },
-            "language_servers": ["oxlint", "oxfmt", "tsgo"],
+            "language_servers": ["oxlint", "oxfmt", "typescript-ls"],
             "formatter": [{ "language_server": { "name": "oxfmt" } }],
             "code_actions_on_format": { "source.fixAll.oxc": true }
         },
         "TypeScript": {
             "format_on_save": "on",
             "prettier": { "allowed": false },
-            "language_servers": ["oxlint", "oxfmt", "tsgo"],
+            "language_servers": ["oxlint", "oxfmt", "typescript-ls"],
             "formatter": [{ "language_server": { "name": "oxfmt" } }],
             "code_actions_on_format": { "source.fixAll.oxc": true }
         },

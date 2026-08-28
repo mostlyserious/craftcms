@@ -8,6 +8,7 @@
 /.cache
 /vendor
 /node_modules
+/.pnpm-store
 /web/static
 /web/cpresources
 /web/assets

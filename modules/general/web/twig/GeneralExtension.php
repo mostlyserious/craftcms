@@ -406,7 +406,7 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             return $markup;
         }
 
-        return sprintf('<template> %s </template>', $markup);
+        return '';
     }
 
     public static function plain(mixed $string): string

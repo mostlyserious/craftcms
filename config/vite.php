@@ -16,7 +16,7 @@ $manifest = Craft::getAlias(sprintf('@webroot%s/.vite/manifest.json', $viteBase)
 
 return [
     'manifestPath' => $manifest,
-    'useDevServer' => !is_file($manifest),
+    'useDevServer' => App::env('CRAFT_ENVIRONMENT') === 'dev' && !is_file($manifest),
     'serverPublic' => UrlHelper::siteHost() . $viteBase . '/',
     'devServerPublic' => implode(':', [
         $primarySiteUrl,

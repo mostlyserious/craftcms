@@ -43,13 +43,13 @@ describe('lightbox', () => {
 
         const cleanup = mountLightbox('<button data-lightbox="/photo-a.jpg">Open</button>')
         const button = document.querySelector<HTMLElement>('[data-lightbox]')
-        const backdrop = document.querySelector<HTMLElement>('div')
+        const dialog = document.querySelector<HTMLDialogElement>('dialog')
 
         button?.click()
 
         expect(document.body.style.overflow).toBe('hidden')
 
-        backdrop?.click()
+        dialog?.click()
 
         expect(document.body.style.overflow).toBe('visible')
 
@@ -76,15 +76,15 @@ describe('lightbox', () => {
         secondCleanup()
     })
 
-    test('registers one backdrop close listener per initialization', () => {
-        const divListener = vi.spyOn(HTMLDivElement.prototype, 'addEventListener')
+    test('registers one dialog close listener per initialization', () => {
+        const dialogListener = vi.spyOn(HTMLDialogElement.prototype, 'addEventListener')
         const cleanup = mountLightbox(`
             <button data-lightbox="/photo-a.jpg">One</button>
             <button data-lightbox="/photo-b.jpg">Two</button>
             <button data-lightbox="/photo-c.jpg">Three</button>
         `)
 
-        expect(divListener.mock.calls.filter(([type]) => type === 'click')).toHaveLength(1)
+        expect(dialogListener.mock.calls.filter(([type]) => type === 'click')).toHaveLength(1)
 
         cleanup()
     })
@@ -96,13 +96,13 @@ describe('lightbox', () => {
             <button data-lightbox="/photo-b.jpg" data-lightbox-group="gallery">Two</button>
         `)
         const buttons = Array.from(document.querySelectorAll<HTMLElement>('[data-lightbox]'))
-        const backdrop = document.querySelector<HTMLDivElement>('div')
+        const dialog = document.querySelector<HTMLDialogElement>('dialog')
 
-        if (!backdrop) {
-            throw new Error('Lightbox backdrop was not created.')
+        if (!dialog) {
+            throw new Error('Lightbox dialog was not created.')
         }
 
-        const navButtons = Array.from(backdrop.children).filter(
+        const navButtons = Array.from(dialog.children).filter(
             (child): child is HTMLButtonElement => child instanceof HTMLButtonElement,
         )
 
@@ -111,10 +111,10 @@ describe('lightbox', () => {
         expect(navButtons).toHaveLength(2)
         expect(navButtons.every(button => button.hidden)).toBe(true)
 
-        backdrop.click()
+        dialog.click()
         buttons[1]?.click()
 
-        expect(navButtons.every(button => button.parentElement === backdrop)).toBe(true)
+        expect(navButtons.every(button => button.parentElement === dialog)).toBe(true)
         expect(navButtons.every(button => !button.hidden)).toBe(true)
 
         cleanup()

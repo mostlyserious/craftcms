@@ -1,4 +1,5 @@
 import { MediaQuery } from 'svelte/reactivity'
+import * as z from 'zod/mini'
 import { AppSchema, type App } from '$lib/schemas/app'
 
 const root = getComputedStyle(document.body)
@@ -21,7 +22,29 @@ interface ScreenState {
     'is2xl': MediaQuery
 }
 
-export const craft: Readonly<App> = Object.freeze(AppSchema.parse(window.$app))
+let app: Readonly<App> | null = null
+
+/** Parsed on first access rather than at module init, so a `window.$app` mismatch only fails the code that reads `craft`. */
+function resolve(): Readonly<App> {
+    if (!app) {
+        const result = AppSchema.safeParse(window.$app)
+
+        if (!result.success) {
+            throw new Error(`window.$app failed validation:\n${z.prettifyError(result.error)}`)
+        }
+
+        app = Object.freeze(result.data)
+    }
+
+    return app
+}
+
+export const craft: Readonly<App> = new Proxy({} as App, {
+    get: (_, prop) => Reflect.get(resolve(), prop),
+    has: (_, prop) => Reflect.has(resolve(), prop),
+    ownKeys: () => Reflect.ownKeys(resolve()),
+    getOwnPropertyDescriptor: (_, prop) => Object.getOwnPropertyDescriptor(resolve(), prop),
+})
 
 export const screen: Readonly<ScreenState> = Object.freeze({
     'prefersReducedMotion': new MediaQuery('prefers-reduced-motion: reduce'),

@@ -2,6 +2,7 @@
     .section('navigation')
     .cache
     .one %}
+{% set menu = navigation ? navigation.main.eagerly().all() : [] %}
 
 <div class="navbar" data-property="--navbar-height: offsetHeight|px">
     <div class="container max-w-7xl">
@@ -14,7 +15,7 @@
             </a>
             <nav aria-label="{{ ('main navigation')|t }}">
                 <ul class="navbar-nav">
-                    {% for item in navigation.main|default([]) %}
+                    {% for item in menu %}
                         {% if item.type == 'dropdown' %}
                             <li class="navbar-item">
                                 <button type="button"
@@ -29,7 +30,7 @@
                                 </button>
                                 <ul id="menu-item-{{ item.uid }}" class="dropdown"
                                     data-toggle-inert="is-active">
-                                    {% for child in item.links %}
+                                    {% for child in item.links.eagerly() %}
                                         {{ link(child.button, {
                                             class: 'dropdown-link',
                                         }, 'li')|attr({
@@ -40,7 +41,7 @@
                             </li>
                         {% elseif item.type == 'menuItem' %}
                             {{ link(item.button, {
-                                class: loop.index == navigation.main|length
+                                class: loop.index == menu|length
                                     ? 'button button-blue'
                                     : 'navbar-link',
                             }, 'li')|attr({
@@ -70,4 +71,4 @@
     </div>
 </div>
 
-{{ include('common/_mobileNavigation') }}
+{{ include('common/_mobileNavigation', { menu: menu }) }}

@@ -1,5 +1,9 @@
-function get_op() {
-    op item get 'ENVIRONMENT_DEFAULTS' --fields=label=$1 --reveal --account=mostlyserious.1password.com --vault=Employee
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+get_op() {
+    op item get 'ENVIRONMENT_DEFAULTS' --fields=label="$1" --reveal --account=mostlyserious.1password.com --vault=Employee
 }
 
 if ! command -v ddev &> /dev/null
@@ -10,10 +14,10 @@ fi
 
 # @todo: check if we can collect Fort Awesome token up-front
 
-cp .env.example .env
-ddev dotenv set .env --primary-site-url="https://$(basename $PWD).ddev.site"
-ddev dotenv set .env --imgix-url="https://$(basename $PWD).imgix.net"
-ddev config --project-name=$(basename $PWD)
+[ -f .env ] || cp .env.example .env
+ddev dotenv set .env --primary-site-url="https://$(basename "$PWD").ddev.site"
+ddev dotenv set .env --imgix-url="https://$(basename "$PWD").imgix.net"
+ddev config --project-name="$(basename "$PWD")"
 ddev start
 ddev composer update
 ddev craft setup/keys
@@ -22,7 +26,7 @@ ddev pnpm install --frozen-lockfile
 
 if command -v op &> /dev/null
 then
-    ddev dotenv set .env --tinypng-key=$(get_op TINYPNG_KEY)
+    ddev dotenv set .env --tinypng-key="$(get_op TINYPNG_KEY)"
     ddev pnpm run build
 else
     echo "1Password CLI not found."

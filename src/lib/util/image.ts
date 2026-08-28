@@ -59,7 +59,11 @@ function attributes(source: ImageSource, loading = 'lazy') {
 
     if (asset.uid) {
         const src = imgix(asset.src, args || {})
-        const src2x = imgix(asset.src, { ...args, width: width * 2, height: height * 2 })
+        const src2x = imgix(asset.src, {
+            ...args,
+            ...(width ? { width: width * 2 } : {}),
+            ...(height ? { height: height * 2 } : {}),
+        })
         const alt = asset.alt
 
         if (!width && height) {
@@ -69,6 +73,9 @@ function attributes(source: ImageSource, loading = 'lazy') {
         if (!height && width) {
             height = Math.floor(Math.min(asset.width, width) * (asset.height / asset.width))
         }
+
+        width = width || asset.width
+        height = height || asset.height
 
         Object.assign(attrs, {
             width,
