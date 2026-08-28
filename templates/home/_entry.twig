@@ -9,4 +9,132 @@
         nested: false,
         branded: true,
     }) }}
+
+    {# =========================================================================
+       Scroll-trigger demo
+       Hard-coded examples for the scroll reveal (`enter:*`) utilities in
+       src/css/utilities/scroll-trigger.css. Sections 3-6 are one-shot: a
+       scroll-latch on the content wrapper INSIDE each section makes the
+       section itself the sensor and latches everything within. The hero
+       and the row-by-row grid replay on re-entry. Latches always go on a
+       wrapper inside the group, never on the section (a latch fires when
+       its PARENT enters, so latching the section hands timing to the tall
+       shared container). Remove this section once real content uses the
+       pattern.
+       ========================================================================= #}
+    <div class="container max-w-5xl py-24 space-y-32">
+
+        {# 1. Basic enter: fade and rise, fires on load when above the fold #}
+        <header class="space-y-4">
+            <h2 class="enter:opacity-0 enter:translate-y-4 duration-700 text-3xl font-bold">
+                Scroll reveals, no JavaScript
+            </h2>
+            <p class="enter:opacity-0 enter:translate-y-4 duration-700 delay-150 text-neutral-600">
+                Everything below animates in once, the first time it enters the viewport.
+            </p>
+        </header>
+
+        {# 2. Card grid: ambient sensing means each li (the parent of its
+             card) fires as ITS row enters the viewport, and stagger-fill
+             sweeps the columns by the grid's live column count. No classes
+             on the li at all. Rows replay on re-entry; see the presets grid
+             below for the one-shot latch pattern. #}
+        <section class="space-y-8">
+            <h3 class="text-xl font-semibold">Staggered grid, row by row</h3>
+            <ul class="grid grid-fill-72 gap-8">
+                {% for index in 1..6 %}
+                    <li>
+                        <article class="enter:opacity-0 enter:translate-y-6 stagger-fill duration-500 rounded-lg bg-neutral-100 p-8">
+                            <h4 class="font-semibold">Card {{ index }}</h4>
+                            <p class="text-sm text-neutral-600">
+                                Rows fire on entry; columns sweep by live count.
+                            </p>
+                        </article>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        {# 3. Per-child choreography: one latched wrapper, each child times
+             itself. The section is the sensor; scroll-trigger-60 on it
+             waits until 60% of the section has entered. #}
+        <section class="space-y-8 scroll-trigger-60">
+            <h3 class="text-xl font-semibold">Choreographed figure</h3>
+            <figure class="scroll-latch space-y-4">
+                <img
+                    class="enter:opacity-0 enter:grayscale enter:scale-105 duration-1000 rounded-lg"
+                    src="https://picsum.photos/seed/reveal/960/540"
+                    alt="Placeholder landscape"
+                    width="960"
+                    height="540"
+                    loading="lazy"
+                >
+                <figcaption class="enter:opacity-0 enter:translate-x-4 duration-700 delay-300 text-sm text-neutral-600">
+                    The image desaturates and settles first, then this caption slides in.
+                </figcaption>
+            </figure>
+        </section>
+
+        {# 4. Arbitrary properties: color sweep, letter-spacing, bar width.
+             Any utility works inside enter:*, not just opacity and transform. #}
+        <section class="space-y-8">
+            <h3 class="text-xl font-semibold">Beyond opacity</h3>
+            <div class="scroll-latch space-y-6">
+                <p class="enter:bg-neutral-200 enter:text-neutral-400 duration-1000 rounded-lg bg-blue-600 p-8 text-lg font-semibold text-white">
+                    This panel reveals by transitioning background and text color.
+                </p>
+                <p class="enter:tracking-widest enter:opacity-0 duration-1000 text-2xl font-bold uppercase">
+                    Letter-spacing tightens into place
+                </p>
+                <div class="h-3 rounded-full bg-neutral-200">
+                    <div class="enter:w-0 duration-1000 h-full w-2/3 rounded-full bg-blue-600"></div>
+                </div>
+            </div>
+        </section>
+
+        {# 5. Presets: convenience hidden states behind the enter: variant,
+             all with fade built in. Composable with core utilities, e.g.
+             enter:zoom enter:blur-sm; custom distances use the primitives,
+             e.g. enter:fade enter:translate-y-16. The ul carries
+             scroll-latch, so the SECTION is the sensor and the whole grid
+             fires as one staggered composition (stagger-n-3 cycles the
+             delays in threes) and stays revealed on every browser. #}
+        <section class="space-y-8">
+            <h3 class="text-xl font-semibold">Presets</h3>
+            <ul class="scroll-latch grid grid-fill-72 gap-8">
+                {% for preset in [
+                    'enter:fade',
+                    'enter:slide-up',
+                    'enter:slide-down',
+                    'enter:slide-left',
+                    'enter:slide-right',
+                    'enter:zoom',
+                    'enter:zoom enter:blur-sm',
+                    'enter:fade enter:translate-y-16',
+                ] %}
+                    <li>
+                        <article class="{{ preset }} stagger-n-3 duration-700 rounded-lg bg-neutral-100 p-8">
+                            <h4 class="font-mono text-sm font-semibold">{{ preset }}</h4>
+                        </article>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        {# 6. Explicit stagger and timing control: manual stagger-* values,
+             a wider stagger-step, and an easing override #}
+        <section class="space-y-8">
+            <h3 class="text-xl font-semibold">Manual timing</h3>
+            <div class="scroll-latch flex flex-wrap gap-4">
+                {% for stagger in ['stagger-0', 'stagger-1', 'stagger-2', 'stagger-3', 'stagger-4'] %}
+                    <span
+                        class="{{ stagger }} stagger-step-150 enter:opacity-0 enter:scale-50 duration-500 ease-in-out rounded-full bg-neutral-800 px-5 py-2 text-sm text-white"
+                    >
+                        {{ stagger }}
+                    </span>
+                {% endfor %}
+            </div>
+        </section>
+
+    </div>
 {% endblock %}
