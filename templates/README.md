@@ -162,7 +162,7 @@ Each block type follows consistent patterns:
 
 ```twig
 {# Conditional rendering based on content #}
-{% if block.content|plain %}
+{% if block.content is filled %}
     <section class="{{ swatch(palette, 'background', 'text') }}" data-animate>
         <div class="{{ padding }}">
             <!-- Block content -->
@@ -173,7 +173,7 @@ Each block type follows consistent patterns:
 
 **Common Patterns:**
 
-- Content existence checks using `|plain` filter
+- Content existence checks using the `filled` test
 - Color theming via `swatch()` function
 - Animation attributes with `data-animate`
 - Responsive padding classes
@@ -225,11 +225,11 @@ Dynamic header rendering based on block types:
 Always check for content before rendering:
 
 ```twig
-{% if block.richText|plain or block.heading|plain %}
+{% if block.richText is filled or block.heading is filled %}
     <!-- Render content -->
 {% endif %}
 
-{% if block.excerpt|plain %}
+{% if block.excerpt is filled %}
     <div class="prose">{{ block.excerpt }}</div>
 {% endif %}
 ```

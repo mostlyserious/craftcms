@@ -50,8 +50,9 @@ Provides standardized methods for transforming Craft CMS content into frontend-c
 
 **Key Methods:**
 
-- `plain()` - Strip HTML tags for plain text output
-- `heading()` - Sanitize heading content with allowed tags
+- `plain()` - Visible text with entities decoded and whitespace trimmed
+- `filled()` - Whether HTML has visible text or embedded content
+- `heading()` - Inline heading markup, or an empty string without visible text
 - `relatedTo()` - Transform related element collections
 - `icon()` - Format Icon Picker field data
 - `image()` - Standardize Asset image data
@@ -86,9 +87,13 @@ Extends Twig with custom functions and filters for enhanced template capabilitie
 
 - `tel` - Format telephone numbers
 - `mailto` - Format email addresses
-- `plain` - Strip HTML tags
+- `plain` - Visible text, printed escaped
 - `media` - Transform media URLs for optimization
-- `heading` - Sanitize heading content
+- `heading` - Inline heading markup, or an empty string without visible text
+
+**Custom Tests:**
+
+- `filled` - Whether HTML has visible text or embedded content, for content existence checks
 
 #### oEmbed Controller (`controllers/OembedController.php`)
 

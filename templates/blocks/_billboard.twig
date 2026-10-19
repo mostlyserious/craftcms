@@ -23,7 +23,7 @@
                     <h2 class="text-4xl md:text-5xl lg:text-6xl">
                         {{ block.heading|heading }}
                     </h2>
-                    {% if block.excerpt|plain %}
+                    {% if block.excerpt is filled %}
                         <div class="prose {{ branded ? 'prose-brand' }}" data-animate>
                             {{ block.excerpt }}
                         </div>
