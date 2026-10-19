@@ -353,36 +353,17 @@ window.$app.config = {{ {
 
 ### `plain`
 
-Strips HTML tags using the Serializer service. Primarily used for conditional content checks and clean text output.
+Returns the visible text of an HTML value through the Serializer service. Entities are decoded, paragraphs and line breaks are separated by a space, and whitespace, including non-breaking and zero-width spaces, is collapsed and trimmed. Print it escaped, for example in an `alt` or `aria-label` attribute.
 
-**Real Usage Examples:**
+Don't use it to check whether content exists: an image-only rich text field has no visible text. Use the `filled` test instead.
 
 ```twig
-{# Content existence checks - templates/blocks/_text.twig #}
-{% if block.richText|plain or block.heading|plain %}
-    <!-- render content -->
-{% endif %}
-
-{# Header existence check - templates/blocks/_text.twig #}
-{% if block.heading|plain %}
-    <header class="mb-4" data-animate>
-        <h2 class="text-3xl md:text-4xl">
-            {{ block.heading|heading }}
-        </h2>
-    </header>
-{% endif %}
-
-{# Excerpt check - templates/blocks/_billboard.twig #}
-{% if block.excerpt|plain %}
-    <div class="prose {{ branded ? 'prose-brand' }}" data-animate>
-        {{ block.excerpt }}
-    </div>
-{% endif %}
+<a href="{{ entry.url }}" aria-label="{{ block.heading|plain }}">
 ```
 
 ### `heading`
 
-Sanitizes heading content, allowing only safe HTML tags. Used for all heading content across templates.
+Returns a heading's inline markup, allowing only `HEADING_TAGS`. Paragraphs become line breaks, so their words don't run together, and whitespace and line breaks at either end are trimmed. A heading with no visible text, such as `<p>&nbsp;</p>`, returns an empty string. Used for all heading content across templates.
 
 **Real Usage Examples:**
 
@@ -419,6 +400,37 @@ Transforms rich text content with automatic `srcset` generation for responsive i
 <div class="prose {{ branded ? 'prose-brand' }}" data-animate>
     {{ block.richText|media(976) }}
 </div>
+```
+
+## Custom Tests
+
+### `filled`
+
+Whether an HTML value has visible text or embedded content: an image, media embed, iframe, or nested entry. Use it for content existence checks instead of the raw value, which is truthy for markup that renders nothing, such as `<p>&nbsp;</p><p>&nbsp;</p>`.
+
+**Real Usage Examples:**
+
+```twig
+{# Content existence checks - templates/blocks/_text.twig #}
+{% if block.richText is filled or block.heading is filled %}
+    <!-- render content -->
+{% endif %}
+
+{# Header existence check - templates/blocks/_text.twig #}
+{% if block.heading is filled %}
+    <header class="mb-4" data-animate>
+        <h2 class="text-3xl md:text-4xl">
+            {{ block.heading|heading }}
+        </h2>
+    </header>
+{% endif %}
+
+{# Excerpt check - templates/blocks/_billboard.twig #}
+{% if block.excerpt is filled %}
+    <div class="prose {{ branded ? 'prose-brand' }}" data-animate>
+        {{ block.excerpt }}
+    </div>
+{% endif %}
 ```
 
 ## Functions Available But Not Currently Used

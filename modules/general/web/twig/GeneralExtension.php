@@ -7,6 +7,7 @@ namespace modules\general\web\twig;
 use Craft;
 use Stringable;
 use Twig\Markup;
+use Twig\TwigTest;
 use Twig\TwigFilter;
 use craft\helpers\App;
 use Twig\TwigFunction;
@@ -95,6 +96,13 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('media', [static::class, 'media'], static::HTML_SAFE),
             new TwigFilter('heading', [static::class, 'heading'], static::HTML_SAFE),
             new TwigFilter('onlyEnv', [static::class, 'onlyEnv'], static::HTML_SAFE),
+        ];
+    }
+
+    public function getTests(): array
+    {
+        return [
+            new TwigTest('filled', [static::class, 'filled']),
         ];
     }
 
@@ -416,6 +424,11 @@ class GeneralExtension extends AbstractExtension implements GlobalsInterface
         }
 
         return Serializer::plain(self::stringValue($string));
+    }
+
+    public static function filled(mixed $string): bool
+    {
+        return Serializer::filled(self::stringValue($string));
     }
 
     public static function heading(mixed $string): string
