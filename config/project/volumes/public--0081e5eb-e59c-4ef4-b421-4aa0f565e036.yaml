@@ -75,6 +75,7 @@ fieldLayouts:
 fs: aws
 handle: public
 name: Public
+propagationMethod: custom
 sortOrder: 1
 subpath: ''
 titleTranslationKeyFormat: null
