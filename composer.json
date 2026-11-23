@@ -43,6 +43,7 @@
     "config": {
         "allow-plugins": {
             "craftcms/plugin-installer": true,
+            "php-http/discovery": false,
             "yiisoft/yii2-composer": true
         },
         "sort-packages": true,
