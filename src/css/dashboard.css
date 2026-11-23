@@ -47,7 +47,7 @@
         & .ck.ck-content {
             padding: 0.5rem !important;
 
-            &[role='textbox'][aria-label^='heading'i] {
+            &[role='textbox'][aria-label^='heading' i] {
                 font-weight: 500;
                 font-size: 1.5rem;
                 line-height: 1.2;
